@@ -1,0 +1,19 @@
+{
+  "name": "unmarked",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Unmarked — luoghi che non trovi sulle guide. Reportage, fotografia, itinerari.",
+  "author": "Samu Cavicchi",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^4.16.18"
+  }
+}

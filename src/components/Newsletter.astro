@@ -1,0 +1,47 @@
+---
+// Newsletter — sezione iscrizione.
+// I numeri sono placeholder: collegheremo i veri stats quando avremo Buttondown/Substack/altro.
+
+export interface Props {
+  readers?: string;
+  issues?: string;
+}
+
+const {
+  readers = '4.800+',
+  issues = '52'
+} = Astro.props;
+---
+
+<div class="nl-section">
+  <div class="nl-left">
+    <div class="nl-logo">Unmarked</div>
+    <div class="nl-stats">
+      <div>
+        <div class="nl-stat-num">{readers}</div>
+        <div class="nl-stat-label">Lettori ogni lunedì</div>
+      </div>
+      <div>
+        <div class="nl-stat-num">{issues}</div>
+        <div class="nl-stat-label">Numeri pubblicati</div>
+      </div>
+    </div>
+  </div>
+  <div class="nl-right">
+    <div class="nl-copy">
+      <div class="nl-tag">Itinerario settimanale</div>
+      <div class="nl-title">Ogni lunedì una rotta.</div>
+      <div class="nl-sub">
+        Quello che i travel blog non pubblicano,<br />
+        nella tua casella ogni settimana.
+      </div>
+    </div>
+    <div>
+      <form class="nl-form" action="#" method="post">
+        <input class="nl-input" type="email" name="email" placeholder="la tua email" required />
+        <button class="nl-btn" type="submit">Iscriviti — è gratis</button>
+      </form>
+      <div class="nl-legal" style="margin-top:8px;">Nessuno spam. Disiscrizione in un click.</div>
+    </div>
+  </div>
+</div>
