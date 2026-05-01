@@ -1,0 +1,50 @@
+---
+// Card riusabile per le destinazioni — usata in archivio e homepage.
+// Riceve una entry della collection 'destinazioni' e usa il design system esistente.
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'destinazioni'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+const dateLabel = data.publishDate.toLocaleDateString('it-IT', {
+  day: '2-digit',
+  month: 'short',
+});
+---
+
+<a href={`/destinazioni/${entry.slug}`} class="card card-link">
+  <div class="card-img">
+    <img
+      src={data.coverImage.src}
+      alt={data.coverImageAlt}
+      class="card-img-bg"
+      loading="lazy"
+    />
+    <div class="card-img-tag">{data.country} · {data.continent}</div>
+  </div>
+  <div class="card-date">{dateLabel}</div>
+  <div class="card-title">{data.title}</div>
+  <div class="card-body">{data.excerpt}</div>
+  <div class="card-foot">
+    <span class="card-author">{data.region || 'Reportage'}</span>
+    <span class="card-read">Leggi →</span>
+  </div>
+</a>
+
+<style>
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .card-img-bg {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+</style>
