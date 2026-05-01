@@ -1,6 +1,6 @@
 ---
 // Layout base usato da tutte le pagine.
-// Carica font, CSS globale, navbar, footer.
+// Carica font, CSS globale, navbar, footer, Netlify Identity widget.
 
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
@@ -43,6 +43,11 @@ const {
   />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Netlify Identity widget — gestisce inviti, login, recupero password.
+       Caricato in tutte le pagine pubbliche perché i link email di invito
+       reindirizzano alla home del sito (non al pannello admin). -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <Navbar />
@@ -50,5 +55,18 @@ const {
   <slot />
 
   <Footer />
+
+  <!-- Quando l'utente fa login via Netlify Identity, lo redirigiamo all'admin del CMS -->
+  <script is:inline>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", function (user) {
+        if (!user) {
+          window.netlifyIdentity.on("login", function () {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>
