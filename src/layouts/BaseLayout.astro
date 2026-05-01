@@ -1,6 +1,4 @@
 ---
-// Layout base usato da tutte le pagine.
-
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -40,7 +38,9 @@ const {
   <Navbar />
   <slot />
   <Footer />
+
   <script is:inline>
+    // Inizializza il widget Netlify Identity dopo che lo script si è caricato
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", function (user) {
         if (!user) {
@@ -49,6 +49,12 @@ const {
           });
         }
       });
+
+      // Forza apertura della modal se l'URL contiene un token di invito o reset password
+      var hash = window.location.hash;
+      if (hash && (hash.indexOf("invite_token=") !== -1 || hash.indexOf("recovery_token=") !== -1 || hash.indexOf("confirmation_token=") !== -1)) {
+        window.netlifyIdentity.open();
+      }
     }
   </script>
 </body>
