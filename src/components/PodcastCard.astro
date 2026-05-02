@@ -1,0 +1,117 @@
+---
+// Card riusabile per gli episodi del podcast.
+// 'mini' = riga compatta per home (riga numero/tag/titolo/durata + bottone play)
+// 'full' = card piena per archivio con cover
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'podcast'>;
+  variant?: 'mini' | 'full';
+}
+
+const { entry, variant = 'full' } = Astro.props;
+const { data } = entry;
+const href = `/podcast/${entry.slug}`;
+const numLabel = String(data.episodeNumber).padStart(2, '0');
+const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+---
+
+{variant === 'mini' && (
+  <a href={href} class="pod-ep pod-link">
+    <div class="pod-num">{numLabel}</div>
+    <div style="flex:1;">
+      <div class="pod-tag">{data.topic}</div>
+      <div class="pod-title">{data.title}</div>
+      <div class="pod-dur">{data.duration} min · {dateLabel}</div>
+    </div>
+    <div class="pod-btn"><div class="pod-icon"></div></div>
+  </a>
+)}
+
+{variant === 'full' && (
+  <a href={href} class="pod-full-card">
+    <div class="pod-full-num">EP {numLabel}</div>
+    <div class="pod-full-info">
+      <div class="pod-full-tag">{data.topic}{data.guests ? ` · con ${data.guests}` : ''}</div>
+      <h3 class="pod-full-title">{data.title}</h3>
+      <p class="pod-full-excerpt">{data.excerpt}</p>
+      <div class="pod-full-meta">{data.duration} min · {dateLabel}</div>
+    </div>
+    <div class="pod-full-btn"><div class="pod-icon"></div></div>
+  </a>
+)}
+
+<style>
+  .pod-link, .pod-full-card {
+    text-decoration: none;
+    color: inherit;
+  }
+  .pod-full-card {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 22px 24px;
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .pod-full-card:hover {
+    box-shadow: 0 6px 18px rgba(26, 24, 20, 0.06);
+    transform: translateY(-1px);
+  }
+  .pod-full-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--beige);
+    flex-shrink: 0;
+    line-height: 1;
+    min-width: 60px;
+    letter-spacing: 0.04em;
+  }
+  .pod-full-info { flex: 1; }
+  .pod-full-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .pod-full-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.25;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+  .pod-full-excerpt {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .pod-full-meta {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+  .pod-full-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--terra);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .pod-full-card:hover .pod-full-btn {
+    background: rgba(196, 133, 90, 0.1);
+  }
+</style>
