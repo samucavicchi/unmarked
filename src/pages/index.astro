@@ -4,12 +4,13 @@ import Hero from '../components/Hero.astro';
 import Newsletter from '../components/Newsletter.astro';
 import DestinazioneCard from '../components/DestinazioneCard.astro';
 import ItinerarioCard from '../components/ItinerarioCard.astro';
+import FilmCard from '../components/FilmCard.astro';
+import PodcastCard from '../components/PodcastCard.astro';
 import { getCollection } from 'astro:content';
 
 const tutteLeDestinazioni = (await getCollection('destinazioni')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-
 const featured = tutteLeDestinazioni.find((e) => e.data.featured) || tutteLeDestinazioni[0];
 const sideList = tutteLeDestinazioni.filter((e) => e.slug !== featured?.slug).slice(0, 4);
 const grid = tutteLeDestinazioni
@@ -21,6 +22,17 @@ const tuttiGliItinerari = (await getCollection('itinerari')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
 const itinerariHome = tuttiGliItinerari.slice(0, 4);
+
+const tuttiIFilm = (await getCollection('film')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const filmFeatured = tuttiIFilm.find((e) => e.data.featured) || tuttiIFilm[0];
+const filmAltri = tuttiIFilm.filter((e) => e.slug !== filmFeatured?.slug).slice(0, 4);
+
+const tuttiIPodcast = (await getCollection('podcast')).sort(
+  (a, b) => b.data.episodeNumber - a.data.episodeNumber
+);
+const podcastHome = tuttiIPodcast.slice(0, 4);
 
 const formatDateShort = (date) =>
   date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
@@ -81,7 +93,7 @@ const formatDateShort = (date) =>
     )}
   </section>
 
-  <!-- ITINERARI (dinamici da collection) -->
+  <!-- ITINERARI -->
   <div class="itinerari-block">
     <div>
       <div class="it-label">Itinerari premium</div>
@@ -94,107 +106,58 @@ const formatDateShort = (date) =>
     </div>
     <div class="it-cards">
       {itinerariHome.length === 0 && (
-        <>
-          <div class="it-card it-card-placeholder">
-            <div>
-              <div class="it-card-title">In arrivo · Itinerari premium</div>
-              <div class="it-card-meta">I primi itinerari sono in lavorazione.</div>
-            </div>
+        <div class="it-card it-card-placeholder">
+          <div>
+            <div class="it-card-title">In arrivo · Itinerari premium</div>
+            <div class="it-card-meta">I primi itinerari sono in lavorazione.</div>
           </div>
-        </>
+        </div>
       )}
       {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="mini" />)}
     </div>
   </div>
 
-  <!-- FILM (placeholder) -->
+  <!-- FILM -->
   <section>
     <div class="sec-head">
       <h2 class="sec-title">Film di viaggio</h2>
       <a href="/film" class="sec-link">Tutti i film →</a>
     </div>
-    <div class="film-grid pb60">
-      <div>
-        <div class="film-main-img">
-          <div class="film-main-bg"></div>
-          <div class="film-main-ov"></div>
-          <div style="position:relative;">
-            <div class="film-play"><div class="film-play-icon"></div></div>
-            <div class="film-main-tag">Kirghizistan · Documentario</div>
-            <div class="film-main-title">Oltre i passi.<br />Un'estate nomade.</div>
-            <div class="film-main-dur">24 min · 2026</div>
-          </div>
-        </div>
-        <div class="film-main-desc">
-          Un viaggio a cavallo attraverso le vallate del Tian Shan. Tre settimane con una famiglia
-          nomade, tra yurte, silenzi e orizzonti senza fine.
+
+    {tuttiIFilm.length === 0 && (
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
+        I primi film stanno per uscire.
+      </div>
+    )}
+
+    {filmFeatured && (
+      <div class="film-grid pb60">
+        <FilmCard entry={filmFeatured} variant="main" />
+        <div class="film-list">
+          {filmAltri.map((entry) => <FilmCard entry={entry} variant="episode" />)}
         </div>
       </div>
-      <div class="film-list">
-        <div class="film-ep">
-          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#2a2520,#1a1814);"></div><div class="film-thumb-play"></div></div>
-          <div><div class="film-ep-tag">Albania · Cortometraggio</div><div class="film-ep-title">Il villaggio che non esiste sulle mappe</div><div class="film-ep-dur">11 min · Mar 2026</div></div>
-        </div>
-        <div class="film-ep">
-          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#251f1a,#181410);"></div><div class="film-thumb-play"></div></div>
-          <div><div class="film-ep-tag">Patagonia · Documentario</div><div class="film-ep-title">Torres del Paine fuori stagione</div><div class="film-ep-dur">18 min · Feb 2026</div></div>
-        </div>
-        <div class="film-ep">
-          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#221e1a,#161210);"></div><div class="film-thumb-play"></div></div>
-          <div><div class="film-ep-tag">Etiopia · Reportage</div><div class="film-ep-title">Lalibela all'alba, prima dei turisti</div><div class="film-ep-dur">14 min · Gen 2026</div></div>
-        </div>
-        <div class="film-ep" style="border-bottom:none; padding-bottom:0;">
-          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#201c18,#14100e);"></div><div class="film-thumb-play"></div></div>
-          <div><div class="film-ep-tag">Giappone · Essay</div><div class="film-ep-title">Shikoku: il pellegrinaggio dei silenzi</div><div class="film-ep-dur">22 min · Dic 2025</div></div>
-        </div>
-      </div>
-    </div>
+    )}
   </section>
 
-  <!-- PODCAST (placeholder) -->
+  <!-- PODCAST -->
   <section>
     <div class="sec-head">
       <h2 class="sec-title">Il podcast</h2>
       <a href="/podcast" class="sec-link">Tutti gli episodi →</a>
     </div>
-    <div class="pod-grid pb60">
-      <div class="pod-ep">
-        <div class="pod-num">01</div>
-        <div style="flex:1;">
-          <div class="pod-tag">Destinazioni</div>
-          <div class="pod-title">Perché l'Albania è il posto giusto adesso</div>
-          <div class="pod-dur">42 min · Mar 2026</div>
-        </div>
-        <div class="pod-btn"><div class="pod-icon"></div></div>
+
+    {tuttiIPodcast.length === 0 && (
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
+        I primi episodi del podcast stanno arrivando.
       </div>
-      <div class="pod-ep">
-        <div class="pod-num">02</div>
-        <div style="flex:1;">
-          <div class="pod-tag">Pratiche</div>
-          <div class="pod-title">Viaggiare slow: meno cose, più tempo</div>
-          <div class="pod-dur">38 min · Mar 2026</div>
-        </div>
-        <div class="pod-btn"><div class="pod-icon"></div></div>
+    )}
+
+    {podcastHome.length > 0 && (
+      <div class="pod-grid pb60">
+        {podcastHome.map((entry) => <PodcastCard entry={entry} variant="mini" />)}
       </div>
-      <div class="pod-ep">
-        <div class="pod-num">03</div>
-        <div style="flex:1;">
-          <div class="pod-tag">Fotografia</div>
-          <div class="pod-title">Come fotografo i paesi che nessuno conosce</div>
-          <div class="pod-dur">51 min · Feb 2026</div>
-        </div>
-        <div class="pod-btn"><div class="pod-icon"></div></div>
-      </div>
-      <div class="pod-ep">
-        <div class="pod-num">04</div>
-        <div style="flex:1;">
-          <div class="pod-tag">Storie</div>
-          <div class="pod-title">Il viaggio che ha cambiato tutto</div>
-          <div class="pod-dur">29 min · Feb 2026</div>
-        </div>
-        <div class="pod-btn"><div class="pod-icon"></div></div>
-      </div>
-    </div>
+    )}
   </section>
 
   <!-- SHOP (placeholder) -->
