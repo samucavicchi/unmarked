@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PodcastCard from '../../components/PodcastCard.astro';
+import { getCollection } from 'astro:content';
+
+const tutti = (await getCollection('podcast')).sort(
+  (a, b) => b.data.episodeNumber - a.data.episodeNumber
+);
+
+const topics = [...new Set(tutti.map((e) => e.data.topic))];
+---
+
+<BaseLayout
+  title="Il podcast — Unmarked"
+  description="Conversazioni sui posti che non trovi sulle guide. Destinazioni, pratiche, fotografia, storie."
+>
+  <section>
+    <div class="archive-head">
+      <div class="archive-eyebrow">Conversazioni · Storie · Pratiche di viaggio</div>
+      <h1 class="archive-title">Il podcast</h1>
+      <p class="archive-sub">
+        Episodi su Spotify, ascoltabili anche da qui. Ogni episodio è un'ora con qualcuno che ha
+        viaggiato senza farsi catturare dalle classifiche.
+      </p>
+    </div>
+
+    {topics.length > 0 && (
+      <div class="archive-filters">
+        <span class="filter-label">Argomenti:</span>
+        {topics.map((t) => <span class="filter-chip">{t}</span>)}
+      </div>
+    )}
+
+    {tutti.length === 0 && (
+      <div class="archive-empty">
+        <p>I primi episodi del podcast stanno arrivando.</p>
+      </div>
+    )}
+
+    <div class="pod-list pb60">
+      {tutti.map((entry) => <PodcastCard entry={entry} variant="full" />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-head {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--light-border);
+    margin-bottom: 40px;
+  }
+  .archive-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 16px;
+  }
+  .archive-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--dark);
+    margin-bottom: 18px;
+    letter-spacing: 0.01em;
+  }
+  .archive-sub {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 540px;
+  }
+  .archive-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .filter-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .filter-chip {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border: 1px solid var(--light-border);
+    border-radius: 2px;
+    color: var(--dark);
+  }
+  .archive-empty {
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .pod-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+</style>
