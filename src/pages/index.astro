@@ -5,20 +5,16 @@ import Newsletter from '../components/Newsletter.astro';
 import DestinazioneCard from '../components/DestinazioneCard.astro';
 import { getCollection } from 'astro:content';
 
-// Carica le ultime destinazioni dalla collection
 const tutteLeDestinazioni = (await getCollection('destinazioni')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
 
-// Featured = la più recente con featured: true. Se nessuna featured, prende la più recente in assoluto.
 const featured = tutteLeDestinazioni.find((e) => e.data.featured) || tutteLeDestinazioni[0];
 
-// Side list = prossime 4 dopo la featured
 const sideList = tutteLeDestinazioni
   .filter((e) => e.slug !== featured?.slug)
   .slice(0, 4);
 
-// Grid = altre 3 dopo featured + sideList
 const grid = tutteLeDestinazioni
   .filter((e) => e.slug !== featured?.slug)
   .filter((e) => !sideList.find((s) => s.slug === e.slug))
@@ -34,7 +30,7 @@ const formatDateShort = (date) =>
 >
   <Hero />
 
-  <!-- DESTINAZIONI -->
+  <!-- DESTINAZIONI (dinamiche da collection) -->
   <section>
     <div class="sec-head">
       <h2 class="sec-title">Ultime destinazioni</h2>
@@ -125,6 +121,136 @@ const formatDateShort = (date) =>
       </div>
     </div>
   </div>
+
+  <!-- FILM (placeholder) -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Film di viaggio</h2>
+      <a href="/film" class="sec-link">Tutti i film →</a>
+    </div>
+    <div class="film-grid pb60">
+      <div>
+        <div class="film-main-img">
+          <div class="film-main-bg"></div>
+          <div class="film-main-ov"></div>
+          <div style="position:relative;">
+            <div class="film-play"><div class="film-play-icon"></div></div>
+            <div class="film-main-tag">Kirghizistan · Documentario</div>
+            <div class="film-main-title">Oltre i passi.<br />Un'estate nomade.</div>
+            <div class="film-main-dur">24 min · 2026</div>
+          </div>
+        </div>
+        <div class="film-main-desc">
+          Un viaggio a cavallo attraverso le vallate del Tian Shan. Tre settimane con una famiglia
+          nomade, tra yurte, silenzi e orizzonti senza fine.
+        </div>
+      </div>
+      <div class="film-list">
+        <div class="film-ep">
+          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#2a2520,#1a1814);"></div><div class="film-thumb-play"></div></div>
+          <div><div class="film-ep-tag">Albania · Cortometraggio</div><div class="film-ep-title">Il villaggio che non esiste sulle mappe</div><div class="film-ep-dur">11 min · Mar 2026</div></div>
+        </div>
+        <div class="film-ep">
+          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#251f1a,#181410);"></div><div class="film-thumb-play"></div></div>
+          <div><div class="film-ep-tag">Patagonia · Documentario</div><div class="film-ep-title">Torres del Paine fuori stagione</div><div class="film-ep-dur">18 min · Feb 2026</div></div>
+        </div>
+        <div class="film-ep">
+          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#221e1a,#161210);"></div><div class="film-thumb-play"></div></div>
+          <div><div class="film-ep-tag">Etiopia · Reportage</div><div class="film-ep-title">Lalibela all'alba, prima dei turisti</div><div class="film-ep-dur">14 min · Gen 2026</div></div>
+        </div>
+        <div class="film-ep" style="border-bottom:none; padding-bottom:0;">
+          <div class="film-thumb"><div class="film-thumb-bg" style="background:linear-gradient(135deg,#201c18,#14100e);"></div><div class="film-thumb-play"></div></div>
+          <div><div class="film-ep-tag">Giappone · Essay</div><div class="film-ep-title">Shikoku: il pellegrinaggio dei silenzi</div><div class="film-ep-dur">22 min · Dic 2025</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PODCAST (placeholder) -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Il podcast</h2>
+      <a href="/podcast" class="sec-link">Tutti gli episodi →</a>
+    </div>
+    <div class="pod-grid pb60">
+      <div class="pod-ep">
+        <div class="pod-num">01</div>
+        <div style="flex:1;">
+          <div class="pod-tag">Destinazioni</div>
+          <div class="pod-title">Perché l'Albania è il posto giusto adesso</div>
+          <div class="pod-dur">42 min · Mar 2026</div>
+        </div>
+        <div class="pod-btn"><div class="pod-icon"></div></div>
+      </div>
+      <div class="pod-ep">
+        <div class="pod-num">02</div>
+        <div style="flex:1;">
+          <div class="pod-tag">Pratiche</div>
+          <div class="pod-title">Viaggiare slow: meno cose, più tempo</div>
+          <div class="pod-dur">38 min · Mar 2026</div>
+        </div>
+        <div class="pod-btn"><div class="pod-icon"></div></div>
+      </div>
+      <div class="pod-ep">
+        <div class="pod-num">03</div>
+        <div style="flex:1;">
+          <div class="pod-tag">Fotografia</div>
+          <div class="pod-title">Come fotografo i paesi che nessuno conosce</div>
+          <div class="pod-dur">51 min · Feb 2026</div>
+        </div>
+        <div class="pod-btn"><div class="pod-icon"></div></div>
+      </div>
+      <div class="pod-ep">
+        <div class="pod-num">04</div>
+        <div style="flex:1;">
+          <div class="pod-tag">Storie</div>
+          <div class="pod-title">Il viaggio che ha cambiato tutto</div>
+          <div class="pod-dur">29 min · Feb 2026</div>
+        </div>
+        <div class="pod-btn"><div class="pod-icon"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP (placeholder) -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Shop</h2>
+      <a href="/shop" class="sec-link">Vedi tutto →</a>
+    </div>
+    <div class="shop-grid pb60">
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#ddd0be,#c4b598);"></div>
+          <div class="prod-badge">Nuovo</div>
+        </div>
+        <div class="prod-name">Pack Unmarked 32L</div>
+        <div class="prod-price">€149</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#d0c5b3,#bfb09c);"></div>
+        </div>
+        <div class="prod-name">Field Notes Edition</div>
+        <div class="prod-price">€24</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#cac0ae,#b9ad9b);"></div>
+          <div class="prod-badge">Limitato</div>
+        </div>
+        <div class="prod-name">Mappa Kirghizistan</div>
+        <div class="prod-price">€18</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#c5bba9,#b4aa97);"></div>
+        </div>
+        <div class="prod-name">Bandana Unmarked</div>
+        <div class="prod-price">€16</div>
+      </div>
+    </div>
+  </section>
 
   <Newsletter />
 </BaseLayout>
