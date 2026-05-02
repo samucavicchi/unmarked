@@ -1,11 +1,9 @@
 # Decap CMS configuration
-# https://decapcms.org/docs/configuration-options/
 
 backend:
   name: git-gateway
   branch: main
 
-# Le foto caricate dal CMS finiscono in src/assets/articoli/
 media_folder: "src/assets/articoli"
 public_folder: "../../assets/articoli"
 
@@ -25,22 +23,21 @@ collections:
     summary: "{{title}} — {{country}}"
     sortable_fields: ["publishDate", "title", "country"]
     fields:
-      - { label: "Titolo", name: "title", widget: "string", hint: "Es. 'Cinque valli silenziose nei Pirenei catalani'" }
-      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false, hint: "Occhiello sopra il titolo, opzionale" }
-      - { label: "Paese", name: "country", widget: "string", hint: "Es. 'Spagna', 'Kirghizistan', 'Italia'" }
+      - { label: "Titolo", name: "title", widget: "string" }
+      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
+      - { label: "Paese", name: "country", widget: "string" }
       - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
-      - { label: "Regione", name: "region", widget: "string", required: false, hint: "Sotto-area, es. 'Pirenei catalani'" }
+      - { label: "Regione", name: "region", widget: "string", required: false }
       - { label: "Foto copertina", name: "coverImage", widget: "image" }
-      - { label: "Alt copertina", name: "coverImageAlt", widget: "string", hint: "Descrizione testuale per SEO e accessibilità" }
-      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "150-200 caratteri. Appare nelle card" }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
-      - { label: "In primo piano", name: "featured", widget: "boolean", default: false, hint: "Se attivo, l'articolo appare in posizione hero in homepage" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
       - { label: "SEO meta description", name: "seoMetaDescription", widget: "text", required: false }
       - {
           label: "Corpo articolo",
           name: "body",
           widget: "markdown",
-          hint: "Il corpo del reportage. Puoi alternare paragrafi, intertitoli, foto e citazioni.",
           buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
           editor_components: ["image"],
         }
@@ -51,22 +48,81 @@ collections:
     folder: "src/content/itinerari"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} — {{country}} ({{duration}}gg, €{{price}})"
+    sortable_fields: ["publishDate", "title", "country", "price"]
     fields:
-      - { label: "Titolo", name: "title", widget: "string" }
+      # Identità
+      - { label: "Titolo", name: "title", widget: "string", hint: "Es. 'Kirghizistan in autonomia · 14 giorni'" }
       - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
       - { label: "Paese", name: "country", widget: "string" }
       - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
       - { label: "Foto copertina", name: "coverImage", widget: "image" }
       - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
-      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Breve descrizione per le card" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
-      - { label: "Durata (giorni)", name: "duration", widget: "number", value_type: "int", min: 1, max: 60 }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+
+      # Meta-row
+      - { label: "Durata (giorni totali)", name: "duration", widget: "number", value_type: "int", min: 1, max: 90 }
       - { label: "Budget", name: "budget", widget: "select", options: ["Economico", "Medio", "Alto"] }
       - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Facile", "Medio", "Avventura"] }
       - { label: "Periodo migliore", name: "bestSeason", widget: "string", hint: "Es. 'Maggio-Settembre'" }
       - { label: "Trasporto", name: "transport", widget: "string", hint: "Es. 'Auto a noleggio + bus locali'" }
-      - { label: "Prezzo (€)", name: "price", widget: "number", value_type: "int", min: 5, max: 50 }
-      - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false }
-      - { label: "Vale il viaggio", name: "valeIlViaggio", widget: "text", required: false }
-      - { label: "Mainstream check", name: "mainstreamCheck", widget: "text", required: false }
-      - { label: "Corpo itinerario", name: "body", widget: "markdown" }
+      - { label: "Prezzo singolo (€)", name: "price", widget: "number", value_type: "int", min: 5, max: 50 }
+
+      # Pagamento (collegamento a Lemon Squeezy — Sessione 6)
+      - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false, hint: "ID prodotto in Lemon Squeezy" }
+      - { label: "Lemon Squeezy Checkout URL", name: "lemonSqueezyCheckoutUrl", widget: "string", required: false, hint: "URL diretto al checkout, opzionale" }
+
+      # Sezioni editoriali (free)
+      - { label: "Vale il viaggio (free)", name: "valeIlViaggio", widget: "text", required: false, hint: "Sezione introduttiva visibile a tutti" }
+      - { label: "Mainstream check (free)", name: "mainstreamCheck", widget: "text", required: false, hint: "Cosa NON visiterai e perché" }
+
+      # Giorni
+      - label: "Giorni"
+        name: "days"
+        widget: "list"
+        summary: "Giorno {{fields.dayNumber}}: {{fields.title}}"
+        fields:
+          - { label: "Numero giorno", name: "dayNumber", widget: "number", value_type: "int", min: 1 }
+          - { label: "Titolo giorno", name: "title", widget: "string", hint: "Es. 'Bishkek → Lago Issyk-Kul'" }
+          - { label: "Descrizione", name: "description", widget: "markdown" }
+          - { label: "Km totali", name: "kmTotali", widget: "number", required: false }
+          - { label: "Dislivello", name: "dislivello", widget: "string", required: false, hint: "Es. '+800m / -300m'" }
+          - { label: "Dove dormire", name: "dormire", widget: "string", required: false }
+          - { label: "Dove mangiare", name: "mangiare", widget: "string", required: false }
+          - { label: "Premium (richiede acquisto)", name: "isPremium", widget: "boolean", default: false, hint: "Se attivo, il giorno è visibile solo a chi ha acquistato" }
+
+      # Mappa
+      - label: "Centro mappa"
+        name: "mapCenter"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
+
+      - label: "Marker mappa"
+        name: "mapMarkers"
+        widget: "list"
+        required: false
+        summary: "{{fields.label}} ({{fields.lat}}, {{fields.lng}})"
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Etichetta", name: "label", widget: "string" }
+          - { label: "Giorno (opzionale)", name: "dayNumber", widget: "number", value_type: "int", required: false }
+
+      # Contatti locali (premium)
+      - label: "Contatti locali (premium)"
+        name: "localContacts"
+        widget: "list"
+        required: false
+        summary: "{{fields.name}} — {{fields.role}}"
+        fields:
+          - { label: "Nome", name: "name", widget: "string" }
+          - { label: "Ruolo", name: "role", widget: "string", hint: "Es. 'Guida montagna', 'Host'" }
+          - { label: "Contatto", name: "contact", widget: "string", hint: "Email, telefono, WhatsApp" }
+          - { label: "Note", name: "notes", widget: "string", required: false }
