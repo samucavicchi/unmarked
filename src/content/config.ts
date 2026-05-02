@@ -24,7 +24,6 @@ const itinerari = defineCollection({
   type: 'content',
   schema: ({ image }) =>
     z.object({
-      // Identità
       title: z.string(),
       subtitle: z.string().optional(),
       country: z.string(),
@@ -34,24 +33,16 @@ const itinerari = defineCollection({
       excerpt: z.string(),
       publishDate: z.date(),
       featured: z.boolean().default(false),
-
-      // Meta-row (mostrato sotto il titolo)
       duration: z.number().int().positive(),
       budget: z.enum(['Economico', 'Medio', 'Alto']),
       difficulty: z.enum(['Facile', 'Medio', 'Avventura']),
       bestSeason: z.string(),
       transport: z.string(),
       price: z.number().positive(),
-
-      // Pagamento (Sessione 6)
       lemonSqueezyProductId: z.string().optional(),
       lemonSqueezyCheckoutUrl: z.string().url().optional(),
-
-      // Sezioni editoriali (free)
       valeIlViaggio: z.string().optional(),
       mainstreamCheck: z.string().optional(),
-
-      // Giorni — alcuni gratis (isPremium=false), altri premium
       days: z
         .array(
           z.object({
@@ -66,8 +57,6 @@ const itinerari = defineCollection({
           })
         )
         .default([]),
-
-      // Mappa Leaflet
       mapCenter: z
         .object({
           lat: z.number(),
@@ -75,7 +64,6 @@ const itinerari = defineCollection({
           zoom: z.number().default(8),
         })
         .optional(),
-
       mapMarkers: z
         .array(
           z.object({
@@ -86,8 +74,6 @@ const itinerari = defineCollection({
           })
         )
         .default([]),
-
-      // Contatti locali (premium)
       localContacts: z
         .array(
           z.object({
@@ -101,7 +87,53 @@ const itinerari = defineCollection({
     }),
 });
 
+// Film — video pubblicati su YouTube. Embed via iframe.
+const film = defineCollection({
+  type: 'content',
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      subtitle: z.string().optional(),
+      country: z.string(),
+      continent: z.enum(['Europa', 'Asia', 'Africa', 'Americhe', 'Oceania']),
+      coverImage: image(),
+      coverImageAlt: z.string(),
+      excerpt: z.string(),
+      publishDate: z.date(),
+      featured: z.boolean().default(false),
+
+      // YouTube
+      youtubeId: z.string(),
+      duration: z.number().int().positive(),
+      type: z.enum(['Documentario', 'Cortometraggio', 'Reportage', 'Essay', 'Trailer']),
+    }),
+});
+
+// Podcast — episodi distribuiti via Spotify. Embed via iframe Spotify.
+const podcast = defineCollection({
+  type: 'content',
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      subtitle: z.string().optional(),
+      coverImage: image().optional(),
+      coverImageAlt: z.string().optional(),
+      excerpt: z.string(),
+      publishDate: z.date(),
+      featured: z.boolean().default(false),
+
+      // Spotify
+      spotifyEpisodeId: z.string(),
+      episodeNumber: z.number().int().positive(),
+      duration: z.number().int().positive(),
+      topic: z.enum(['Destinazioni', 'Pratiche', 'Fotografia', 'Storie', 'Interviste']),
+      guests: z.string().optional(),
+    }),
+});
+
 export const collections = {
   destinazioni,
   itinerari,
+  film,
+  podcast,
 };
