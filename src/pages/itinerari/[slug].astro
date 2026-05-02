@@ -1,0 +1,419 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const itinerari = await getCollection('itinerari');
+  return itinerari.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'itinerari'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { data } = entry;
+
+const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const days = (data.days || []).slice().sort((a, b) => a.dayNumber - b.dayNumber);
+
+const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
+---
+
+<BaseLayout
+  title={`${data.title} — Itinerario — Unmarked`}
+  description={data.excerpt}
+  ogImage={data.coverImage.src}
+>
+  <!-- Leaflet CSS+JS solo in questa pagina -->
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <article class="itin-page">
+    <header class="itin-hero">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="itin-hero-bg" />
+      <div class="itin-hero-overlay"></div>
+      <div class="itin-hero-content">
+        <div class="itin-tag">{data.country} · {data.continent}</div>
+        <h1 class="itin-title">{data.title}</h1>
+        {data.subtitle && <p class="itin-subtitle">{data.subtitle}</p>}
+      </div>
+    </header>
+
+    <div class="itin-meta-row">
+      <div class="meta-cell"><div class="meta-label">Durata</div><div class="meta-value">{data.duration} giorni</div></div>
+      <div class="meta-cell"><div class="meta-label">Budget</div><div class="meta-value">{data.budget}</div></div>
+      <div class="meta-cell"><div class="meta-label">Difficoltà</div><div class="meta-value">{data.difficulty}</div></div>
+      <div class="meta-cell"><div class="meta-label">Periodo</div><div class="meta-value">{data.bestSeason}</div></div>
+      <div class="meta-cell"><div class="meta-label">Trasporto</div><div class="meta-value">{data.transport}</div></div>
+      <div class="meta-cell meta-price"><div class="meta-label">Prezzo</div><div class="meta-value">€{data.price}</div></div>
+    </div>
+
+    <div class="itin-body">
+      {data.valeIlViaggio && (
+        <section class="itin-section">
+          <h2>Vale il viaggio</h2>
+          <p>{data.valeIlViaggio}</p>
+        </section>
+      )}
+
+      {data.mainstreamCheck && (
+        <section class="itin-section itin-section-mainstream">
+          <h2>Mainstream check</h2>
+          <p>{data.mainstreamCheck}</p>
+        </section>
+      )}
+
+      {days.length > 0 && (
+        <section class="itin-section">
+          <h2>Giorno per giorno</h2>
+          <div class="days-list">
+            {days.map((day) => (
+              <div class={`day-card ${day.isPremium ? 'day-card-locked' : ''}`}>
+                <div class="day-header">
+                  <div class="day-number">Giorno {day.dayNumber}</div>
+                  <div class="day-title">{day.title}</div>
+                </div>
+                {!day.isPremium && (
+                  <>
+                    <div class="day-description" set:html={day.description.replace(/\n/g, '<br>')}></div>
+                    <div class="day-meta">
+                      {day.kmTotali && <span>{day.kmTotali} km</span>}
+                      {day.dislivello && <span>Dislivello: {day.dislivello}</span>}
+                      {day.dormire && <span>Dormi: {day.dormire}</span>}
+                      {day.mangiare && <span>Mangi: {day.mangiare}</span>}
+                    </div>
+                  </>
+                )}
+                {day.isPremium && (
+                  <div class="day-locked-overlay">
+                    <div class="lock-icon">🔒</div>
+                    <p class="lock-text">Contenuto premium — sblocca questo giorno con l'acquisto dell'itinerario</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {data.mapCenter && (
+        <section class="itin-section">
+          <h2>La mappa</h2>
+          <div
+            id="leaflet-map"
+            data-center={JSON.stringify(data.mapCenter)}
+            data-markers={JSON.stringify(data.mapMarkers || [])}
+          ></div>
+        </section>
+      )}
+
+      <!-- Paywall CTA -->
+      <section class="itin-paywall">
+        <div class="paywall-eyebrow">Per andare oltre</div>
+        <h2 class="paywall-title">Sblocca l'itinerario completo</h2>
+        <p class="paywall-sub">
+          Tutti i giorni completi, contatti locali verificati, mappe offline,
+          aggiornamenti stagionali. Una volta acquistato è tuo per sempre.
+        </p>
+        <div class="paywall-buttons">
+          <a href={checkoutUrl} class="btn-primary">
+            Sblocca questo itinerario · €{data.price}
+          </a>
+          <a href="/abbonati" class="btn-secondary">
+            Oppure abbonati · €29/mese o €149/anno
+          </a>
+        </div>
+        <p class="paywall-note">
+          L'abbonamento ti dà accesso a tutti gli itinerari attuali e futuri.
+        </p>
+      </section>
+    </div>
+  </article>
+
+  <!-- Leaflet -->
+  <script
+    is:inline
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      var mapEl = document.getElementById('leaflet-map');
+      if (!mapEl || typeof L === 'undefined') return;
+      var center = JSON.parse(mapEl.dataset.center);
+      var markers = JSON.parse(mapEl.dataset.markers || '[]');
+      var map = L.map('leaflet-map').setView([center.lat, center.lng], center.zoom || 8);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18,
+      }).addTo(map);
+      markers.forEach(function (m) {
+        L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.label);
+      });
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .itin-hero {
+    position: relative;
+    height: 480px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 52px 48px;
+  }
+  .itin-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .itin-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.78) 0%, rgba(26,24,20,0.25) 55%, rgba(26,24,20,0.05) 100%);
+  }
+  .itin-hero-content {
+    position: relative;
+    color: #FAFAF8;
+    max-width: 800px;
+  }
+  .itin-tag {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 14px;
+  }
+  .itin-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .itin-subtitle {
+    font-size: 16px;
+    color: rgba(250, 250, 248, 0.75);
+    line-height: 1.5;
+    max-width: 640px;
+  }
+
+  .itin-meta-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    background: var(--dark);
+    color: #FAFAF8;
+    padding: 24px 40px;
+    gap: 16px;
+  }
+  .meta-cell {
+    text-align: center;
+  }
+  .meta-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 248, 0.4);
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: #FAFAF8;
+  }
+  .meta-price .meta-value {
+    color: var(--terra);
+    font-size: 22px;
+  }
+  @media (max-width: 700px) {
+    .itin-meta-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .itin-body {
+    max-width: 880px;
+    margin: 60px auto 80px;
+    padding: 0 40px;
+  }
+  .itin-section {
+    margin-bottom: 56px;
+  }
+  .itin-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 18px;
+    color: var(--dark);
+  }
+  .itin-section p {
+    font-size: 15px;
+    line-height: 1.78;
+    color: var(--dark);
+  }
+  .itin-section-mainstream {
+    background: var(--beige);
+    padding: 30px 32px;
+    border-radius: 3px;
+  }
+  .itin-section-mainstream h2 {
+    margin-bottom: 14px;
+  }
+
+  .days-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .day-card {
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    padding: 22px 24px;
+    background: #fff;
+    position: relative;
+  }
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 12px;
+  }
+  .day-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--terra);
+    flex-shrink: 0;
+  }
+  .day-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--dark);
+  }
+  .day-description {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .day-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--sand);
+  }
+  .day-card-locked {
+    background: linear-gradient(180deg, #fff 0%, #f6f0e6 100%);
+    border-style: dashed;
+  }
+  .day-locked-overlay {
+    text-align: center;
+    padding: 16px 0 4px;
+  }
+  .lock-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .lock-text {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  #leaflet-map {
+    height: 420px;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--light-border);
+  }
+
+  .itin-paywall {
+    background: var(--dark);
+    color: #FAFAF8;
+    padding: 48px 40px;
+    border-radius: 3px;
+    text-align: center;
+    margin-top: 32px;
+  }
+  .paywall-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 14px;
+  }
+  .paywall-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+  .paywall-sub {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(250, 250, 248, 0.75);
+    max-width: 540px;
+    margin: 0 auto 24px;
+  }
+  .paywall-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .btn-primary {
+    background: var(--terra);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: #b5764d; }
+  .btn-secondary {
+    background: transparent;
+    color: #FAFAF8;
+    border: 1px solid rgba(250, 250, 248, 0.4);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 13px 22px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(250, 250, 248, 0.08); }
+  .paywall-note {
+    font-size: 11px;
+    color: rgba(250, 250, 248, 0.45);
+    margin-top: 8px;
+  }
+</style>
