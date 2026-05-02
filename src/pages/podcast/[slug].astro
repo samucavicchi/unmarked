@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const podcast = await getCollection('podcast');
+  return podcast.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'podcast'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { data } = entry;
+
+const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const numLabel = String(data.episodeNumber).padStart(2, '0');
+const spotifyEmbedUrl = `https://open.spotify.com/embed/episode/${data.spotifyEpisodeId}?utm_source=oembed`;
+---
+
+<BaseLayout
+  title={`Ep. ${numLabel} — ${data.title} — Podcast Unmarked`}
+  description={data.excerpt}
+  ogImage={data.coverImage?.src}
+>
+  <article>
+    <header class="pod-hero">
+      <div class="pod-hero-inner">
+        <div class="pod-hero-num">EP {numLabel}</div>
+        <div class="pod-tag-row">
+          <span class="pod-hero-topic">{data.topic}</span>
+          {data.guests && <span class="pod-hero-guests">con {data.guests}</span>}
+        </div>
+        <h1 class="pod-hero-title">{data.title}</h1>
+        {data.subtitle && <p class="pod-hero-subtitle">{data.subtitle}</p>}
+        <div class="pod-hero-meta">{data.duration} min · {formattedDate}</div>
+      </div>
+    </header>
+
+    <div class="pod-player-wrap">
+      <iframe
+        class="pod-player"
+        src={spotifyEmbedUrl}
+        width="100%"
+        height="232"
+        frameborder="0"
+        allowfullscreen
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <div class="pod-body">
+      <Content />
+    </div>
+
+    <nav class="pod-back">
+      <a href="/podcast" class="back-link">← Tutti gli episodi</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .pod-hero {
+    background: var(--dark);
+    color: #FAFAF8;
+    padding: 70px 40px;
+  }
+  .pod-hero-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .pod-hero-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--sand);
+    margin-bottom: 12px;
+  }
+  .pod-tag-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .pod-hero-topic {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .pod-hero-guests {
+    font-size: 11px;
+    color: rgba(250, 250, 248, 0.6);
+    font-style: italic;
+  }
+  .pod-hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+  }
+  .pod-hero-subtitle {
+    font-size: 16px;
+    color: rgba(250, 250, 248, 0.75);
+    line-height: 1.5;
+    margin-bottom: 18px;
+    max-width: 640px;
+  }
+  .pod-hero-meta {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 248, 0.5);
+  }
+
+  .pod-player-wrap {
+    max-width: 880px;
+    margin: 40px auto 0;
+    padding: 0 40px;
+  }
+  .pod-player {
+    width: 100%;
+    height: 232px;
+    border-radius: 12px;
+    border: 0;
+  }
+
+  .pod-body {
+    max-width: 720px;
+    margin: 50px auto;
+    padding: 0 40px;
+    font-size: 15px;
+    line-height: 1.78;
+    color: var(--dark);
+  }
+  .pod-body :global(h2), .pod-body :global(h3) {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    margin: 32px 0 12px;
+  }
+  .pod-body :global(h2) { font-size: 26px; }
+  .pod-body :global(h3) { font-size: 20px; }
+  .pod-body :global(p) { margin-bottom: 14px; }
+  .pod-body :global(ul), .pod-body :global(ol) {
+    margin: 0 0 18px 22px;
+  }
+  .pod-body :global(a) {
+    color: var(--terra);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .pod-back {
+    max-width: 720px;
+    margin: 0 auto 80px;
+    padding: 0 40px;
+  }
+  .back-link {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+</style>
