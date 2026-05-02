@@ -1,0 +1,158 @@
+---
+// Card riusabile per i film.
+// 'main' = il film principale (usato per featured in homepage e archivio)
+// 'episode' = card piccola per la lista episodi
+// 'grid' = card 1/3 per archivio
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'film'>;
+  variant?: 'main' | 'episode' | 'grid';
+}
+
+const { entry, variant = 'grid' } = Astro.props;
+const { data } = entry;
+const href = `/film/${entry.slug}`;
+---
+
+{variant === 'main' && (
+  <a href={href} class="film-main-link">
+    <div class="film-main-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="film-main-bg-img" />
+      <div class="film-main-ov"></div>
+      <div style="position:relative;">
+        <div class="film-play"><div class="film-play-icon"></div></div>
+        <div class="film-main-tag">{data.country} · {data.type}</div>
+        <div class="film-main-title" set:html={data.title.replace(/\.\s/g, '.<br>')}></div>
+        <div class="film-main-dur">{data.duration} min · {data.publishDate.getFullYear()}</div>
+      </div>
+    </div>
+    <div class="film-main-desc">{data.excerpt}</div>
+  </a>
+)}
+
+{variant === 'episode' && (
+  <a href={href} class="film-ep film-link">
+    <div class="film-thumb">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="film-thumb-img" />
+      <div class="film-thumb-play"></div>
+    </div>
+    <div>
+      <div class="film-ep-tag">{data.country} · {data.type}</div>
+      <div class="film-ep-title">{data.title}</div>
+      <div class="film-ep-dur">{data.duration} min · {data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' })}</div>
+    </div>
+  </a>
+)}
+
+{variant === 'grid' && (
+  <a href={href} class="film-grid-card">
+    <div class="film-grid-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+      <div class="film-grid-ov"></div>
+      <div class="film-grid-play"><div class="film-grid-play-icon"></div></div>
+    </div>
+    <div class="film-grid-info">
+      <div class="film-grid-tag">{data.country} · {data.type}</div>
+      <h3 class="film-grid-title">{data.title}</h3>
+      <div class="film-grid-meta">{data.duration} min · {data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' })}</div>
+    </div>
+  </a>
+)}
+
+<style>
+  .film-main-link, .film-link, .film-grid-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .film-main-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-thumb-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-grid-card {
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .film-grid-card:hover {
+    box-shadow: 0 6px 20px rgba(26, 24, 20, 0.08);
+    transform: translateY(-2px);
+  }
+  .film-grid-img {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: var(--dark);
+  }
+  .film-grid-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-grid-ov {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.65) 0%, rgba(26,24,20,0.05) 60%, transparent 100%);
+  }
+  .film-grid-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 24, 20, 0.3);
+  }
+  .film-grid-play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 4px;
+  }
+  .film-grid-info {
+    padding: 18px 20px 22px;
+  }
+  .film-grid-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .film-grid-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 10px;
+  }
+  .film-grid-meta {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+</style>
