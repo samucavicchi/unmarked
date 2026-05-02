@@ -1,0 +1,118 @@
+---
+// Card riusabile per gli itinerari.
+// 'full' = card più ricca per archivio, con immagine + excerpt + prezzo
+// 'mini' = card minimal per la sezione 'Itinerari premium' della homepage (sfondo scuro)
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'itinerari'>;
+  variant?: 'full' | 'mini';
+}
+
+const { entry, variant = 'full' } = Astro.props;
+const { data } = entry;
+const href = `/itinerari/${entry.slug}`;
+---
+
+{variant === 'mini' && (
+  <a href={href} class="it-card it-card-link">
+    <div>
+      <div class="it-card-title">{data.title}</div>
+      <div class="it-card-meta">{data.continent} · {data.difficulty} · {data.duration} giorni</div>
+    </div>
+    <div class="it-price">€{data.price}</div>
+  </a>
+)}
+
+{variant === 'full' && (
+  <a href={href} class="it-full-card">
+    <div class="it-full-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+      <div class="it-full-price-badge">€{data.price}</div>
+    </div>
+    <div class="it-full-info">
+      <div class="it-full-tag">{data.country} · {data.continent}</div>
+      <h3 class="it-full-title">{data.title}</h3>
+      <p class="it-full-excerpt">{data.excerpt}</p>
+      <div class="it-full-meta">{data.duration} giorni · {data.difficulty} · Budget {data.budget}</div>
+    </div>
+  </a>
+)}
+
+<style>
+  .it-card-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .it-full-card {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .it-full-card:hover {
+    box-shadow: 0 6px 20px rgba(26, 24, 20, 0.08);
+    transform: translateY(-2px);
+  }
+  .it-full-img {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .it-full-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .it-full-price-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: var(--terra);
+    color: #FAFAF8;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 5px 14px;
+    border-radius: 2px;
+    letter-spacing: 0.02em;
+  }
+  .it-full-info {
+    padding: 20px 22px 24px;
+  }
+  .it-full-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .it-full-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+  .it-full-excerpt {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .it-full-meta {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+</style>
