@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ItinerarioCard from '../../../components/ItinerarioCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tutti = await getCollection('itinerari');
+  const continenti = [...new Set(tutti.map((e) => e.data.continent))];
+  return continenti.map((continente) => ({
+    params: { continente: continente.toLowerCase().replace(/\s+/g, '-') },
+    props: {
+      continente,
+      entries: tutti
+        .filter((e) => e.data.continent === continente)
+        .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+    },
+  }));
+}
+
+const { continente, entries } = Astro.props;
+---
+
+<BaseLayout title={`Itinerari ${continente} — Unmarked`}>
+  <section>
+    <div class="archive-head">
+      <div class="archive-eyebrow">Itinerari · Continente</div>
+      <h1 class="archive-title">{continente}</h1>
+      <p class="archive-sub">{entries.length} itinerari dal continente {continente}.</p>
+      <a href="/itinerari" class="back-link">← Tutti gli itinerari</a>
+    </div>
+    <div class="it-grid pb60">
+      {entries.map((entry) => <ItinerarioCard entry={entry} variant="full" />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-head { padding: 60px 0 40px; border-bottom: 1px solid var(--light-border); margin-bottom: 40px; }
+  .archive-eyebrow { font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; }
+  .archive-title { font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; line-height: 1.0; color: var(--dark); margin-bottom: 18px; letter-spacing: 0.01em; }
+  .archive-sub { font-size: 14px; line-height: 1.7; color: var(--muted); margin-bottom: 18px; }
+  .back-link { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+  .it-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 900px) { .it-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .it-grid { grid-template-columns: 1fr; } }
+</style>
