@@ -51,49 +51,38 @@ collections:
     summary: "{{title}} — {{country}} ({{duration}}gg, €{{price}})"
     sortable_fields: ["publishDate", "title", "country", "price"]
     fields:
-      # Identità
-      - { label: "Titolo", name: "title", widget: "string", hint: "Es. 'Kirghizistan in autonomia · 14 giorni'" }
+      - { label: "Titolo", name: "title", widget: "string" }
       - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
       - { label: "Paese", name: "country", widget: "string" }
       - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
       - { label: "Foto copertina", name: "coverImage", widget: "image" }
       - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
-      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Breve descrizione per le card" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
-
-      # Meta-row
       - { label: "Durata (giorni totali)", name: "duration", widget: "number", value_type: "int", min: 1, max: 90 }
       - { label: "Budget", name: "budget", widget: "select", options: ["Economico", "Medio", "Alto"] }
       - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Facile", "Medio", "Avventura"] }
-      - { label: "Periodo migliore", name: "bestSeason", widget: "string", hint: "Es. 'Maggio-Settembre'" }
-      - { label: "Trasporto", name: "transport", widget: "string", hint: "Es. 'Auto a noleggio + bus locali'" }
+      - { label: "Periodo migliore", name: "bestSeason", widget: "string" }
+      - { label: "Trasporto", name: "transport", widget: "string" }
       - { label: "Prezzo singolo (€)", name: "price", widget: "number", value_type: "int", min: 5, max: 50 }
-
-      # Pagamento (collegamento a Lemon Squeezy — Sessione 6)
-      - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false, hint: "ID prodotto in Lemon Squeezy" }
-      - { label: "Lemon Squeezy Checkout URL", name: "lemonSqueezyCheckoutUrl", widget: "string", required: false, hint: "URL diretto al checkout, opzionale" }
-
-      # Sezioni editoriali (free)
-      - { label: "Vale il viaggio (free)", name: "valeIlViaggio", widget: "text", required: false, hint: "Sezione introduttiva visibile a tutti" }
-      - { label: "Mainstream check (free)", name: "mainstreamCheck", widget: "text", required: false, hint: "Cosa NON visiterai e perché" }
-
-      # Giorni
+      - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false }
+      - { label: "Lemon Squeezy Checkout URL", name: "lemonSqueezyCheckoutUrl", widget: "string", required: false }
+      - { label: "Vale il viaggio (free)", name: "valeIlViaggio", widget: "text", required: false }
+      - { label: "Mainstream check (free)", name: "mainstreamCheck", widget: "text", required: false }
       - label: "Giorni"
         name: "days"
         widget: "list"
         summary: "Giorno {{fields.dayNumber}}: {{fields.title}}"
         fields:
           - { label: "Numero giorno", name: "dayNumber", widget: "number", value_type: "int", min: 1 }
-          - { label: "Titolo giorno", name: "title", widget: "string", hint: "Es. 'Bishkek → Lago Issyk-Kul'" }
+          - { label: "Titolo giorno", name: "title", widget: "string" }
           - { label: "Descrizione", name: "description", widget: "markdown" }
           - { label: "Km totali", name: "kmTotali", widget: "number", required: false }
-          - { label: "Dislivello", name: "dislivello", widget: "string", required: false, hint: "Es. '+800m / -300m'" }
+          - { label: "Dislivello", name: "dislivello", widget: "string", required: false }
           - { label: "Dove dormire", name: "dormire", widget: "string", required: false }
           - { label: "Dove mangiare", name: "mangiare", widget: "string", required: false }
-          - { label: "Premium (richiede acquisto)", name: "isPremium", widget: "boolean", default: false, hint: "Se attivo, il giorno è visibile solo a chi ha acquistato" }
-
-      # Mappa
+          - { label: "Premium (richiede acquisto)", name: "isPremium", widget: "boolean", default: false }
       - label: "Centro mappa"
         name: "mapCenter"
         widget: "object"
@@ -103,19 +92,16 @@ collections:
           - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
           - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
           - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
-
       - label: "Marker mappa"
         name: "mapMarkers"
         widget: "list"
         required: false
-        summary: "{{fields.label}} ({{fields.lat}}, {{fields.lng}})"
+        summary: "{{fields.label}}"
         fields:
           - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
           - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
           - { label: "Etichetta", name: "label", widget: "string" }
           - { label: "Giorno (opzionale)", name: "dayNumber", widget: "number", value_type: "int", required: false }
-
-      # Contatti locali (premium)
       - label: "Contatti locali (premium)"
         name: "localContacts"
         widget: "list"
@@ -123,6 +109,62 @@ collections:
         summary: "{{fields.name}} — {{fields.role}}"
         fields:
           - { label: "Nome", name: "name", widget: "string" }
-          - { label: "Ruolo", name: "role", widget: "string", hint: "Es. 'Guida montagna', 'Host'" }
-          - { label: "Contatto", name: "contact", widget: "string", hint: "Email, telefono, WhatsApp" }
+          - { label: "Ruolo", name: "role", widget: "string" }
+          - { label: "Contatto", name: "contact", widget: "string" }
           - { label: "Note", name: "notes", widget: "string", required: false }
+
+  - name: "film"
+    label: "Film"
+    label_singular: "Film"
+    folder: "src/content/film"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{country}} ({{duration}}min)"
+    sortable_fields: ["publishDate", "title", "country"]
+    fields:
+      - { label: "Titolo", name: "title", widget: "string", hint: "Es. 'Oltre i passi. Un'estate nomade'" }
+      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
+      - { label: "Paese", name: "country", widget: "string" }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Foto copertina", name: "coverImage", widget: "image", hint: "Thumbnail editoriale del film" }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "YouTube ID", name: "youtubeId", widget: "string", hint: "Solo l'ID, es. 'dQw4w9WgXcQ' (la parte dopo ?v= nell'URL YouTube)" }
+      - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
+      - { label: "Tipo", name: "type", widget: "select", options: ["Documentario", "Cortometraggio", "Reportage", "Essay", "Trailer"] }
+      - {
+          label: "Descrizione",
+          name: "body",
+          widget: "markdown",
+          buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list"],
+        }
+
+  - name: "podcast"
+    label: "Podcast"
+    label_singular: "Episodio podcast"
+    folder: "src/content/podcast"
+    create: true
+    slug: "{{slug}}"
+    summary: "Ep. {{episodeNumber}} — {{title}}"
+    sortable_fields: ["episodeNumber", "publishDate", "title"]
+    fields:
+      - { label: "Titolo episodio", name: "title", widget: "string" }
+      - { label: "Sottotitolo / Hook", name: "subtitle", widget: "string", required: false }
+      - { label: "Numero episodio", name: "episodeNumber", widget: "number", value_type: "int", min: 1 }
+      - { label: "Argomento", name: "topic", widget: "select", options: ["Destinazioni", "Pratiche", "Fotografia", "Storie", "Interviste"] }
+      - { label: "Ospiti", name: "guests", widget: "string", required: false }
+      - { label: "Foto copertina", name: "coverImage", widget: "image", required: false }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "Spotify Episode ID", name: "spotifyEpisodeId", widget: "string", hint: "Apri l'episodio su Spotify, click sui 3 puntini → Condividi → Embed → copia l'ID nell'URL spotify:episode:XXX" }
+      - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
+      - {
+          label: "Show notes",
+          name: "body",
+          widget: "markdown",
+          buttons: ["bold", "italic", "link", "heading-three", "bulleted-list", "numbered-list"],
+        }
