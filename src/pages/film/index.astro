@@ -6,9 +6,6 @@ import { getCollection } from 'astro:content';
 const tutti = (await getCollection('film')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-
-const featured = tutti.find((e) => e.data.featured) || tutti[0];
-const altri = tutti.filter((e) => e.slug !== featured?.slug);
 ---
 
 <BaseLayout
@@ -31,18 +28,9 @@ const altri = tutti.filter((e) => e.slug !== featured?.slug);
       </div>
     )}
 
-    {featured && (
-      <div class="film-grid pb60">
-        <FilmCard entry={featured} variant="main" />
-        <div class="film-list">
-          {altri.slice(0, 4).map((entry) => <FilmCard entry={entry} variant="episode" />)}
-        </div>
-      </div>
-    )}
-
-    {altri.length > 4 && (
+    {tutti.length > 0 && (
       <div class="film-cards-grid pb60">
-        {altri.slice(4).map((entry) => <FilmCard entry={entry} variant="grid" />)}
+        {tutti.map((entry) => <FilmCard entry={entry} variant="grid" />)}
       </div>
     )}
   </section>
@@ -85,8 +73,7 @@ const altri = tutti.filter((e) => e.slug !== featured?.slug);
   .film-cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 24px;
+    gap: 28px;
   }
   @media (max-width: 900px) {
     .film-cards-grid { grid-template-columns: repeat(2, 1fr); }
