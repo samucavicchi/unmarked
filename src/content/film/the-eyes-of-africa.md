@@ -5,7 +5,8 @@ country: Uganda
 continent: Africa
 coverImage: ../../assets/articoli/the-eyes-of-africa.jpeg
 coverImageAlt: xxxxxx
-excerpt: xxxxx
+excerpt: L'Uganda, la perla d'Africa, nel cuore della foresta equatoriale si
+  nasconde un tesoro prezioso
 publishDate: 2026-05-03
 featured: false
 youtubeId: B34AQ0RULeo
