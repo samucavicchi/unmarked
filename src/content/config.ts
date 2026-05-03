@@ -17,6 +17,29 @@ const destinazioni = defineCollection({
       publishDate: z.date(),
       featured: z.boolean().default(false),
       seoMetaDescription: z.string().optional(),
+
+      // Wow pack: arricchimento editoriale opzionale
+      interludeImage: image().optional(),
+      interludeCaption: z.string().optional(),
+      pullQuote: z.string().optional(),
+      mapCenter: z
+        .object({
+          lat: z.number(),
+          lng: z.number(),
+          zoom: z.number().default(8),
+        })
+        .optional(),
+      mapMarkers: z
+        .array(
+          z.object({
+            lat: z.number(),
+            lng: z.number(),
+            label: z.string(),
+          })
+        )
+        .default([]),
+      // Slug dell'itinerario correlato per il blocco CTA "C'è un itinerario per questo posto"
+      relatedItinerary: z.string().optional(),
     }),
 });
 
@@ -87,7 +110,6 @@ const itinerari = defineCollection({
     }),
 });
 
-// Film — video pubblicati su YouTube. Embed via iframe.
 const film = defineCollection({
   type: 'content',
   schema: ({ image }) =>
@@ -101,15 +123,12 @@ const film = defineCollection({
       excerpt: z.string(),
       publishDate: z.date(),
       featured: z.boolean().default(false),
-
-      // YouTube
       youtubeId: z.string(),
       duration: z.number().int().positive(),
       type: z.enum(['Documentario', 'Cortometraggio', 'Reportage', 'Essay', 'Trailer']),
     }),
 });
 
-// Podcast — episodi distribuiti via Spotify. Embed via iframe Spotify.
 const podcast = defineCollection({
   type: 'content',
   schema: ({ image }) =>
@@ -121,8 +140,6 @@ const podcast = defineCollection({
       excerpt: z.string(),
       publishDate: z.date(),
       featured: z.boolean().default(false),
-
-      // Spotify
       spotifyEpisodeId: z.string(),
       episodeNumber: z.number().int().positive(),
       duration: z.number().int().positive(),
