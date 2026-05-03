@@ -11,7 +11,7 @@ featured: false
 interludeImage: ../../assets/articoli/3-1-dimensioni-grandi.jpeg
 pullQuote: il Caprivi è un luogo estremamente diverso dal resto della Namibia,
   si respira un Africa che ti culla tra popoli e animali
-relatedItinerary: Namibia oltre i confini 12 giorni
+relatedItinerary: islanda
 mapCenter:
   zoom: 8
   lng: 17.566816
