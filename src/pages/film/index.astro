@@ -5,6 +5,32 @@ import { getCollection } from 'astro:content';
 const tutti = (await getCollection('film')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
+
+// "In cantiere" — sezione descrittiva di 3 box, non cliccabili.
+// Modifica titolo/sub e immagini qui sotto. Le foto vanno in public/ con i nomi indicati.
+const cantiere = [
+  {
+    stage: 'Pre-produzione',
+    image: '/film-pipeline-pre.jpg',
+    fallback: 'linear-gradient(135deg, #c9b89a 0%, #b5a585 100%)',
+    title: 'Titolo del prossimo film',
+    sub: 'Quello che stiamo studiando: location, contatti, sopralluoghi, prima delle riprese.',
+  },
+  {
+    stage: 'In produzione',
+    image: '/film-pipeline-prod.jpg',
+    fallback: 'linear-gradient(135deg, #C4855A 0%, #a06d47 100%)',
+    title: 'Titolo del film in corso',
+    sub: 'Quello che stiamo girando ora, mentre leggi questa pagina.',
+  },
+  {
+    stage: 'Presto in arrivo',
+    image: '/film-pipeline-soon.jpg',
+    fallback: 'linear-gradient(135deg, #8A9E8C 0%, #6f8472 100%)',
+    title: 'Titolo del film in uscita',
+    sub: 'Quello che è in montaggio, prossimo alla pubblicazione.',
+  },
+];
 ---
 
 <BaseLayout
@@ -31,7 +57,7 @@ const tutti = (await getCollection('film')).sort(
       </div>
     )}
 
-    <div class="film-stack pb60">
+    <div class="film-stack">
       {tutti.map((entry) => {
         const data = entry.data;
         const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
@@ -53,6 +79,27 @@ const tutti = (await getCollection('film')).sort(
           </a>
         );
       })}
+    </div>
+
+    <!-- IN CANTIERE — 3 box descrittivi non cliccabili -->
+    <div class="cantiere-section">
+      <div class="cantiere-head">
+        <h2 class="cantiere-title">In cantiere</h2>
+        <p class="cantiere-sub">Quello a cui stiamo lavorando, in tutte le sue fasi.</p>
+      </div>
+      <div class="cantiere-grid pb60">
+        {cantiere.map((c) => (
+          <div class="cantiere-box">
+            <div class="cantiere-img" style={`background-image: url(${c.image}), ${c.fallback};`}>
+              <span class="cantiere-stage">{c.stage}</span>
+            </div>
+            <div class="cantiere-info">
+              <h3 class="cantiere-box-title">{c.title}</h3>
+              <p class="cantiere-box-sub">{c.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -76,7 +123,6 @@ const tutti = (await getCollection('film')).sort(
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    /* Fallback se l'immagine non c'è ancora */
     background-color: #1a1814;
   }
   .film-archive-hero-overlay {
@@ -134,12 +180,12 @@ const tutti = (await getCollection('film')).sort(
     font-style: italic;
   }
 
+  /* Stack dei film */
   .film-stack {
     display: flex;
     flex-direction: column;
     gap: 56px;
   }
-
   .film-wide {
     text-decoration: none;
     color: inherit;
@@ -155,11 +201,7 @@ const tutti = (await getCollection('film')).sort(
     transition: transform 0.3s;
   }
   .film-wide:hover .film-wide-img { transform: scale(1.005); }
-  .film-wide-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  .film-wide-img img { width: 100%; height: 100%; object-fit: cover; }
   .film-wide-ov {
     position: absolute;
     inset: 0;
@@ -240,6 +282,81 @@ const tutti = (await getCollection('film')).sort(
     max-width: 800px;
   }
 
+  /* Sezione "In cantiere" */
+  .cantiere-section {
+    margin-top: 80px;
+  }
+  .cantiere-head {
+    border-bottom: 1px solid var(--light-border);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .cantiere-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+  }
+  .cantiere-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .cantiere-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .cantiere-box {
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: default;
+  }
+  .cantiere-img {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+  }
+  .cantiere-stage {
+    background: rgba(26, 24, 20, 0.85);
+    color: #FAFAF8;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+  .cantiere-info {
+    padding: 20px 22px 24px;
+  }
+  .cantiere-box-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin: 0 0 10px;
+  }
+  .cantiere-box-sub {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .cantiere-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   @media (max-width: 700px) {
     .film-archive-hero { padding: 50px 24px 44px; min-height: 380px; }
     .film-archive-claim { font-size: 40px; }
@@ -248,5 +365,7 @@ const tutti = (await getCollection('film')).sort(
     .film-wide-play { width: 60px; height: 60px; }
     .film-wide-play-icon { border-width: 9px 0 9px 16px; }
     .film-stack { gap: 36px; }
+    .cantiere-grid { grid-template-columns: 1fr; }
+    .cantiere-title { font-size: 28px; }
   }
 </style>
