@@ -11,16 +11,20 @@ const tutti = (await getCollection('film')).sort(
   title="Film di viaggio — Unmarked"
   description="Documentari, cortometraggi e reportage video dai posti che non trovi sulle guide."
 >
-  <section>
-    <div class="archive-head">
-      <div class="archive-eyebrow">Film · Documentari · Reportage video</div>
-      <h1 class="archive-title">Film di viaggio</h1>
-      <p class="archive-sub">
-        Storie raccontate in immagini in movimento. Tre settimane in una valle del Tian Shan,
-        un'estate dietro un branco di renne, un fine settimana in un villaggio dimenticato.
+  <header class="film-archive-hero">
+    <div class="film-archive-hero-bg"></div>
+    <div class="film-archive-hero-overlay"></div>
+    <div class="film-archive-hero-content">
+      <div class="film-archive-eyebrow">Documentari · Cortometraggi · Reportage video</div>
+      <h1 class="film-archive-claim">Le storie<br />che dovevano restare<br />in movimento.</h1>
+      <p class="film-archive-sub">
+        Tre settimane in una valle del Tian Shan. Un'estate dietro un branco di renne. Un fine
+        settimana in un villaggio dimenticato. Cose che le parole non bastano a tenere.
       </p>
     </div>
+  </header>
 
+  <section>
     {tutti.length === 0 && (
       <div class="archive-empty">
         <p>I primi film stanno per uscire. Torna fra qualche giorno.</p>
@@ -54,33 +58,75 @@ const tutti = (await getCollection('film')).sort(
 </BaseLayout>
 
 <style>
-  .archive-head {
-    padding: 60px 0 40px;
-    border-bottom: 1px solid var(--light-border);
-    margin-bottom: 40px;
+  /* Hero archivio film */
+  .film-archive-hero {
+    position: relative;
+    min-height: 460px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 70px 48px 64px;
+    margin-bottom: 60px;
   }
-  .archive-eyebrow {
+  .film-archive-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/film-hero.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* Fallback se l'immagine non c'è ancora */
+    background-color: #1a1814;
+  }
+  .film-archive-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(26,24,20,0.55) 0%, rgba(26,24,20,0.2) 60%, rgba(26,24,20,0) 100%),
+      linear-gradient(to top, rgba(26,24,20,0.75) 0%, rgba(26,24,20,0.2) 60%, rgba(26,24,20,0.05) 100%);
+  }
+  .film-archive-hero-content {
+    position: relative;
+    color: #FAFAF8;
+    max-width: 760px;
+  }
+  .film-archive-eyebrow {
     font-size: 9px;
+    font-weight: 300;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 16px;
+    color: var(--sand);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .archive-title {
+  .film-archive-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--terra);
+  }
+  .film-archive-claim {
     font-family: 'Cormorant Garamond', serif;
     font-size: 64px;
     font-weight: 300;
     line-height: 1.0;
-    color: var(--dark);
-    margin-bottom: 18px;
+    color: #FAFAF8;
+    margin: 0 0 22px;
     letter-spacing: 0.01em;
   }
-  .archive-sub {
+  .film-archive-sub {
     font-size: 14px;
+    font-weight: 300;
+    color: rgba(250, 250, 248, 0.72);
     line-height: 1.7;
-    color: var(--muted);
     max-width: 540px;
+    margin: 0;
   }
+
   .archive-empty {
     text-align: center;
     padding: 80px 40px;
@@ -99,7 +145,6 @@ const tutti = (await getCollection('film')).sort(
     color: inherit;
     display: block;
   }
-
   .film-wide-img {
     position: relative;
     width: 100%;
@@ -109,9 +154,7 @@ const tutti = (await getCollection('film')).sort(
     background: var(--dark);
     transition: transform 0.3s;
   }
-  .film-wide:hover .film-wide-img {
-    transform: scale(1.005);
-  }
+  .film-wide:hover .film-wide-img { transform: scale(1.005); }
   .film-wide-img img {
     width: 100%;
     height: 100%;
@@ -198,6 +241,8 @@ const tutti = (await getCollection('film')).sort(
   }
 
   @media (max-width: 700px) {
+    .film-archive-hero { padding: 50px 24px 44px; min-height: 380px; }
+    .film-archive-claim { font-size: 40px; }
     .film-wide-content { padding: 20px; }
     .film-wide-title { font-size: 28px; }
     .film-wide-play { width: 60px; height: 60px; }
