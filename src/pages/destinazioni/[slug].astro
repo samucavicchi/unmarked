@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DestinazioneCard from '../../components/DestinazioneCard.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -23,6 +24,13 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
   month: 'long',
   year: 'numeric',
 });
+
+// Articoli correlati: 3 destinazioni più recenti, escluso quello attuale
+const tutte = await getCollection('destinazioni');
+const correlati = tutte
+  .filter((e) => e.slug !== entry.slug)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -31,12 +39,9 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
   ogImage={data.coverImage.src}
 >
   <article>
+    <!-- HERO cinematica full-bleed -->
     <header class="article-hero">
-      <img
-        src={data.coverImage.src}
-        alt={data.coverImageAlt}
-        class="article-hero-bg"
-      />
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="article-hero-bg" />
       <div class="article-hero-overlay"></div>
       <div class="article-hero-content">
         <div class="article-tag">
@@ -48,9 +53,23 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
       </div>
     </header>
 
+    <!-- BODY editoriale con drop cap e foto full-bleed -->
     <div class="article-body">
       <Content />
     </div>
+
+    <!-- ARTICOLI CORRELATI -->
+    {correlati.length > 0 && (
+      <section class="article-related">
+        <div class="related-head">
+          <h2 class="related-title">Reportage correlati</h2>
+          <a href="/destinazioni" class="related-link">Tutte le destinazioni →</a>
+        </div>
+        <div class="related-grid">
+          {correlati.map((e) => <DestinazioneCard entry={e} />)}
+        </div>
+      </section>
+    )}
 
     <nav class="article-back">
       <a href="/destinazioni" class="back-link">← Tutte le destinazioni</a>
@@ -59,14 +78,16 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
 </BaseLayout>
 
 <style>
+  /* HERO cinematica full-bleed */
   .article-hero {
     position: relative;
-    height: 480px;
+    min-height: 80vh;
+    height: 720px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 52px 48px;
+    padding: 60px 56px 70px;
   }
   .article-hero-bg {
     position: absolute;
@@ -79,86 +100,190 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to top, rgba(26,24,20,0.78) 0%, rgba(26,24,20,0.25) 55%, rgba(26,24,20,0.05) 100%);
+      linear-gradient(to top, rgba(26,24,20,0.78) 0%, rgba(26,24,20,0.2) 55%, rgba(26,24,20,0) 100%);
   }
   .article-hero-content {
     position: relative;
     color: #FAFAF8;
-    max-width: 800px;
+    max-width: 880px;
   }
   .article-tag {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 300;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--sand);
-    margin-bottom: 14px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .article-tag::before {
+    content: '';
+    display: inline-block;
+    width: 36px;
+    height: 1px;
+    background: var(--terra);
   }
   .article-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 56px;
+    font-size: 78px;
     font-weight: 300;
-    line-height: 1.05;
-    margin-bottom: 16px;
-    letter-spacing: 0.01em;
+    line-height: 1.0;
+    margin: 0 0 22px;
+    letter-spacing: 0.005em;
+    max-width: 900px;
   }
   .article-subtitle {
-    font-size: 16px;
-    color: rgba(250, 250, 248, 0.75);
+    font-size: 19px;
+    font-weight: 300;
+    color: rgba(250, 250, 248, 0.85);
     line-height: 1.5;
-    margin-bottom: 18px;
-    max-width: 640px;
+    margin: 0 0 26px;
+    max-width: 720px;
+    font-style: italic;
   }
   .article-meta {
     font-size: 11px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: rgba(250, 250, 248, 0.55);
   }
+
+  /* BODY editoriale */
   .article-body {
     max-width: 720px;
-    margin: 60px auto 60px;
+    margin: 80px auto 80px;
     padding: 0 40px;
-    font-size: 16px;
-    line-height: 1.78;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.7;
     color: var(--dark);
   }
+
+  /* Drop cap solo sul primo paragrafo */
+  .article-body :global(p:first-of-type::first-letter) {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 88px;
+    line-height: 0.85;
+    float: left;
+    padding: 8px 14px 0 0;
+    color: var(--terra);
+    margin-top: 4px;
+  }
+
+  .article-body :global(p) {
+    margin-bottom: 24px;
+  }
+
   .article-body :global(h2) {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 300;
-    line-height: 1.2;
-    margin: 44px 0 14px;
+    line-height: 1.15;
+    margin: 56px 0 18px;
+    letter-spacing: 0.005em;
   }
   .article-body :global(h3) {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 400;
     line-height: 1.3;
-    margin: 36px 0 10px;
+    margin: 44px 0 14px;
   }
-  .article-body :global(p) {
-    margin-bottom: 18px;
-  }
+
   .article-body :global(blockquote) {
-    border-left: 2px solid var(--terra);
-    padding-left: 24px;
-    margin: 32px 0;
+    border: 0;
+    border-top: 1px solid var(--terra);
+    border-bottom: 1px solid var(--terra);
+    padding: 36px 0;
+    margin: 56px 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
     font-style: italic;
-    color: var(--muted);
-    font-size: 18px;
-    line-height: 1.6;
+    line-height: 1.4;
+    color: var(--dark);
+    text-align: center;
   }
-  .article-body :global(img) {
-    width: 100%;
-    border-radius: 3px;
-    margin: 32px 0 6px;
-  }
+  .article-body :global(blockquote p) { margin: 0; }
+
   .article-body :global(a) {
     color: var(--terra);
     text-decoration: underline;
-    text-underline-offset: 3px;
+    text-underline-offset: 4px;
   }
+
+  /* Foto inline a tutta larghezza (full-bleed) */
+  .article-body :global(img) {
+    display: block;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-top: 56px;
+    margin-bottom: 12px;
+    border-radius: 0;
+  }
+
+  /* Didascalia in italics dopo l'immagine (em sotto img in markdown) */
+  .article-body :global(img + em),
+  .article-body :global(p > img + br + em) {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+    color: var(--muted);
+    margin: 6px auto 56px;
+    font-weight: 300;
+    max-width: 720px;
+  }
+
+  /* ARTICOLI CORRELATI */
+  .article-related {
+    max-width: 1280px;
+    margin: 60px auto 60px;
+    padding: 0 40px;
+  }
+  .related-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--light-border);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .related-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  .related-link {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    text-decoration: none;
+  }
+  .related-link:hover { text-decoration: underline; }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .related-grid { grid-template-columns: 1fr; }
+  }
+
   .article-back {
     max-width: 720px;
     margin: 0 auto 80px;
@@ -172,7 +297,17 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
     color: var(--terra);
     text-decoration: none;
   }
-  .back-link:hover {
-    text-decoration: underline;
+  .back-link:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .article-hero { padding: 40px 28px 50px; height: auto; min-height: 68vh; }
+    .article-title { font-size: 50px; }
+    .article-subtitle { font-size: 17px; }
+    .article-body { font-size: 18px; padding: 0 24px; margin: 56px auto; }
+    .article-body :global(p:first-of-type::first-letter) { font-size: 64px; }
+    .article-body :global(h2) { font-size: 28px; }
+    .article-body :global(h3) { font-size: 22px; }
+    .article-body :global(blockquote) { font-size: 22px; padding: 24px 0; margin: 36px 0; }
   }
 </style>
