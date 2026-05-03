@@ -41,6 +41,29 @@ collections:
           buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
           editor_components: ["image"],
         }
+      # Wow pack — campi opzionali per arricchire la pagina destinazione
+      - { label: "Foto interludio (full-screen, mostrata dopo il body)", name: "interludeImage", widget: "image", required: false, hint: "Foto a tutto schermo. Lasciare vuoto per nessun interludio" }
+      - { label: "Didascalia foto interludio", name: "interludeCaption", widget: "string", required: false }
+      - { label: "Pull quote (citazione full-bleed)", name: "pullQuote", widget: "text", required: false, hint: "Una citazione potente estratta dal testo, mostrata grande e centrata su sfondo scuro" }
+      - { label: "Slug itinerario correlato", name: "relatedItinerary", widget: "string", required: false, hint: "Lo slug dell'itinerario relativo a questo posto. Es. 'kirghizistan-14-giorni'. Mostra un blocco CTA in fondo." }
+      - label: "Centro mappa (opzionale)"
+        name: "mapCenter"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
+      - label: "Marker mappa"
+        name: "mapMarkers"
+        widget: "list"
+        required: false
+        summary: "{{fields.label}}"
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Etichetta", name: "label", widget: "string" }
 
   - name: "itinerari"
     label: "Itinerari"
@@ -122,16 +145,16 @@ collections:
     summary: "{{title}} — {{country}} ({{duration}}min)"
     sortable_fields: ["publishDate", "title", "country"]
     fields:
-      - { label: "Titolo", name: "title", widget: "string", hint: "Es. 'Oltre i passi. Un'estate nomade'" }
+      - { label: "Titolo", name: "title", widget: "string" }
       - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
       - { label: "Paese", name: "country", widget: "string" }
       - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
-      - { label: "Foto copertina", name: "coverImage", widget: "image", hint: "Thumbnail editoriale del film" }
+      - { label: "Foto copertina", name: "coverImage", widget: "image" }
       - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
       - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
-      - { label: "YouTube ID", name: "youtubeId", widget: "string", hint: "Solo l'ID, es. 'dQw4w9WgXcQ' (la parte dopo ?v= nell'URL YouTube)" }
+      - { label: "YouTube ID", name: "youtubeId", widget: "string", hint: "Solo l'ID, es. 'dQw4w9WgXcQ'" }
       - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
       - { label: "Tipo", name: "type", widget: "select", options: ["Documentario", "Cortometraggio", "Reportage", "Essay", "Trailer"] }
       - {
@@ -160,7 +183,7 @@ collections:
       - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
-      - { label: "Spotify Episode ID", name: "spotifyEpisodeId", widget: "string", hint: "Apri l'episodio su Spotify, click sui 3 puntini → Condividi → Embed → copia l'ID nell'URL spotify:episode:XXX" }
+      - { label: "Spotify Episode ID", name: "spotifyEpisodeId", widget: "string" }
       - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
       - {
           label: "Show notes",
