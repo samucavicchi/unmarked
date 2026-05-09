@@ -18,7 +18,8 @@ const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-'); const HERO_VIDEO_ID
   description="Itinerari di viaggio giorno per giorno, contatti locali verificati, mappe offline."
 >
   <div class="it-hero-wrap"><div class="it-hero">{HERO_VIDEO_URL ? (<iframe class="it-hero-video" src={HERO_VIDEO_URL} title="Hero" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>) : (<img src="/hero.jpg" alt="" class="it-hero-fallback" />)}<div class="it-hero-overlay"></div></div></div>
-    <div class="archive-head">
+    <section>
+<div class="archive-head">
       <div class="archive-eyebrow">Itinerari premium</div>
       <h1 class="archive-title">Itinerari</h1>
       <p class="archive-sub">
