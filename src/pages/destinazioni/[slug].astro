@@ -181,7 +181,7 @@ if (data.relatedItinerary) {
         crossorigin=""
       ></script>
       <script is:inline>
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('load', function () {
           var mapEl = document.getElementById('leaflet-map');
           if (!mapEl || typeof L === 'undefined') return;
           var center = JSON.parse(mapEl.dataset.center);
@@ -343,7 +343,7 @@ if (data.relatedItinerary) {
   }
 
   /* INTERLUDIO foto full-screen */
-  .article-interlude {
+  .article-interlude {  padding: 0;
     position: relative;
     width: 100vw;
     margin-left: calc(50% - 50vw);
