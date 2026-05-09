@@ -10,14 +10,14 @@ const tutti = (await getCollection('itinerari')).sort(
 const continenti = [...new Set(tutti.map((e) => e.data.continent))].sort();
 const paesi = [...new Set(tutti.map((e) => e.data.country))].sort();
 
-const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
+const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-'); const HERO_VIDEO_ID = ''; const HERO_VIDEO_URL = HERO_VIDEO_ID ? 'https://www.youtube-nocookie.com/embed/' + HERO_VIDEO_ID + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + HERO_VIDEO_ID + '&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1' : '';
 ---
 
 <BaseLayout
   title="Itinerari premium — Unmarked"
   description="Itinerari di viaggio giorno per giorno, contatti locali verificati, mappe offline."
 >
-  <section>
+  <div class="it-hero-wrap"><div class="it-hero">{HERO_VIDEO_URL ? (<iframe class="it-hero-video" src={HERO_VIDEO_URL} title="Hero" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>) : (<img src="/hero.jpg" alt="" class="it-hero-fallback" />)}<div class="it-hero-overlay"></div></div></div>
     <div class="archive-head">
       <div class="archive-eyebrow">Itinerari premium</div>
       <h1 class="archive-title">Itinerari</h1>
@@ -131,4 +131,4 @@ const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
   @media (max-width: 600px) {
     .it-grid { grid-template-columns: 1fr; }
   }
-</style>
+  .it-hero-wrap { padding: 24px 24px 0; } .it-hero { position: relative; width: 100%; aspect-ratio: 21 / 9; max-height: 70vh; overflow: hidden; border-radius: 24px; background: var(--dark); } .it-hero-video, .it-hero-fallback { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; } .it-hero-video { transform: scale(1.4); pointer-events: none; } .it-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.25) 0%, rgba(26,24,20,0) 60%); pointer-events: none; } @media (max-width: 600px) { .it-hero-wrap { padding: 12px 12px 0; } .it-hero { border-radius: 16px; aspect-ratio: 16 / 9; } } </style>
