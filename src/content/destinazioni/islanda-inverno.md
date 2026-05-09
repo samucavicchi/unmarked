@@ -7,7 +7,7 @@ coverImage: ../../assets/articoli/240204-islanda-inverno-cavalli-33-dimensioni-g
 coverImageAlt: Cavalli Islanda
 excerpt: Islanda in inverno tra ghiaccio e fuoco
 publishDate: 2026-01-14
-featured: false
+featured: true
 interludeImage: ../../assets/articoli/dsc_0487.jpeg
 interludeCaption: le grotte di ghiaccio
 pullQuote: un Islanda diversa, vera, che ti mette alla prova ad ogni passo
