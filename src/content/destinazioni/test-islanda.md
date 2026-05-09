@@ -7,7 +7,7 @@ coverImage: ../../assets/articoli/samu-sv-3.jpg
 coverImageAlt: test
 excerpt: articolo di test
 publishDate: 2026-05-01
-featured: true
+featured: false
 interludeImage: ../../assets/articoli/marco-1.jpg
 interludeCaption: prova foto
 pullQuote: questo è un test per provare la grafica
