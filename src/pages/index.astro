@@ -11,7 +11,7 @@ const tutteLeDestinazioni = (await getCollection('destinazioni')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
 const featured = tutteLeDestinazioni.find((e) => e.data.featured) || tutteLeDestinazioni[0];
-const sideList = tutteLeDestinazioni.filter((e) => e.slug !== featured?.slug).slice(0, 4);
+const sideList = tutteLeDestinazioni.filter((e) => e.slug !== featured?.slug).slice(0, 3);
 const grid = tutteLeDestinazioni
   .filter((e) => e.slug !== featured?.slug)
   .filter((e) => !sideList.find((s) => s.slug === e.slug))
@@ -63,7 +63,7 @@ const formatDateShort = (date) =>
           <div class="feat-content">
             <div class="feat-tag">{featured.data.country} · {featured.data.continent}{featured.data.region ? ` · ${featured.data.region}` : ''}</div>
             <div class="feat-title">{featured.data.title}</div>
-            <div class="feat-meta">{formatDateShort(featured.data.publishDate)}</div>
+            {featured.data.subtitle && <div class="feat-subtitle">{featured.data.subtitle}</div>}
           </div>
         </a>
 
@@ -76,7 +76,7 @@ const formatDateShort = (date) =>
               <div class="side-info">
                 <div class="side-tag">{entry.data.country} · {entry.data.continent}</div>
                 <div class="side-title">{entry.data.title}</div>
-                <div class="side-meta">{formatDateShort(entry.data.publishDate)}</div>
+                {entry.data.subtitle && <div class="side-subtitle">{entry.data.subtitle}</div>}
               </div>
             </a>
           ))}
