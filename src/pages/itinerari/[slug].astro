@@ -74,7 +74,7 @@ const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
       {data.mainstreamCheck && (
         <section class="itin-section itin-section-mainstream">
           <h2>Mainstream check</h2>
-          <p>{data.mainstreamCheck}</p>
+          <div class="itin-fade-wrap itin-fade-wrap-beige"><p>{data.mainstreamCheck}</p></div>
         </section>
       )}
 
@@ -83,12 +83,12 @@ const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
           <h2>Giorno per giorno</h2>
           <div class="days-list">
             {days.map((day) => (
-              <div class={`day-card ${day.isPremium ? 'day-card-locked' : ''}`}>
+              <div class={`day-card ${day.isPremium ? 'day-card-faded' : ''}`}>
                 <div class="day-header">
                   <div class="day-number">Giorno {day.dayNumber}</div>
                   <div class="day-title">{day.title}</div>
                 </div>
-                {!day.isPremium && (
+                {true && (
                   <>
                     <div class="day-description" set:html={day.description.replace(/\n/g, '<br>')}></div>
                     <div class="day-meta">
@@ -99,7 +99,7 @@ const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
                     </div>
                   </>
                 )}
-                {day.isPremium && (
+                {false && (
                   <div class="day-locked-overlay">
                     <div class="lock-icon">🔒</div>
                     <p class="lock-text">Contenuto premium — sblocca questo giorno con l'acquisto dell'itinerario</p>
@@ -416,4 +416,4 @@ const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
     color: rgba(250, 250, 248, 0.45);
     margin-top: 8px;
   }
-</style>
+.day-card-faded { position: relative; max-height: 110px; overflow: hidden; } .day-card-faded::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); pointer-events: none; } .itin-fade-wrap { position: relative; max-height: 140px; overflow: hidden; } .itin-fade-wrap::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, var(--cream) 100%); pointer-events: none; } .itin-fade-wrap-beige::after { background: linear-gradient(to bottom, rgba(232,223,208,0) 0%, var(--beige) 100%); } </style>
