@@ -15,18 +15,32 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
 const { data } = entry;
 
-const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
-
 const days = (data.days || []).slice().sort((a, b) => a.dayNumber - b.dayNumber);
+const firstPremiumIdx = days.findIndex((d) => d.isPremium);
+const freeDays = firstPremiumIdx === -1 ? days : days.slice(0, firstPremiumIdx);
+const premiumDays = firstPremiumIdx === -1 ? [] : days.slice(firstPremiumIdx);
 
 const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
+
+const updatedDate = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+
+// Map markers: per ogni giorno, prendi il marker con stesso dayNumber
+const mapPoints = days.map((d) => {
+  const m = (data.mapMarkers || []).find((mm: any) => mm.dayNumber === d.dayNumber);
+  if (!m) return null;
+  return {
+    num: d.dayNumber,
+    title: d.title,
+    sub: (d.description || '').split('\n')[0].slice(0, 90),
+    locked: !!d.isPremium,
+    lat: m.lat,
+    lng: m.lng,
+  };
+}).filter(Boolean);
+
+const hasMap = !!data.mapCenter && mapPoints.length > 0;
 ---
 
 <BaseLayout
@@ -34,386 +48,357 @@ const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
   description={data.excerpt}
   ogImage={data.coverImage.src}
 >
-  <!-- Leaflet CSS+JS solo in questa pagina -->
-  <link
-    slot="head"
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  {hasMap && (
+    <link
+      slot="head"
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+  )}
 
-  <article class="itin-page">
-    <header class="itin-hero">
-      <img src={data.coverImage.src} alt={data.coverImageAlt} class="itin-hero-bg" />
-      <div class="itin-hero-overlay"></div>
-      <div class="itin-hero-content">
-        <div class="itin-tag">{data.country} · {data.continent}</div>
-        <h1 class="itin-title">{data.title}</h1>
-        {data.subtitle && <p class="itin-subtitle">{data.subtitle}</p>}
-      </div>
-    </header>
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>→</span>
+    <a href="/itinerari">Itinerari</a>
+    <span>→</span>
+    <span class="breadcrumb-current">{data.country} · {data.continent}</span>
+  </div>
 
-    <div class="itin-meta-row">
-      <div class="meta-cell"><div class="meta-label">Durata</div><div class="meta-value">{data.duration} giorni</div></div>
-      <div class="meta-cell"><div class="meta-label">Budget</div><div class="meta-value">{data.budget}</div></div>
-      <div class="meta-cell"><div class="meta-label">Difficoltà</div><div class="meta-value">{data.difficulty}</div></div>
-      <div class="meta-cell"><div class="meta-label">Periodo</div><div class="meta-value">{data.bestSeason}</div></div>
-      <div class="meta-cell"><div class="meta-label">Trasporto</div><div class="meta-value">{data.transport}</div></div>
-      <div class="meta-cell meta-price"><div class="meta-label">Prezzo</div><div class="meta-value">€{data.price}</div></div>
+  <div class="it-hero">
+    <div class="it-badges">
+      <div class="badge badge-prem">Premium</div>
+      <div class="badge badge-dur">{data.duration} giorni</div>
+      <div class="badge badge-lvl">Livello {data.difficulty.toLowerCase()}</div>
     </div>
+    <h1 class="it-title">{data.title}</h1>
+    {data.subtitle && <p class="it-subtitle">{data.subtitle}</p>}
+    <div class="it-meta-row">
+      <div class="it-meta-item"><div class="it-meta-val">{data.duration}</div><div class="it-meta-label">Giorni</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.budget}</div><div class="it-meta-label">Budget</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.difficulty}</div><div class="it-meta-label">Difficoltà</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.bestSeason}</div><div class="it-meta-label">Periodo</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.transport}</div><div class="it-meta-label">Trasporto</div></div>
+    </div>
+  </div>
 
-    <div class="itin-body">
-      {data.valeIlViaggio && (
-        <section class="itin-section">
-          <h2>Vale il viaggio</h2>
-          <p>{data.valeIlViaggio}</p>
-        </section>
-      )}
+  <div class="it-hero-img">
+    <img src={data.coverImage.src} alt={data.coverImageAlt} />
+  </div>
 
-      {data.mainstreamCheck && (
-        <section class="itin-section itin-section-mainstream">
-          <h2>Mainstream check</h2>
-          <div class="itin-fade-wrap itin-fade-wrap-beige"><p>{data.mainstreamCheck}</p></div>
-        </section>
-      )}
+  <div class="it-body">
+    <div class="it-text">
+      {data.valeIlViaggio && <p class="it-intro">{data.valeIlViaggio}</p>}
 
-      {days.length > 0 && (
-        <section class="itin-section">
-          <h2>Giorno per giorno</h2>
-          <div class="days-list">
-            {days.map((day) => (
-              <div class={`day-card ${day.isPremium ? 'day-card-faded' : ''}`}>
-                <div class="day-header">
-                  <div class="day-number">Giorno {day.dayNumber}</div>
-                  <div class="day-title">{day.title}</div>
-                </div>
-                {true && (
-                  <>
-                    <div class="day-description" set:html={day.description.replace(/\n/g, '<br>')}></div>
-                    <div class="day-meta">
-                      {day.kmTotali && <span>{day.kmTotali} km</span>}
-                      {day.dislivello && <span>Dislivello: {day.dislivello}</span>}
-                      {day.dormire && <span>Dormi: {day.dormire}</span>}
-                      {day.mangiare && <span>Mangi: {day.mangiare}</span>}
-                    </div>
-                  </>
-                )}
-                {false && (
-                  <div class="day-locked-overlay">
-                    <div class="lock-icon">🔒</div>
-                    <p class="lock-text">Contenuto premium — sblocca questo giorno con l'acquisto dell'itinerario</p>
-                  </div>
-                )}
+      {freeDays.length > 0 && <div class="preview-badge">Anteprima gratuita — {freeDays.length === 1 ? 'giorno 1' : `giorni 1–${freeDays.length}`}</div>}
+
+      <div class="it-section-label">Programma giornaliero</div>
+
+      <div class="it-days">
+        {freeDays.map((day) => (
+          <div class="it-day">
+            <div class="it-day-num">{String(day.dayNumber).padStart(2, '0')}</div>
+            <div class="it-day-content">
+              <div class="it-day-title">{day.title}</div>
+              <div class="it-day-sub" set:html={(day.description || '').replace(/\n/g, '<br>')}></div>
+              <div class="it-day-tags">
+                {day.kmTotali && <div class="it-day-tag">{day.kmTotali} km</div>}
+                {day.dislivello && <div class="it-day-tag">{day.dislivello}</div>}
+                {day.dormire && <div class="it-day-tag">Dormi: {day.dormire}</div>}
+                {day.mangiare && <div class="it-day-tag">Mangi: {day.mangiare}</div>}
               </div>
-            ))}
+            </div>
           </div>
-        </section>
-      )}
+        ))}
+      </div>
 
-      {data.mapCenter && (
-        <section class="itin-section">
-          <h2>La mappa</h2>
-          <div
-            id="leaflet-map"
-            data-center={JSON.stringify(data.mapCenter)}
-            data-markers={JSON.stringify(data.mapMarkers || [])}
-          ></div>
-        </section>
-      )}
+      {premiumDays.length > 0 && (
+        <div class="paywall-wrap">
+          <div class="paywall-blur-content">
+            <div class="it-days">
+              {premiumDays.map((day) => (
+                <div class="it-day">
+                  <div class="it-day-num">{String(day.dayNumber).padStart(2, '0')}</div>
+                  <div class="it-day-content">
+                    <div class="it-day-title">{day.title}</div>
+                    <div class="it-day-sub" set:html={(day.description || '').replace(/\n/g, '<br>')}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-      <!-- Paywall CTA -->
-      <section class="itin-paywall">
-        <div class="paywall-eyebrow">Per andare oltre</div>
-        <h2 class="paywall-title">Sblocca l'itinerario completo</h2>
-        <p class="paywall-sub">
-          Tutti i giorni completi, contatti locali verificati, mappe offline,
-          aggiornamenti stagionali. Una volta acquistato è tuo per sempre.
-        </p>
-        <div class="paywall-buttons">
-          <a href={checkoutUrl} class="btn-primary">
-            Sblocca questo itinerario · €{data.price}
-          </a>
-          <a href="/abbonati" class="btn-secondary">
-            Oppure abbonati · €29/mese o €149/anno
-          </a>
+          <div class="paywall-overlay"></div>
+
+          <div class="paywall-box">
+            <div class="pw-icon">⌛</div>
+            <div class="pw-title">Sblocca l'itinerario completo</div>
+            <div class="pw-sub">{premiumDays.length} giorni dettagliati, mappe offline, dove dormire, dove mangiare, contatti locali verificati e aggiornamenti stagionali inclusi.</div>
+
+            <div class="pw-options">
+              <div class="pw-opt">
+                <div class="pw-opt-label">Solo questo</div>
+                <div class="pw-opt-price">€{data.price}</div>
+                <div class="pw-opt-period">acquisto unico</div>
+                <div class="pw-opt-desc">Accesso permanente a questo itinerario</div>
+              </div>
+              <div class="pw-opt featured">
+                <div class="pw-opt-label">Tutto illimitato</div>
+                <div class="pw-opt-price">€29</div>
+                <div class="pw-opt-period">al mese</div>
+                <div class="pw-opt-desc">Tutti gli itinerari + nuovi ogni mese</div>
+              </div>
+            </div>
+
+            <a href="/abbonati" class="pw-btn-sub">Abbonati — €29/mese</a>
+            <a href={checkoutUrl} class="pw-btn-single">Acquista solo questo — €{data.price}</a>
+            <div class="pw-login">Hai già un account? <span>Accedi</span></div>
+          </div>
         </div>
-        <p class="paywall-note">
-          L'abbonamento ti dà accesso a tutti gli itinerari attuali e futuri.
-        </p>
-      </section>
+      )}
     </div>
-  </article>
 
-  <!-- Leaflet -->
-  <script
-    is:inline
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-  <script is:inline>
-    document.addEventListener('DOMContentLoaded', function () {
-      var mapEl = document.getElementById('leaflet-map');
-      if (!mapEl || typeof L === 'undefined') return;
-      var center = JSON.parse(mapEl.dataset.center);
-      var markers = JSON.parse(mapEl.dataset.markers || '[]');
-      var map = L.map('leaflet-map').setView([center.lat, center.lng], center.zoom || 8);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-      }).addTo(map);
-      markers.forEach(function (m) {
-        L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.label);
-      });
-    });
-  </script>
+    <div class="it-sidebar">
+      <div class="price-box">
+        <div class="price-box-title">Sblocca l'itinerario</div>
+        <div class="price-main">
+          <div class="price-amount">€{data.price}</div>
+          <div class="price-period">acquisto unico</div>
+        </div>
+        <div class="price-or">oppure</div>
+        <div class="price-sub-opt">
+          <span class="price-sub-label">Con abbonamento</span>
+          <span class="price-sub-val">€29/mese</span>
+        </div>
+        <div class="price-includes">
+          <div class="price-item"><div class="price-dot"></div><div>{data.duration} giorni dettagliati giorno per giorno</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Mappa offline scaricabile</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Dove dormire e dove mangiare</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Contatti locali verificati</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Aggiornamenti stagionali inclusi</div></div>
+        </div>
+        <a href={checkoutUrl} class="btn-buy">Acquista — €{data.price}</a>
+        <a href="/abbonati" class="btn-sub-sidebar">Abbonati e accedi a tutto</a>
+        <div class="price-already">Sei abbonato? <span>Accedi</span></div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-title">Dettagli</div>
+        <div class="info-item"><span class="info-label">Destinazione</span><span class="info-val">{data.country}</span></div>
+        <div class="info-item"><span class="info-label">Durata</span><span class="info-val">{data.duration} giorni</span></div>
+        <div class="info-item"><span class="info-label">Budget</span><span class="info-val">{data.budget}</span></div>
+        <div class="info-item"><span class="info-label">Periodo</span><span class="info-val">{data.bestSeason}</span></div>
+        <div class="info-item"><span class="info-label">Difficoltà</span><span class="info-val">{data.difficulty}</span></div>
+        <div class="info-item"><span class="info-label">Trasporto</span><span class="info-val">{data.transport}</span></div>
+        <div class="info-item"><span class="info-label">Aggiornato</span><span class="info-val">{updatedDate}</span></div>
+      </div>
+    </div>
+  </div>
+
+  {hasMap && (
+    <div class="it-map">
+      <div class="it-map-label">Mappa dell'itinerario</div>
+      <div
+        id="it-map"
+        class="it-map-container"
+        data-center={JSON.stringify(data.mapCenter)}
+        data-points={JSON.stringify(mapPoints)}
+      ></div>
+      <div class="it-map-caption">I punti sbloccati mostrano il percorso completo · Giorni premium disponibili con l'acquisto</div>
+    </div>
+  )}
+
+  <div class="consulenza-strip">
+    <div class="consulenza-strip-left">
+      <div class="consulenza-strip-icon">✦</div>
+      <div class="consulenza-strip-text">
+        <div class="consulenza-strip-title">Vuoi un itinerario costruito su misura?</div>
+        <div class="consulenza-strip-sub">Una consulenza con noi per il tuo viaggio specifico.</div>
+      </div>
+    </div>
+    <a href="/consulenze" class="consulenza-strip-cta">Scopri →</a>
+  </div>
+
+  {hasMap && (
+    <>
+      <script
+        is:inline
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+      ></script>
+      <script is:inline>
+        function initItMap() {
+          var el = document.getElementById('it-map');
+          if (!el) return;
+          if (typeof L === 'undefined') { setTimeout(initItMap, 50); return; }
+          var center = JSON.parse(el.dataset.center);
+          var points = JSON.parse(el.dataset.points || '[]');
+          var map = L.map('it-map', { center: [center.lat, center.lng], zoom: center.zoom || 9, scrollWheelZoom: false });
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            maxZoom: 18
+          }).addTo(map);
+          var coordsAll = points.map(function(p){ return [p.lat, p.lng]; });
+          var coordsFree = points.filter(function(p){ return !p.locked; }).map(function(p){ return [p.lat, p.lng]; });
+          if (coordsAll.length > 1) {
+            L.polyline(coordsAll, { color: '#C9B99A', weight: 1.5, opacity: 0.4, dashArray: '6, 8' }).addTo(map);
+          }
+          if (coordsFree.length > 1) {
+            L.polyline(coordsFree, { color: '#C4855A', weight: 2, opacity: 0.8 }).addTo(map);
+          }
+          points.forEach(function(p){
+            var icon = L.divIcon({
+              className: '',
+              html: '<div class="map-marker ' + (p.locked ? 'locked' : '') + '">' + (p.locked ? '🔒' : p.num) + '</div>',
+              iconSize: [28, 28],
+              iconAnchor: [14, 14],
+              popupAnchor: [0, -16]
+            });
+            var popup = p.locked
+              ? '<div class="popup-day">Giorno ' + p.num + '</div><div class="popup-title">' + p.title + '</div><div class="popup-locked">🔒 Disponibile con l\'acquisto</div>'
+              : '<div class="popup-day">Giorno ' + p.num + '</div><div class="popup-title">' + p.title + '</div><div class="popup-sub">' + p.sub + '</div>';
+            L.marker([p.lat, p.lng], { icon: icon }).addTo(map).bindPopup(popup);
+          });
+        }
+        if (document.readyState !== 'loading') initItMap();
+        else window.addEventListener('load', initItMap);
+      </script>
+    </>
+  )}
 </BaseLayout>
 
 <style>
-  .itin-hero {
-    position: relative;
-    height: 480px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 52px 48px;
-  }
-  .itin-hero-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .itin-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(26,24,20,0.78) 0%, rgba(26,24,20,0.25) 55%, rgba(26,24,20,0.05) 100%);
-  }
-  .itin-hero-content {
-    position: relative;
-    color: #FAFAF8;
-    max-width: 800px;
-  }
-  .itin-tag {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--sand);
-    margin-bottom: 14px;
-  }
-  .itin-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 56px;
-    font-weight: 300;
-    line-height: 1.05;
-    margin-bottom: 16px;
-  }
-  .itin-subtitle {
-    font-size: 16px;
-    color: rgba(250, 250, 248, 0.75);
-    line-height: 1.5;
-    max-width: 640px;
-  }
+  /* BREADCRUMB */
+  .breadcrumb { padding: 16px 40px; font-size: 9px; font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sand); border-bottom: 1px solid var(--light-border); display: flex; align-items: center; gap: 8px; }
+  .breadcrumb a { color: var(--sand); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--terra); }
+  .breadcrumb-current { color: var(--terra); }
 
-  .itin-meta-row {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    background: var(--dark);
-    color: #FAFAF8;
-    padding: 24px 40px;
-    gap: 16px;
-  }
-  .meta-cell {
-    text-align: center;
-  }
-  .meta-label {
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(250, 250, 248, 0.4);
-    margin-bottom: 6px;
-  }
-  .meta-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 300;
-    color: #FAFAF8;
-  }
-  .meta-price .meta-value {
-    color: var(--terra);
-    font-size: 22px;
-  }
-  @media (max-width: 700px) {
-    .itin-meta-row { grid-template-columns: repeat(2, 1fr); }
-  }
+  /* HERO */
+  .it-hero { padding: 52px 40px 0; }
+  .it-badges { display: flex; gap: 8px; margin-bottom: 16px; }
+  .badge { font-size: 8px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
+  .badge-prem { background: var(--dark); color: var(--sand); }
+  .badge-dur { background: var(--beige); color: var(--muted); }
+  .badge-lvl { background: var(--beige); color: var(--muted); }
 
-  .itin-body {
-    max-width: 880px;
-    margin: 60px auto 80px;
-    padding: 0 40px;
-  }
-  .itin-section {
-    margin-bottom: 56px;
-  }
-  .itin-section h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    margin-bottom: 18px;
-    color: var(--dark);
-  }
-  .itin-section p {
-    font-size: 15px;
-    line-height: 1.78;
-    color: var(--dark);
-  }
-  .itin-section-mainstream {
-    background: var(--beige);
-    padding: 30px 32px;
-    border-radius: 3px;
-  }
-  .itin-section-mainstream h2 {
-    margin-bottom: 14px;
-  }
+  .it-title { font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300; line-height: 1.05; color: var(--dark); margin-bottom: 16px; max-width: 760px; }
+  .it-subtitle { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300; line-height: 1.5; color: var(--muted); margin-bottom: 28px; max-width: 640px; }
 
-  .days-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .day-card {
-    border: 1px solid var(--light-border);
-    border-radius: 3px;
-    padding: 22px 24px;
-    background: #fff;
-    position: relative;
-  }
-  .day-header {
-    display: flex;
-    align-items: baseline;
-    gap: 18px;
-    margin-bottom: 12px;
-  }
-  .day-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--terra);
-    flex-shrink: 0;
-  }
-  .day-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--dark);
-  }
-  .day-description {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--muted);
-    margin-bottom: 14px;
-  }
-  .day-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: var(--sand);
-  }
-  .day-card-locked {
-    background: linear-gradient(180deg, #fff 0%, #f6f0e6 100%);
-    border-style: dashed;
-  }
-  .day-locked-overlay {
-    text-align: center;
-    padding: 16px 0 4px;
-  }
-  .lock-icon {
-    font-size: 22px;
-    margin-bottom: 6px;
-  }
-  .lock-text {
-    font-size: 12px;
-    color: var(--muted);
-    font-style: italic;
-  }
+  .it-meta-row { display: flex; gap: 0; border-top: 1px solid var(--light-border); border-bottom: 1px solid var(--light-border); margin-bottom: 0; }
+  .it-meta-item { padding: 18px 28px; border-right: 1px solid var(--light-border); text-align: center; flex: 1; }
+  .it-meta-item:first-child { padding-left: 0; text-align: left; }
+  .it-meta-item:last-child { border-right: none; }
+  .it-meta-val { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 4px; }
+  .it-meta-label { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 
-  #leaflet-map {
-    height: 420px;
-    border-radius: 3px;
-    overflow: hidden;
-    border: 1px solid var(--light-border);
-  }
+  /* FOTO HERO */
+  .it-hero-img { width: 100%; height: 560px; position: relative; overflow: hidden; margin-top: 40px; }
+  .it-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .itin-paywall {
-    background: var(--dark);
-    color: #FAFAF8;
-    padding: 48px 40px;
-    border-radius: 3px;
-    text-align: center;
-    margin-top: 32px;
+  /* BODY LAYOUT */
+  .it-body { display: grid; grid-template-columns: 1fr 300px; gap: 60px; padding: 52px 40px 0; }
+
+  .it-intro { font-size: 16px; font-weight: 300; line-height: 1.85; color: var(--dark); margin-bottom: 32px; }
+
+  .preview-badge { display: inline-block; font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; background: #EAF0EA; color: var(--sage); padding: 5px 12px; border-radius: 2px; margin-bottom: 20px; }
+
+  .it-section-label { font-size: 9px; font-weight: 300; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-section-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--terra); }
+
+  /* GIORNI */
+  .it-days { margin-bottom: 0; }
+  .it-day { border-bottom: 1px solid var(--light-border); padding: 22px 0; display: flex; gap: 20px; align-items: flex-start; }
+  .it-day:first-child { border-top: 1px solid var(--light-border); }
+  .it-day-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--beige); min-width: 52px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .it-day-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--dark); margin-bottom: 6px; }
+  .it-day-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.65; }
+  .it-day-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .it-day-tag { font-size: 8px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--light-border); border-radius: 2px; color: var(--muted); }
+
+  /* PAYWALL */
+  .paywall-wrap { position: relative; margin-top: 0; }
+  .paywall-blur-content { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+  .paywall-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.97) 35%, rgba(250,250,248,1) 100%); }
+  .paywall-box { position: relative; text-align: center; padding: 40px 0 60px; }
+  .pw-icon { font-size: 28px; margin-bottom: 14px; }
+  .pw-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); margin-bottom: 8px; }
+  .pw-sub { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 28px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .pw-options { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+  .pw-opt { flex: 1; max-width: 200px; border: 1px solid var(--light-border); border-radius: 3px; padding: 18px 16px; text-align: left; }
+  .pw-opt.featured { border-color: var(--dark); }
+  .pw-opt-label { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+  .pw-opt-price { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 2px; }
+  .pw-opt-period { font-size: 10px; font-weight: 300; color: var(--muted); margin-bottom: 10px; }
+  .pw-opt-desc { font-size: 11px; font-weight: 300; color: var(--muted); line-height: 1.5; }
+  .pw-btn-sub { display: block; width: 100%; max-width: 412px; margin: 0 auto 8px; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; }
+  .pw-btn-single { display: block; width: 100%; max-width: 412px; margin: 0 auto 14px; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; }
+  .pw-login { font-size: 10px; font-weight: 300; color: var(--sand); }
+  .pw-login span { color: var(--terra); cursor: pointer; }
+
+  /* SIDEBAR */
+  .it-sidebar { position: sticky; top: 76px; align-self: start; }
+  .price-box { border: 1px solid var(--dark); border-radius: 3px; padding: 24px; margin-bottom: 16px; }
+  .price-box-title { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .price-main { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--dark); line-height: 1; }
+  .price-period { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .price-or { font-size: 10px; font-weight: 300; color: var(--muted); margin: 10px 0; text-align: center; display: flex; align-items: center; gap: 8px; }
+  .price-or::before, .price-or::after { content: ''; flex: 1; height: 1px; background: var(--light-border); }
+  .price-sub-opt { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--light-border); margin-bottom: 14px; }
+  .price-sub-label { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .price-sub-val { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dark); }
+  .price-includes { margin-bottom: 20px; }
+  .price-item { display: flex; gap: 9px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--light-border); font-size: 11px; font-weight: 300; color: var(--dark); line-height: 1.5; }
+  .price-item:last-child { border-bottom: none; }
+  .price-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); flex-shrink: 0; margin-top: 6px; }
+  .btn-buy { display: block; width: 100%; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; margin-bottom: 8px; }
+  .btn-sub-sidebar { display: block; width: 100%; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; margin-bottom: 12px; }
+  .price-already { font-size: 10px; font-weight: 300; color: var(--sand); text-align: center; }
+  .price-already span { color: var(--terra); cursor: pointer; }
+  .info-box { border: 1px solid var(--light-border); border-radius: 3px; padding: 20px; margin-bottom: 16px; }
+  .info-box-title { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .info-item { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--light-border); font-size: 11px; }
+  .info-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .info-label { font-weight: 300; color: var(--muted); }
+  .info-val { font-weight: 500; color: var(--dark); }
+
+  /* MAPPA */
+  .it-map { padding: 60px 40px 0; }
+  .it-map-label { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-map-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--muted); }
+  .it-map-container { width: 100%; height: 480px; border-radius: 3px; overflow: hidden; border: 1px solid var(--light-border); }
+  .it-map-caption { font-size: 10px; font-weight: 300; color: var(--muted); margin-top: 10px; letter-spacing: 0.06em; }
+
+  :global(.map-marker) { width: 28px; height: 28px; border-radius: 50%; background: var(--dark); color: var(--sand); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; border: 2px solid var(--terra); box-shadow: 0 2px 8px rgba(26,24,20,0.25); }
+  :global(.map-marker.locked) { background: var(--beige); color: var(--sand); border-color: var(--light-border); opacity: 0.6; }
+  :global(.leaflet-popup-content-wrapper) { border-radius: 3px !important; box-shadow: 0 4px 20px rgba(26,24,20,0.12) !important; font-family: 'Inter', sans-serif !important; font-weight: 300 !important; }
+  :global(.leaflet-popup-content) { margin: 14px 18px !important; }
+  :global(.popup-day) { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #C4855A; margin-bottom: 4px; }
+  :global(.popup-title) { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; color: #1a1814; margin-bottom: 4px; }
+  :global(.popup-sub) { font-size: 11px; font-weight: 300; color: #8a7e6a; line-height: 1.5; }
+  :global(.popup-locked) { font-size: 10px; font-weight: 300; color: #C9B99A; font-style: italic; }
+
+  /* CONSULENZA STRIP */
+  .consulenza-strip { margin: 48px 40px 80px; background: var(--beige); border: 1px solid #d8cec0; border-radius: 3px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .consulenza-strip-left { display: flex; align-items: center; gap: 14px; }
+  .consulenza-strip-icon { font-size: 18px; flex-shrink: 0; color: var(--terra); }
+  .consulenza-strip-title { font-size: 13px; font-weight: 300; color: var(--dark); margin-bottom: 2px; }
+  .consulenza-strip-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .consulenza-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(196,133,90,0.3); padding-bottom: 1px; flex-shrink: 0; }
+  .consulenza-strip-cta:hover { border-color: var(--terra); }
+
+  @media (max-width: 900px) {
+    .it-body { grid-template-columns: 1fr; gap: 32px; }
+    .it-sidebar { position: static; }
+    .it-meta-row { flex-wrap: wrap; }
+    .it-meta-item { flex: 1 1 33%; border-right: none; border-bottom: 1px solid var(--light-border); }
+    .it-title { font-size: 38px; }
+    .it-hero-img { height: 360px; }
+    .pw-options { flex-direction: column; align-items: stretch; }
+    .pw-opt { max-width: 100%; }
+    .consulenza-strip { flex-direction: column; align-items: flex-start; }
   }
-  .paywall-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--sand);
-    margin-bottom: 14px;
-  }
-  .paywall-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    margin-bottom: 12px;
-  }
-  .paywall-sub {
-    font-size: 14px;
-    line-height: 1.7;
-    color: rgba(250, 250, 248, 0.75);
-    max-width: 540px;
-    margin: 0 auto 24px;
-  }
-  .paywall-buttons {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-  .btn-primary {
-    background: var(--terra);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 14px 24px;
-    border-radius: 2px;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: #b5764d; }
-  .btn-secondary {
-    background: transparent;
-    color: #FAFAF8;
-    border: 1px solid rgba(250, 250, 248, 0.4);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 13px 22px;
-    border-radius: 2px;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-  .btn-secondary:hover { background: rgba(250, 250, 248, 0.08); }
-  .paywall-note {
-    font-size: 11px;
-    color: rgba(250, 250, 248, 0.45);
-    margin-top: 8px;
-  }
-.day-card-faded { position: relative; max-height: 110px; overflow: hidden; } .day-card-faded::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); pointer-events: none; } .itin-fade-wrap { position: relative; max-height: 140px; overflow: hidden; } .itin-fade-wrap::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, var(--cream) 100%); pointer-events: none; } .itin-fade-wrap-beige::after { background: linear-gradient(to bottom, rgba(232,223,208,0) 0%, var(--beige) 100%); } </style>
+</style>
