@@ -1,5 +1,5 @@
 ---
-title: isalnda
+title: Ghiaccio e inverno
 subtitle: isalnda
 country: isalnda
 continent: Europa
@@ -7,7 +7,7 @@ coverImage: ../../assets/articoli/islanda-estrema-cover-1.jpg
 coverImageAlt: isalnda
 excerpt: isalnda
 publishDate: 2026-05-02
-featured: true
+featured: false
 duration: 5
 budget: Medio
 difficulty: Medio
