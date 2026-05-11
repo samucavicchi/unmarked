@@ -7,9 +7,9 @@ backend:
 media_folder: "src/assets/articoli"
 public_folder: "../../assets/articoli"
 
-site_url: https://tourmaline-tartufo-0cbf4c.netlify.app
-display_url: https://tourmaline-tartufo-0cbf4c.netlify.app
-logo_url: https://tourmaline-tartufo-0cbf4c.netlify.app/favicon.svg
+site_url: https://unmarked-staging.netlify.app
+display_url: https://unmarked-staging.netlify.app
+logo_url: https://unmarked-staging.netlify.app/favicon.svg
 
 locale: 'it'
 
@@ -91,8 +91,92 @@ collections:
       - { label: "Prezzo singolo (€)", name: "price", widget: "number", value_type: "int", min: 5, max: 50 }
       - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false }
       - { label: "Lemon Squeezy Checkout URL", name: "lemonSqueezyCheckoutUrl", widget: "string", required: false }
-      - { label: "Vale il viaggio (free)", name: "valeIlViaggio", widget: "text", required: false }
-      - { label: "Mainstream check (free)", name: "mainstreamCheck", widget: "text", required: false }
+      # Legacy: testi liberi (lasciare vuoti se usi i campi strutturati sotto)
+      - { label: "Vale il viaggio — intro libero (legacy)", name: "valeIlViaggio", widget: "text", required: false, hint: "Lascia vuoto se usi 'Vale il viaggio (strutturato)' sotto. Resta come paragrafo di apertura nel body." }
+      - { label: "Mainstream check — testo libero (legacy)", name: "mainstreamCheck", widget: "text", required: false, hint: "Lascia vuoto se usi 'Mainstream check (strutturato)' sotto." }
+      # Step B: Vale il viaggio strutturato (3 colonne)
+      - label: "Vale il viaggio (strutturato)"
+        name: "vale"
+        widget: "object"
+        required: false
+        collapsed: true
+        hint: "Sezione con 3 colonne — Dormire / Mangiare / Non perdere. Solo il primo item per colonna è libero, gli altri vanno sotto paywall."
+        fields:
+          - { label: "Intro (opzionale)", name: "intro", widget: "text", required: false }
+          - label: "Dormire"
+            name: "dormire"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località (breve sotto al nome)", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip (frase tra virgolette, evidenziata)", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo (testo libero, es. 'Da €65/notte')", name: "price", widget: "string", required: false }
+          - label: "Mangiare"
+            name: "mangiare"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo", name: "price", widget: "string", required: false }
+          - label: "Non perdere (tappe da non perdere)"
+            name: "tappe"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo / Accesso (es. 'Accesso libero')", name: "price", widget: "string", required: false }
+      # Step B: Mainstream check strutturato (lista con stelle 1-5)
+      - label: "Mainstream check (strutturato)"
+        name: "mainstream"
+        widget: "object"
+        required: false
+        collapsed: true
+        hint: "Cosa NON visiterai e perché — lista di luoghi turistici da evitare con alternative Unmarked."
+        fields:
+          - { label: "Intro (opzionale)", name: "intro", widget: "text", required: false }
+          - label: "Voci"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.rating}}/5"
+            fields:
+              - { label: "Nome luogo turistico", name: "name", widget: "string" }
+              - { label: "Tipo (Località / Attrazione / Sentiero...)", name: "type", widget: "string", required: false }
+              - { label: "Rating (1-5 stelle)", name: "rating", widget: "number", value_type: "int", min: 1, max: 5, default: 3 }
+              - { label: "Verdetto", name: "verdict", widget: "text" }
+              - { label: "Distanza (es. '12 km a est')", name: "distance", widget: "string", required: false }
+              - label: "Alternativa Unmarked (opzionale)"
+                name: "alternative"
+                widget: "object"
+                required: false
+                collapsed: true
+                fields:
+                  - { label: "Nome alternativa", name: "name", widget: "string" }
+                  - { label: "Perché preferirla", name: "reason", widget: "text" }
+      # Step B: Galleria itinerario (sotto la mappa)
+      - label: "Galleria itinerario"
+        name: "gallery"
+        widget: "list"
+        required: false
+        summary: "{{fields.caption}}"
+        hint: "Griglia 3 col × 2 righe. Il primo item può occupare 2 colonne (wide)."
+        fields:
+          - { label: "Foto", name: "image", widget: "image" }
+          - { label: "Didascalia", name: "caption", widget: "string", required: false }
+          - { label: "Wide (2 colonne)", name: "wide", widget: "boolean", default: false }
       - label: "Giorni"
         name: "days"
         widget: "list"
@@ -106,6 +190,14 @@ collections:
           - { label: "Dove dormire", name: "dormire", widget: "string", required: false }
           - { label: "Dove mangiare", name: "mangiare", widget: "string", required: false }
           - { label: "Premium (richiede acquisto)", name: "isPremium", widget: "boolean", default: false }
+          - label: "Galleria del giorno"
+            name: "gallery"
+            widget: "list"
+            required: false
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: "Foto", name: "image", widget: "image" }
+              - { label: "Didascalia", name: "caption", widget: "string", required: false }
       - label: "Centro mappa"
         name: "mapCenter"
         widget: "object"
