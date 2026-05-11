@@ -41,6 +41,28 @@ const mapPoints = days.map((d) => {
 }).filter(Boolean);
 
 const hasMap = !!data.mapCenter && mapPoints.length > 0;
+
+// Step B: "Vale il viaggio" strutturato (3 colonne con primo item free + paywall sui restanti)
+const vale = data.vale || null;
+const valeCols = vale ? [
+  { key: 'dormire', label: 'Dormire', items: vale.dormire || [] },
+  { key: 'mangiare', label: 'Mangiare', items: vale.mangiare || [] },
+  { key: 'tappe', label: 'Non perdere', items: vale.tappe || [] },
+] : [];
+const valeHasPaywall = valeCols.some((c) => c.items.length > 1);
+const badgeLabels: Record<string, string> = {
+  must: 'Top pick',
+  good: 'Da provare',
+  hidden: 'Hidden gem',
+};
+
+// Step B: "Mainstream check" strutturato
+const ms = data.mainstream || null;
+const msFreeItems = ms ? (ms.items || []).slice(0, 1) : [];
+const msPremiumItems = ms ? (ms.items || []).slice(1) : [];
+
+// Galleria itinerario
+const gallery = data.gallery || [];
 ---
 
 <BaseLayout
@@ -90,6 +112,7 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
   <div class="it-body">
     <div class="it-text">
       {data.valeIlViaggio && <p class="it-intro">{data.valeIlViaggio}</p>}
+      {vale?.intro && <p class="it-intro">{vale.intro}</p>}
 
       {freeDays.length > 0 && <div class="preview-badge">Anteprima gratuita — {freeDays.length === 1 ? 'giorno 1' : `giorni 1–${freeDays.length}`}</div>}
 
@@ -108,6 +131,24 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
                 {day.dormire && <div class="it-day-tag">Dormi: {day.dormire}</div>}
                 {day.mangiare && <div class="it-day-tag">Mangi: {day.mangiare}</div>}
               </div>
+              {day.gallery && day.gallery.length > 0 && (
+                <>
+                  <div class="day-gallery-toggle">
+                    <span class="day-gallery-toggle-icon">+</span>
+                    <span>{day.gallery.length} {day.gallery.length === 1 ? 'foto' : 'foto'}</span>
+                  </div>
+                  <div class="day-gallery">
+                    {day.gallery.map((g: any) => (
+                      <div class="day-gallery-img" data-caption={g.caption || ''}>
+                        <img src={g.image.src} alt={g.caption || ''} />
+                      </div>
+                    ))}
+                    {day.gallery[0]?.caption && (
+                      <div class="day-gallery-caption-row">{day.gallery.map((g: any) => g.caption).filter(Boolean).join(' · ')}</div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}
@@ -196,6 +237,157 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
     </div>
   </div>
 
+  {/* Step B: Vale il viaggio (strutturato) */}
+  {vale && valeCols.some((c) => c.items.length > 0) && (
+    <div class="vale">
+      <div class="vale-head">
+        <div class="vale-title">Vale il viaggio</div>
+        <div class="vale-sub">Strutture e posti selezionati di persona — non sponsorizzati</div>
+      </div>
+
+      <div class="vale-grid">
+        {valeCols.map((col) => (
+          <div>
+            <div class="vale-col-label">{col.label}</div>
+            {col.items.slice(0, 1).map((it: any) => (
+              <div class="vale-item">
+                <div class="vale-item-header">
+                  <div class="vale-item-name">{it.name}</div>
+                  <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+                </div>
+                {it.location && <div class="vale-item-loc">{it.location}</div>}
+                <div class="vale-item-desc">{it.description}</div>
+                {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+                {it.price && <div class="vale-item-price" set:html={it.price.replace(/(€\d[\d.,]*|Da €\d[\d.,]*\/[^\s,]+|Circa €\d[\d.,]*[^\s,]*|\d+€\/[^\s,]+|gratuito|libero)/i, '<strong>$1</strong>')}></div>}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {valeHasPaywall && (
+        <div class="vale-paywall-wrap">
+          <div class="vale-blur">
+            <div class="vale-grid">
+              {valeCols.map((col) => (
+                <div>
+                  {col.items.slice(1).map((it: any) => (
+                    <div class="vale-item">
+                      <div class="vale-item-header">
+                        <div class="vale-item-name">{it.name}</div>
+                        <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+                      </div>
+                      {it.location && <div class="vale-item-loc">{it.location}</div>}
+                      <div class="vale-item-desc">{it.description}</div>
+                      {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+                      {it.price && <div class="vale-item-price">{it.price}</div>}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="vale-overlay"></div>
+          <div class="vale-pw-box">
+            <div class="vale-pw-title">Altri consigli riservati agli abbonati</div>
+            <div class="vale-pw-sub">Dove dormire davvero, dove mangiare senza finire in trappola turistica e cosa non perdere per nessun motivo.</div>
+            <a href="/abbonati" class="vale-pw-btn-sub">Abbonati — €29/mese</a>
+            <a href={checkoutUrl} class="vale-pw-btn-single">Acquista questo itinerario — €{data.price}</a>
+            <div class="vale-pw-login">Hai già un account? <span>Accedi</span></div>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+
+  {/* Step B: Mainstream check (strutturato) */}
+  {(ms || data.mainstreamCheck) && (
+    <div class="ms">
+      <div class="ms-head">
+        <div class="ms-title">Mainstream check</div>
+        <div class="ms-sub">Cosa <em>non</em> visiterai e perché</div>
+      </div>
+      {ms?.intro && <p class="ms-intro">{ms.intro}</p>}
+      {!ms && data.mainstreamCheck && <p class="ms-intro">{data.mainstreamCheck}</p>}
+
+      {ms && msFreeItems.length > 0 && (
+        <div class="ms-list">
+          {msFreeItems.map((it: any) => (
+            <div class="ms-item">
+              <div class="ms-item-grid">
+                <div class="ms-item-info">
+                  <div class="ms-item-head">
+                    <div class="ms-item-name">{it.name}</div>
+                    {it.type && <div class="ms-item-type">{it.type}</div>}
+                  </div>
+                  <div class="ms-item-rating">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <span class={`ms-star ${i < it.rating ? 'ms-star-filled' : ''}`}>★</span>
+                    ))}
+                    <span class="ms-rating-num">{it.rating}/5</span>
+                  </div>
+                  <div class="ms-item-verdict">{it.verdict}</div>
+                  {it.alternative && (
+                    <div class="ms-item-alt">
+                      <div class="ms-item-alt-label">Alternativa Unmarked</div>
+                      <div class="ms-item-alt-name">{it.alternative.name}</div>
+                      <div class="ms-item-alt-reason">{it.alternative.reason}</div>
+                    </div>
+                  )}
+                </div>
+                {it.distance && <div class="ms-item-distance">{it.distance}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {ms && msPremiumItems.length > 0 && (
+        <div class="ms-paywall-wrap">
+          <div class="ms-blur">
+            <div class="ms-list">
+              {msPremiumItems.map((it: any) => (
+                <div class="ms-item">
+                  <div class="ms-item-grid">
+                    <div class="ms-item-info">
+                      <div class="ms-item-head">
+                        <div class="ms-item-name">{it.name}</div>
+                        {it.type && <div class="ms-item-type">{it.type}</div>}
+                      </div>
+                      <div class="ms-item-rating">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span class={`ms-star ${i < it.rating ? 'ms-star-filled' : ''}`}>★</span>
+                        ))}
+                        <span class="ms-rating-num">{it.rating}/5</span>
+                      </div>
+                      <div class="ms-item-verdict">{it.verdict}</div>
+                      {it.alternative && (
+                        <div class="ms-item-alt">
+                          <div class="ms-item-alt-label">Alternativa Unmarked</div>
+                          <div class="ms-item-alt-name">{it.alternative.name}</div>
+                          <div class="ms-item-alt-reason">{it.alternative.reason}</div>
+                        </div>
+                      )}
+                    </div>
+                    {it.distance && <div class="ms-item-distance">{it.distance}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="vale-overlay"></div>
+          <div class="vale-pw-box">
+            <div class="vale-pw-title">Altri mainstream check riservati agli abbonati</div>
+            <div class="vale-pw-sub">Cosa NON visiterai, e cosa vedere al suo posto.</div>
+            <a href="/abbonati" class="vale-pw-btn-sub">Abbonati — €29/mese</a>
+            <a href={checkoutUrl} class="vale-pw-btn-single">Acquista questo itinerario — €{data.price}</a>
+            <div class="vale-pw-login">Hai già un account? <span>Accedi</span></div>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+
   {hasMap && (
     <div class="it-map">
       <div class="it-map-label">Mappa dell'itinerario</div>
@@ -209,6 +401,20 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
     </div>
   )}
 
+  {/* Step B: Galleria itinerario (sotto la mappa) */}
+  {gallery.length > 0 && (
+    <div class="it-gallery">
+      <div class="it-gallery-label">Fotografie dall'itinerario</div>
+      <div class="it-gallery-grid">
+        {gallery.map((g: any) => (
+          <div class={`gal-item ${g.wide ? 'wide' : ''}`} data-caption={g.caption || ''}>
+            <img src={g.image.src} alt={g.caption || ''} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
   <div class="consulenza-strip">
     <div class="consulenza-strip-left">
       <div class="consulenza-strip-icon">✦</div>
@@ -219,6 +425,47 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
     </div>
     <a href="/consulenze" class="consulenza-strip-cta">Scopri →</a>
   </div>
+
+  {/* Lightbox per gallerie */}
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-close" id="lb-close">✕</div>
+    <img class="lightbox-img" id="lb-img" src="" alt="" />
+    <div class="lightbox-caption" id="lb-caption"></div>
+  </div>
+
+  <script is:inline>
+    // Toggle gallerie giorno
+    document.querySelectorAll('.day-gallery-toggle').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var gallery = btn.nextElementSibling;
+        btn.classList.toggle('open');
+        if (gallery) gallery.classList.toggle('open');
+      });
+    });
+
+    // Lightbox: click su qualsiasi foto in galleria
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lb-img');
+    var lbCap = document.getElementById('lb-caption');
+    function openLb(src, caption){
+      if (!lb || !lbImg) return;
+      lbImg.src = src;
+      if (lbCap) lbCap.textContent = caption || '';
+      lb.classList.add('open');
+    }
+    function closeLb(){ if (lb) lb.classList.remove('open'); }
+    document.querySelectorAll('.day-gallery-img, .gal-item').forEach(function(el){
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        var img = el.querySelector('img');
+        if (img) openLb(img.src, el.dataset.caption || img.alt || '');
+      });
+    });
+    if (lb) lb.addEventListener('click', closeLb);
+    var close = document.getElementById('lb-close');
+    if (close) close.addEventListener('click', function(e){ e.stopPropagation(); closeLb(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLb(); });
+  </script>
 
   {hasMap && (
     <>
@@ -313,6 +560,7 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
   .it-day { border-bottom: 1px solid var(--light-border); padding: 22px 0; display: flex; gap: 20px; align-items: flex-start; }
   .it-day:first-child { border-top: 1px solid var(--light-border); }
   .it-day-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--beige); min-width: 52px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .it-day-content { flex: 1; min-width: 0; }
   .it-day-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--dark); margin-bottom: 6px; }
   .it-day-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.65; }
   .it-day-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
@@ -365,6 +613,66 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
   .info-label { font-weight: 300; color: var(--muted); }
   .info-val { font-weight: 500; color: var(--dark); }
 
+  /* VALE IL VIAGGIO (Step B) */
+  .vale { padding: 60px 40px 0; }
+  .vale-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .vale-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
+  .vale-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .vale-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+  .vale-col-label { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .vale-col-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--terra); }
+  .vale-item { padding: 18px 0; border-bottom: 1px solid var(--light-border); }
+  .vale-item:last-child { border-bottom: none; }
+  .vale-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dark); line-height: 1.2; }
+  .vale-item-badge { font-size: 8px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+  .badge-must { background: #FDF0E8; color: var(--terra); }
+  .badge-good { background: var(--beige); color: var(--muted); }
+  .badge-hidden { background: #EAF0EA; color: var(--sage); }
+  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--sand); margin-bottom: 6px; }
+  .vale-item-desc { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.68; }
+  .vale-item-tip { margin-top: 10px; padding: 8px 12px; background: var(--cream); border-left: 2px solid var(--terra); font-size: 11px; font-weight: 300; color: var(--dark); line-height: 1.6; font-style: italic; }
+  .vale-item-price { margin-top: 8px; font-size: 10px; font-weight: 300; color: var(--muted); }
+  .vale-item-price strong { font-weight: 500; color: var(--dark); }
+
+  .vale-paywall-wrap { position: relative; margin-top: 0; }
+  .vale-blur { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+  .vale-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.96) 30%, rgba(250,250,248,1) 100%); }
+  .vale-pw-box { position: relative; text-align: center; padding: 32px 16px 52px; }
+  .vale-pw-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--dark); margin-bottom: 7px; }
+  .vale-pw-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 22px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; margin-right: 8px; }
+  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; }
+  .vale-pw-login { font-size: 10px; font-weight: 300; color: var(--sand); margin-top: 12px; }
+  .vale-pw-login span { color: var(--terra); cursor: pointer; }
+
+  /* MAINSTREAM CHECK (Step B) */
+  .ms { padding: 60px 40px 0; }
+  .ms-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .ms-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
+  .ms-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .ms-intro { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 20px; max-width: 760px; }
+  .ms-list { display: flex; flex-direction: column; gap: 0; }
+  .ms-item { padding: 22px 0; border-bottom: 1px solid var(--light-border); }
+  .ms-item:first-child { border-top: 1px solid var(--light-border); }
+  .ms-item-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; }
+  .ms-item-info { min-width: 0; }
+  .ms-item-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .ms-item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--dark); line-height: 1.2; }
+  .ms-item-type { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sand); }
+  .ms-item-rating { display: flex; align-items: center; gap: 3px; margin-bottom: 8px; }
+  .ms-star { font-size: 14px; color: var(--light-border); line-height: 1; }
+  .ms-star-filled { color: var(--terra); }
+  .ms-rating-num { margin-left: 6px; font-size: 11px; font-weight: 300; color: var(--muted); }
+  .ms-item-verdict { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+  .ms-item-alt { background: #EAF0EA; border-left: 2px solid var(--sage); padding: 10px 14px; border-radius: 2px; margin-top: 10px; }
+  .ms-item-alt-label { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
+  .ms-item-alt-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; color: var(--dark); margin-bottom: 4px; }
+  .ms-item-alt-reason { font-size: 11px; font-weight: 300; color: var(--muted); line-height: 1.55; }
+  .ms-item-distance { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--sand); text-transform: uppercase; white-space: nowrap; align-self: start; padding-top: 4px; }
+  .ms-paywall-wrap { position: relative; margin-top: 0; }
+  .ms-blur { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+
   /* MAPPA */
   .it-map { padding: 60px 40px 0; }
   .it-map-label { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
@@ -380,6 +688,37 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
   :global(.popup-title) { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; color: #1a1814; margin-bottom: 4px; }
   :global(.popup-sub) { font-size: 11px; font-weight: 300; color: #8a7e6a; line-height: 1.5; }
   :global(.popup-locked) { font-size: 10px; font-weight: 300; color: #C9B99A; font-style: italic; }
+
+  /* GALLERIA ITINERARIO (Step B) */
+  .it-gallery { padding: 60px 40px 0; }
+  .it-gallery-label { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-gallery-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--muted); }
+  .it-gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-auto-rows: 300px; gap: 10px; }
+  .gal-item { border-radius: 3px; position: relative; overflow: hidden; cursor: zoom-in; background: var(--beige); }
+  .gal-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s; }
+  .gal-item:hover img { filter: brightness(0.92); }
+  .gal-item.wide { grid-column: span 2; }
+
+  /* GALLERIA DEL GIORNO (Step B) — toggle */
+  .day-gallery-toggle { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; cursor: pointer; font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--light-border); padding: 5px 12px; border-radius: 2px; transition: all 0.2s; user-select: none; }
+  .day-gallery-toggle:hover { border-color: var(--terra); color: var(--terra); }
+  .day-gallery-toggle.open { border-color: var(--terra); color: var(--terra); }
+  .day-gallery-toggle-icon { font-size: 11px; line-height: 1; transition: transform 0.25s; display: inline-block; }
+  .day-gallery-toggle.open .day-gallery-toggle-icon { transform: rotate(45deg); }
+  .day-gallery { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; overflow: hidden; }
+  .day-gallery.open { display: grid; animation: fadeInGallery 0.25s ease; }
+  @keyframes fadeInGallery { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .day-gallery-img { height: 160px; border-radius: 3px; position: relative; overflow: hidden; cursor: zoom-in; background: var(--beige); }
+  .day-gallery-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s; }
+  .day-gallery-img:hover img { filter: brightness(0.9); }
+  .day-gallery-caption-row { grid-column: 1 / -1; font-size: 10px; font-weight: 300; color: var(--muted); letter-spacing: 0.06em; }
+
+  /* LIGHTBOX */
+  .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(26,24,20,0.92); align-items: center; justify-content: center; cursor: zoom-out; padding: 24px; }
+  .lightbox.open { display: flex; }
+  .lightbox-img { max-width: 90vw; max-height: 80vh; border-radius: 3px; display: block; cursor: default; }
+  .lightbox-close { position: fixed; top: 24px; right: 28px; font-size: 22px; color: rgba(250,250,248,0.7); cursor: pointer; font-weight: 300; line-height: 1; z-index: 10000; }
+  .lightbox-caption { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.5); letter-spacing: 0.1em; max-width: 80vw; text-align: center; }
 
   /* CONSULENZA STRIP */
   .consulenza-strip { margin: 48px 40px 80px; background: var(--beige); border: 1px solid #d8cec0; border-radius: 3px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
@@ -400,5 +739,10 @@ const hasMap = !!data.mapCenter && mapPoints.length > 0;
     .pw-options { flex-direction: column; align-items: stretch; }
     .pw-opt { max-width: 100%; }
     .consulenza-strip { flex-direction: column; align-items: flex-start; }
+    .vale-grid { grid-template-columns: 1fr; gap: 8px; }
+    .ms-item-grid { grid-template-columns: 1fr; gap: 8px; }
+    .ms-item-distance { padding-top: 0; }
+    .it-gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 220px; }
+    .gal-item.wide { grid-column: span 2; }
   }
 </style>
