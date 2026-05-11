@@ -15,7 +15,29 @@ bestSeason: isalnda - isalnda
 transport: Auto 4x4
 price: 12
 valeIlViaggio: isalndaisalndaisalndaisalndaisalnda
-mainstreamCheck: isalnda isalnda
+mainstreamCheck: blu blu blu blu blu blu
+vale:
+  intro: posti che valgono il viaggio
+  dormire:
+    - badge: must
+      name: Hotel 1
+      location: Islanda
+      description: "Un posto bello Un posto bello Un posto bello Un posto bello Un
+        posto bello "
+  mangiare:
+    - badge: must
+      name: ristorante
+      location: spiaggia
+      description: "Un posto bello Un posto bello Un posto bello Un posto bello Un
+        posto bello Un posto bello Un posto bello Un posto bello Un posto bello
+        "
+      tip: buono buono buono
+      price: "100"
+gallery:
+  - wide: false
+    image: ../../assets/articoli/240204-islanda-inverno-cavalli-33-dimensioni-grandi.jpeg
+  - wide: false
+    image: ../../assets/articoli/dsc_0487.jpeg
 days:
   - isPremium: false
     dayNumber: 1
