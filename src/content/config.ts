@@ -45,8 +45,31 @@ const destinazioni = defineCollection({
 
 const itinerari = defineCollection({
   type: 'content',
-  schema: ({ image }) =>
-    z.object({
+  schema: ({ image }) => {
+    // Sotto-schema per item di "Vale il viaggio" (Step B)
+    const valeItem = z.object({
+      name: z.string(),
+      badge: z.enum(['must', 'good', 'hidden']).default('must'),
+      location: z.string().optional(),
+      description: z.string(),
+      tip: z.string().optional(),
+      price: z.string().optional(),
+    });
+    // Sotto-schema per item di "Mainstream check" (Step B)
+    const msItem = z.object({
+      name: z.string(),
+      type: z.string().optional(),
+      rating: z.number().int().min(1).max(5),
+      verdict: z.string(),
+      alternative: z
+        .object({
+          name: z.string(),
+          reason: z.string(),
+        })
+        .optional(),
+      distance: z.string().optional(),
+    });
+    return z.object({
       title: z.string(),
       subtitle: z.string().optional(),
       country: z.string(),
@@ -64,8 +87,33 @@ const itinerari = defineCollection({
       price: z.number().positive(),
       lemonSqueezyProductId: z.string().optional(),
       lemonSqueezyCheckoutUrl: z.string().url().optional(),
+      // Legacy: testi liberi (rimangono come fallback per i contenuti vecchi)
       valeIlViaggio: z.string().optional(),
       mainstreamCheck: z.string().optional(),
+      // Step B: strutture
+      vale: z
+        .object({
+          intro: z.string().optional(),
+          dormire: z.array(valeItem).optional(),
+          mangiare: z.array(valeItem).optional(),
+          tappe: z.array(valeItem).optional(),
+        })
+        .optional(),
+      mainstream: z
+        .object({
+          intro: z.string().optional(),
+          items: z.array(msItem),
+        })
+        .optional(),
+      gallery: z
+        .array(
+          z.object({
+            image: image(),
+            caption: z.string().optional(),
+            wide: z.boolean().default(false),
+          })
+        )
+        .optional(),
       days: z
         .array(
           z.object({
@@ -77,6 +125,14 @@ const itinerari = defineCollection({
             dormire: z.string().optional(),
             mangiare: z.string().optional(),
             isPremium: z.boolean().default(false),
+            gallery: z
+              .array(
+                z.object({
+                  image: image(),
+                  caption: z.string().optional(),
+                })
+              )
+              .optional(),
           })
         )
         .default([]),
@@ -107,7 +163,8 @@ const itinerari = defineCollection({
           })
         )
         .default([]),
-    }),
+    });
+  },
 });
 
 const film = defineCollection({
