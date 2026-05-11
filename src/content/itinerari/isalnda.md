@@ -1,20 +1,21 @@
 ---
-title: Ghiaccio e inverno
-subtitle: isalnda
+title: Namibia
+subtitle: Un viaggio diverso
 country: isalnda
 continent: Europa
-coverImage: ../../assets/articoli/islanda-estrema-cover-1.jpg
+coverImage: ../../assets/articoli/230611-spitzkope-12.jpg
 coverImageAlt: isalnda
 excerpt: isalnda
 publishDate: 2026-05-02
 featured: false
-duration: 5
-budget: Medio
-difficulty: Medio
-bestSeason: isalnda - isalnda
+duration: 10
+budget: Alto
+difficulty: Avventura
+bestSeason: maggio e ottobre
 transport: Auto 4x4
-price: 12
-valeIlViaggio: isalndaisalndaisalndaisalndaisalnda
+price: 15
+valeIlViaggio: "namibia namibia namibia namibia namibia namibia namibia namibia
+  namibia namibia namibia "
 mainstreamCheck: blu blu blu blu blu blu
 vale:
   intro: posti che valgono il viaggio
