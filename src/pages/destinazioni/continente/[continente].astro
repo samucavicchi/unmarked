@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import DestinazioneCard from '../../../components/DestinazioneCard.astro';
+import DestinazioniArchive from '../../../components/DestinazioniArchive.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -13,70 +13,26 @@ export async function getStaticPaths() {
       entries: tutte
         .filter((e) => e.data.continent === continente)
         .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+      allContinenti: [...new Set(tutte.map((e) => e.data.continent))].sort(),
     },
   }));
 }
 
-const { continente, entries } = Astro.props;
+const { continente, entries, allContinenti } = Astro.props;
+const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
 ---
 
 <BaseLayout
   title={`${continente} — Destinazioni — Unmarked`}
   description={`Reportage e racconti di viaggio dal continente ${continente}.`}
 >
-  <section>
-    <div class="archive-head">
-      <div class="archive-eyebrow">Destinazioni · Continente</div>
-      <h1 class="archive-title">{continente}</h1>
-      <p class="archive-sub">
-        {entries.length} {entries.length === 1 ? 'reportage' : 'reportage'} dal continente {continente}.
-      </p>
-      <a href="/destinazioni" class="back-link">← Tutte le destinazioni</a>
-    </div>
-
-    <div class="dest-grid pb60">
-      {entries.map((entry) => <DestinazioneCard entry={entry} />)}
-    </div>
-  </section>
+  <DestinazioniArchive
+    items={entries}
+    continenti={allContinenti}
+    eyebrow="Destinazioni · Continente"
+    title={continente}
+    description={`${entries.length} ${entries.length === 1 ? 'reportage' : 'reportage'} dal continente ${continente}.`}
+    currentContinent={slugify(continente)}
+    backLink={true}
+  />
 </BaseLayout>
-
-<style>
-  .archive-head {
-    padding: 60px 0 40px;
-    border-bottom: 1px solid var(--light-border);
-    margin-bottom: 40px;
-  }
-  .archive-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 16px;
-  }
-  .archive-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 64px;
-    font-weight: 300;
-    line-height: 1.0;
-    color: var(--dark);
-    margin-bottom: 18px;
-    letter-spacing: 0.01em;
-  }
-  .archive-sub {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--muted);
-    margin-bottom: 18px;
-  }
-  .back-link {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--terra);
-    text-decoration: none;
-  }
-  .back-link:hover {
-    text-decoration: underline;
-  }
-</style>
