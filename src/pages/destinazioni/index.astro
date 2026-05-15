@@ -1,124 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DestinazioneCard from '../../components/DestinazioneCard.astro';
+import DestinazioniArchive from '../../components/DestinazioniArchive.astro';
 import { getCollection } from 'astro:content';
 
 const tutte = (await getCollection('destinazioni')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-
-// Tassonomia geografica per i filtri rapidi nell'header dell'archivio
 const continenti = [...new Set(tutte.map((e) => e.data.continent))].sort();
-const paesi = [...new Set(tutte.map((e) => e.data.country))].sort();
-
-const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
 ---
 
 <BaseLayout
   title="Destinazioni — Unmarked"
   description="Reportage fotografici dai posti che non trovi sulle guide. Storie, paesaggi, culture."
 >
-  <section>
-    <div class="archive-head">
-      <div class="archive-eyebrow">Reportage · Fotografia</div>
-      <h1 class="archive-title">Destinazioni</h1>
-      <p class="archive-sub">
-        Posti raccontati con calma, fotografati con cura. Niente liste numerate, niente classifiche.
-        Solo viaggi.
-      </p>
-    </div>
-
-    {continenti.length > 0 && (
-      <div class="archive-filters">
-        <span class="filter-label">Per continente:</span>
-        {continenti.map((c) => (
-          <a href={`/destinazioni/continente/${slugify(c)}`} class="filter-chip">{c}</a>
-        ))}
-      </div>
-    )}
-
-    {paesi.length > 0 && (
-      <div class="archive-filters">
-        <span class="filter-label">Per paese:</span>
-        {paesi.map((p) => (
-          <a href={`/destinazioni/paese/${slugify(p)}`} class="filter-chip">{p}</a>
-        ))}
-      </div>
-    )}
-
-    {tutte.length === 0 && (
-      <div class="archive-empty">
-        <p>Nessuna destinazione pubblicata ancora. Torna fra qualche giorno.</p>
-      </div>
-    )}
-
-    <div class="dest-grid pb60">
-      {tutte.map((entry) => <DestinazioneCard entry={entry} />)}
-    </div>
-  </section>
+  <DestinazioniArchive
+    items={tutte}
+    continenti={continenti}
+    eyebrow="Reportage · Fotografia"
+    title="Destinazioni"
+    description="Posti raccontati con calma, fotografati con cura. Niente liste numerate, niente classifiche. Solo viaggi."
+  />
 </BaseLayout>
-
-<style>
-  .archive-head {
-    padding: 60px 0 40px;
-    border-bottom: 1px solid var(--light-border);
-    margin-bottom: 40px;
-  }
-  .archive-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 16px;
-  }
-  .archive-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 64px;
-    font-weight: 300;
-    line-height: 1.0;
-    color: var(--dark);
-    margin-bottom: 18px;
-    letter-spacing: 0.01em;
-  }
-  .archive-sub {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--muted);
-    max-width: 540px;
-  }
-  .archive-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .filter-label {
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-right: 4px;
-  }
-  .filter-chip {
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    padding: 5px 12px;
-    border: 1px solid var(--light-border);
-    border-radius: 2px;
-    color: var(--dark);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-  }
-  .filter-chip:hover {
-    background: var(--terra);
-    color: #fff;
-    border-color: var(--terra);
-  }
-  .archive-empty {
-    text-align: center;
-    padding: 80px 40px;
-    color: var(--muted);
-    font-style: italic;
-  }
-</style>
