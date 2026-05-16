@@ -26,7 +26,6 @@ const {
 const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
 const isAllActive = !currentContinent && !currentPaese;
 
-// Hero = prima destinazione featured (fallback: prima in assoluto)
 const heroEntry = items.find((e) => e.data.featured) ?? items[0] ?? null;
 const gridItems = heroEntry
   ? items.filter((e) => e.slug !== heroEntry.slug)
@@ -42,16 +41,24 @@ const gridItems = heroEntry
       </div>
     )}
     <a href={`/destinazioni/${heroEntry.slug}`} class="dst-hero-card">
-      <img src={heroEntry.data.coverImage.src} alt={heroEntry.data.coverImageAlt} class="dst-hero-card-bg" />
-      <div class="dst-hero-card-overlay"></div>
-      <div class="dst-hero-card-top">
-        <span class="dst-hero-card-archive">{eyebrow}</span>
+      <div class="dst-hero-card-photo">
+        <img src={heroEntry.data.coverImage.src} alt={heroEntry.data.coverImageAlt} class="dst-hero-card-bg" />
+        <div class="dst-hero-card-overlay"></div>
+        <div class="dst-hero-card-top">
+          <span class="dst-hero-card-archive">{eyebrow}</span>
+        </div>
+        <div class="dst-hero-card-bottom">
+          <div class="dst-hero-card-geo">{heroEntry.data.country} · {heroEntry.data.continent}</div>
+          <h1 class="dst-hero-card-title">{heroEntry.data.title}</h1>
+          {heroEntry.data.subtitle && <p class="dst-hero-card-sub">{heroEntry.data.subtitle}</p>}
+        </div>
       </div>
-      <div class="dst-hero-card-bottom">
-        <div class="dst-hero-card-geo">{heroEntry.data.country} · {heroEntry.data.continent}</div>
-        <h1 class="dst-hero-card-title">{heroEntry.data.title}</h1>
-        {heroEntry.data.subtitle && <p class="dst-hero-card-sub">{heroEntry.data.subtitle}</p>}
-        <div class="dst-hero-card-cta">Leggi il reportage →</div>
+      <div class="dst-hero-card-strip">
+        <div class="dst-hero-strip-desc">{heroEntry.data.excerpt}</div>
+        <div class="dst-hero-strip-foot">
+          <span class="dst-hero-strip-label">{heroEntry.data.region || 'Reportage'}</span>
+          <span class="dst-hero-strip-cta">Leggi il reportage →</span>
+        </div>
       </div>
     </a>
   </div>
@@ -67,7 +74,7 @@ const gridItems = heroEntry
   </div>
 )}
 
-{/* FILTRI */}
+{/* FILTRI — sfondo scuro */}
 <div class="dst-filters-bar">
   <a href="/destinazioni" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
   {continenti.map((c) => {
@@ -109,28 +116,37 @@ const gridItems = heroEntry
 )}
 
 <style>
-  /* HERO CARD */
+  /* HERO WRAP */
   .dst-hero-wrap { position: relative; }
   .dst-hero-topbar { padding: 16px 40px 0; }
   .dst-hero-back { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); text-decoration: none; }
   .dst-hero-back:hover { text-decoration: underline; }
 
-  .dst-hero-card { display: block; position: relative; height: 560px; overflow: hidden; text-decoration: none; }
+  /* HERO CARD */
+  .dst-hero-card { display: block; text-decoration: none; color: inherit; }
+
+  .dst-hero-card-photo { position: relative; height: 520px; overflow: hidden; }
   .dst-hero-card-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
   .dst-hero-card:hover .dst-hero-card-bg { transform: scale(1.03); }
-  .dst-hero-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.88) 0%, rgba(26,24,20,0.4) 55%, rgba(26,24,20,0.18) 100%); }
+  .dst-hero-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.78) 0%, rgba(26,24,20,0.28) 55%, rgba(26,24,20,0.1) 100%); }
 
   .dst-hero-card-top { position: absolute; top: 0; left: 0; right: 0; padding: 28px 40px; z-index: 2; }
   .dst-hero-card-archive { font-size: 9px; font-weight: 300; letter-spacing: 0.28em; text-transform: uppercase; color: var(--sand); display: inline-flex; align-items: center; gap: 10px; }
   .dst-hero-card-archive::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--terra); }
 
-  .dst-hero-card-bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 40px 44px; z-index: 2; max-width: 800px; }
-  .dst-hero-card-geo { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.5); margin-bottom: 12px; }
-  .dst-hero-card-title { font-family: 'Cormorant Garamond', serif; font-size: 62px; font-weight: 300; color: #FAFAF8; line-height: 1.0; margin-bottom: 12px; letter-spacing: 0.01em; }
-  .dst-hero-card-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.65); line-height: 1.65; margin-bottom: 20px; max-width: 560px; }
-  .dst-hero-card-cta { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); }
+  .dst-hero-card-bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 32px 40px 36px; z-index: 2; max-width: 820px; }
+  .dst-hero-card-geo { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.5); margin-bottom: 10px; }
+  .dst-hero-card-title { font-family: 'Cormorant Garamond', serif; font-size: 62px; font-weight: 300; color: #FAFAF8; line-height: 1.0; margin-bottom: 10px; letter-spacing: 0.01em; }
+  .dst-hero-card-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.72); line-height: 1.55; }
 
-  /* FALLBACK HERO (nessuna destinazione) */
+  /* STRISCIA BIANCA */
+  .dst-hero-card-strip { background: var(--cream); border: 1px solid var(--light-border); border-top: none; padding: 18px 40px 20px; }
+  .dst-hero-strip-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+  .dst-hero-strip-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--light-border); }
+  .dst-hero-strip-label { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .dst-hero-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); }
+
+  /* FALLBACK HERO */
   .dst-hero { position: relative; width: 100%; min-height: 280px; background: var(--dark); padding: 56px 40px 48px; overflow: hidden; }
   .dst-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(26,24,20,0.94) 0%, rgba(26,24,20,0.7) 60%, rgba(26,24,20,0.5) 100%); z-index: 1; }
   .dst-hero-content { position: relative; z-index: 2; max-width: 720px; }
@@ -140,17 +156,17 @@ const gridItems = heroEntry
   .dst-hero-sub { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.65); line-height: 1.72; max-width: 520px; }
   .dst-hero-back-plain { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); text-decoration: none; margin-top: 18px; }
 
-  /* FILTRI */
-  .dst-filters-bar { padding: 20px 40px; border-bottom: 1px solid var(--light-border); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .dst-filter-btn { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; padding: 7px 14px; border: 1px solid var(--light-border); border-radius: 2px; color: var(--muted); background: transparent; text-decoration: none; transition: all 0.2s; }
-  .dst-filter-btn:hover { border-color: var(--terra); color: var(--terra); }
-  .dst-filter-btn.active { background: var(--dark); color: #FAFAF8; border-color: var(--dark); }
+  /* FILTRI SCURI */
+  .dst-filters-bar { padding: 16px 40px; background: var(--dark); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .dst-filter-btn { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; padding: 7px 14px; border: 1px solid rgba(250,250,248,0.15); border-radius: 2px; color: rgba(250,250,248,0.45); background: transparent; text-decoration: none; transition: all 0.2s; }
+  .dst-filter-btn:hover { border-color: var(--terra); color: var(--sand); }
+  .dst-filter-btn.active { background: rgba(250,250,248,0.08); color: #FAFAF8; border-color: rgba(250,250,248,0.35); }
 
   /* GRIGLIA */
   .dst-grid { padding: 40px 40px 60px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
   .dst-empty { text-align: center; padding: 80px 40px; color: var(--muted); font-style: italic; }
 
-  /* CARD GRIGLIA */
+  /* CARD */
   .dst-card { border: 1px solid var(--light-border); border-radius: 3px; overflow: hidden; cursor: pointer; transition: border-color 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--cream); }
   .dst-card:hover { border-color: var(--sand); }
   .dst-card-img { height: 220px; position: relative; overflow: hidden; }
@@ -168,16 +184,17 @@ const gridItems = heroEntry
 
   /* RESPONSIVE */
   @media (max-width: 900px) {
-    .dst-hero-card { height: 440px; }
+    .dst-hero-card-photo { height: 420px; }
     .dst-hero-card-title { font-size: 44px; }
-    .dst-hero-card-bottom { padding: 32px 24px 36px; max-width: 100%; }
+    .dst-hero-card-bottom { padding: 28px 24px 32px; max-width: 100%; }
     .dst-hero-card-top { padding: 20px 24px; }
     .dst-hero-topbar { padding: 14px 24px 0; }
+    .dst-hero-card-strip { padding: 16px 24px 18px; }
     .dst-grid { grid-template-columns: repeat(2, 1fr); padding: 32px 24px 40px; gap: 20px; }
-    .dst-filters-bar { padding: 16px 24px; }
+    .dst-filters-bar { padding: 14px 24px; }
   }
   @media (max-width: 600px) {
-    .dst-hero-card { height: 380px; }
+    .dst-hero-card-photo { height: 360px; }
     .dst-hero-card-title { font-size: 34px; }
     .dst-grid { grid-template-columns: 1fr; }
   }
