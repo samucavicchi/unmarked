@@ -37,7 +37,7 @@ const gridItems = heroEntry
   <div class="dst-hero-wrap">
     {backLink && (
       <div class="dst-hero-topbar">
-        <a href="/destinazioni" class="dst-hero-back">â Tutte le destinazioni</a>
+        <a href="/destinazioni" class="dst-hero-back">← Tutte le destinazioni</a>
       </div>
     )}
     <a href={`/destinazioni/${heroEntry.slug}`} class="dst-hero-card">
@@ -49,7 +49,7 @@ const gridItems = heroEntry
         </div>
         <div class="dst-hero-card-bottom">
           <div class="dst-hero-card-text">
-            <div class="dst-hero-card-geo">{heroEntry.data.country} Â· {heroEntry.data.continent}</div>
+            <div class="dst-hero-card-geo">{heroEntry.data.country} · {heroEntry.data.continent}</div>
             <h1 class="dst-hero-card-title">{heroEntry.data.title}</h1>
             {heroEntry.data.subtitle && <p class="dst-hero-card-sub">{heroEntry.data.subtitle}</p>}
           </div>
@@ -71,12 +71,12 @@ const gridItems = heroEntry
       <div class="dst-hero-tag">{eyebrow}</div>
       <h1 class="dst-hero-title">{title}</h1>
       <p class="dst-hero-sub">{description}</p>
-      {backLink && <a href="/destinazioni" class="dst-hero-back-plain">â Tutte le destinazioni</a>}
+      {backLink && <a href="/destinazioni" class="dst-hero-back-plain">← Tutte le destinazioni</a>}
     </div>
   </div>
 )}
 
-{/* FILTRI â sfondo scuro */}
+{/* FILTRI — sfondo scuro */}
 <div class="dst-filters-bar">
   <a href="/destinazioni" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
   {continenti.map((c) => {
@@ -101,7 +101,7 @@ const gridItems = heroEntry
           <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} />
           <div class="dst-card-img-ov"></div>
           <div class="dst-card-img-title">
-            <div class="dst-card-area">{entry.data.country} Â· {entry.data.continent}</div>
+            <div class="dst-card-area">{entry.data.country} · {entry.data.continent}</div>
             <div class="dst-card-name">{entry.data.title}</div>
           </div>
         </div>
@@ -109,7 +109,7 @@ const gridItems = heroEntry
           <div class="dst-card-desc">{entry.data.excerpt}</div>
           <div class="dst-card-foot">
             <span class="dst-card-label">{entry.data.region || 'Reportage'}</span>
-            <span class="dst-card-cta">Leggi â</span>
+            <span class="dst-card-cta">Leggi</span>
           </div>
         </div>
       </a>
