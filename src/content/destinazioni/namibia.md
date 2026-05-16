@@ -5,10 +5,9 @@ country: Namibia
 continent: Africa
 coverImage: ../../assets/articoli/230611-spitzkope-12.jpg
 coverImageAlt: africa
-excerpt: "prova prova prova prova prova prova prova prova prova prova prova
-  prova prova prova prova prova prova prova prova prova prova prova prova prova
-  prova prova prova prova prova prova prova prova prova prova prova prova prova
-  prova prova prova prova prova prova prova "
+excerpt: La namibia è un posto bello, molto bello, ma tanto bello, ci piace
+  tanto infatti ci stiamo tornando proprio adesso e pensiamo che un giorno ci
+  andremo a vivere
 publishDate: 2026-05-09
 featured: false
 interludeImage: ../../assets/articoli/3-1-dimensioni-grandi.jpeg
