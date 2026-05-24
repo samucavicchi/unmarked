@@ -64,6 +64,7 @@ const formatDateShort = (date) =>
             <div class="feat-tag">{featured.data.country} · {featured.data.continent}{featured.data.region ? ` · ${featured.data.region}` : ''}</div>
             <div class="feat-title">{featured.data.title}</div>
             {featured.data.subtitle && <div class="feat-subtitle">{featured.data.subtitle}</div>}
+          <div class="feat-cta-btn">Leggi il reportage</div>
           </div>
         </a>
 
@@ -77,6 +78,7 @@ const formatDateShort = (date) =>
                 <div class="side-tag">{entry.data.country} · {entry.data.continent}</div>
                 <div class="side-title">{entry.data.title}</div>
                 {entry.data.subtitle && <div class="side-subtitle">{entry.data.subtitle}</div>}
+              <div class="side-arrow">Leggi</div>
               </div>
             </a>
           ))}
