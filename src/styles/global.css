@@ -276,7 +276,12 @@ section { padding: 60px 40px 0; }
   background: linear-gradient(to top, rgba(26,24,20,0.72) 0%, rgba(26,24,20,0.15) 55%, transparent 100%);
 }
 
-.feat-content { position: relative; }
+.feat-content {
+  position: absolute;
+  bottom: 26px;
+  left: 26px;
+  right: 26px;
+}
 
 .feat-tag {
   font-size: 9px;
@@ -950,7 +955,7 @@ footer {
 display: flex;
 flex-direction: column;
 gap: 12px;
-height: 420px;
+height: 380px;
 }
 .dest-featured > .side-list > .side-item {
 display: flex;
