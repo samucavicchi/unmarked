@@ -7,101 +7,196 @@ const tutti = (await getCollection('podcast')).sort(
   (a, b) => b.data.episodeNumber - a.data.episodeNumber
 );
 
-const topics = [...new Set(tutti.map((e) => e.data.topic))];
+const totalEpisodes = tutti.length;
+const avgDuration = totalEpisodes > 0
+  ? Math.round(tutti.reduce((sum, e) => sum + (e.data.duration || 45), 0) / totalEpisodes)
+  : 45;
+
+const topics = [...new Set(tutti.map((e) => e.data.topic).filter(Boolean))];
 ---
 
 <BaseLayout
   title="Il podcast — Unmarked"
   description="Conversazioni sui posti che non trovi sulle guide. Destinazioni, pratiche, fotografia, storie."
 >
-  <section>
-    <div class="archive-head">
-      <div class="archive-eyebrow">Conversazioni · Storie · Pratiche di viaggio</div>
-      <h1 class="archive-title">Il podcast</h1>
-      <p class="archive-sub">
+  <header class="pod-hero">
+    <div class="pod-hero-inner">
+      <div class="pod-eyebrow">Conversazioni · Storie · Pratiche di viaggio</div>
+      <h1 class="pod-hero-title">Il podcast</h1>
+      <p class="pod-hero-sub">
         Episodi su Spotify, ascoltabili anche da qui. Ogni episodio è un'ora con qualcuno che ha
         viaggiato senza farsi catturare dalle classifiche.
       </p>
+      <a
+        href="https://open.spotify.com/show/unmarked"
+        target="_blank"
+        rel="noopener"
+        class="pod-spotify-badge"
+      >
+        <span class="pod-spotify-dot"></span>
+        Ascolta su Spotify
+      </a>
+      {totalEpisodes > 0 && (
+        <div class="pod-stats">
+          <div class="pod-stat">
+            <div class="pod-stat-num">{totalEpisodes}</div>
+            <div class="pod-stat-lbl">Episodi</div>
+          </div>
+          <div class="pod-stat">
+            <div class="pod-stat-num">~{avgDuration}'</div>
+            <div class="pod-stat-lbl">Durata media</div>
+          </div>
+          <div class="pod-stat">
+            <div class="pod-stat-num">Gratuito</div>
+            <div class="pod-stat-lbl">Accesso</div>
+          </div>
+        </div>
+      )}
     </div>
+  </header>
 
+  <section class="pod-body">
     {topics.length > 0 && (
-      <div class="archive-filters">
-        <span class="filter-label">Argomenti:</span>
-        {topics.map((t) => <span class="filter-chip">{t}</span>)}
+      <div class="pod-filters">
+        {topics.map((t) => <span class="pod-chip">{t}</span>)}
       </div>
     )}
 
     {tutti.length === 0 && (
-      <div class="archive-empty">
+      <div class="pod-empty">
         <p>I primi episodi del podcast stanno arrivando.</p>
       </div>
     )}
 
-    <div class="pod-list pb60">
+    <div class="pod-list">
       {tutti.map((entry) => <PodcastCard entry={entry} variant="full" />)}
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .archive-head {
-    padding: 60px 0 40px;
-    border-bottom: 1px solid var(--light-border);
-    margin-bottom: 40px;
+  /* ── Hero ── */
+  .pod-hero {
+    background: var(--dark);
+    border-bottom: 1px solid rgba(201, 185, 154, 0.12);
+    padding: 72px 0 60px;
   }
-  .archive-eyebrow {
+  .pod-hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .pod-eyebrow {
     font-size: 9px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--terra);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
-  .archive-title {
+  .pod-hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 64px;
+    font-size: 72px;
     font-weight: 300;
     line-height: 1.0;
-    color: var(--dark);
-    margin-bottom: 18px;
+    color: #FAFAF8;
+    margin-bottom: 20px;
     letter-spacing: 0.01em;
   }
-  .archive-sub {
+  .pod-hero-sub {
     font-size: 14px;
-    line-height: 1.7;
-    color: var(--muted);
-    max-width: 540px;
-  }
-  .archive-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
+    line-height: 1.75;
+    color: rgba(250, 250, 248, 0.6);
+    max-width: 520px;
     margin-bottom: 32px;
   }
-  .filter-label {
+  .pod-spotify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #1DB954;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 10px 20px;
+    border-radius: 24px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .pod-spotify-badge:hover { opacity: 0.88; }
+  .pod-spotify-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .pod-stats {
+    display: flex;
+    gap: 36px;
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .pod-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .pod-stat-lbl {
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--muted);
-    margin-right: 4px;
+    color: rgba(250, 250, 248, 0.4);
   }
-  .filter-chip {
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    padding: 5px 12px;
+
+  /* ── Body ── */
+  .pod-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  .pod-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .pod-chip {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
     border: 1px solid var(--light-border);
     border-radius: 2px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .pod-chip:hover {
+    border-color: var(--dark);
     color: var(--dark);
   }
-  .archive-empty {
+  .pod-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pod-empty {
     text-align: center;
     padding: 80px 40px;
     color: var(--muted);
     font-style: italic;
   }
-  .pod-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .pod-hero { padding: 48px 0 40px; }
+    .pod-hero-title { font-size: 48px; }
+    .pod-stats { gap: 24px; }
+    .pod-body { padding: 32px 16px 60px; }
   }
 </style>
