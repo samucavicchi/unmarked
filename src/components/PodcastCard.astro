@@ -1,7 +1,7 @@
 ---
 // Card riusabile per gli episodi del podcast.
-// 'mini' = riga compatta per home (riga numero/tag/titolo/durata + bottone play)
-// 'full' = card piena per archivio con cover
+// 'mini' = riga compatta per home
+// 'full' = riga editoriale per archivio (numero · info · play)
 
 import type { CollectionEntry } from 'astro:content';
 
@@ -30,88 +30,127 @@ const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short',
 )}
 
 {variant === 'full' && (
-  <a href={href} class="pod-full-card">
-    <div class="pod-full-num">EP {numLabel}</div>
-    <div class="pod-full-info">
-      <div class="pod-full-tag">{data.topic}{data.guests ? ` · con ${data.guests}` : ''}</div>
-      <h3 class="pod-full-title">{data.title}</h3>
-      <p class="pod-full-excerpt">{data.excerpt}</p>
-      <div class="pod-full-meta">{data.duration} min · {dateLabel}</div>
+  <a href={href} class="pod-row">
+    <div class="pod-row-num">{numLabel}</div>
+    <div class="pod-row-info">
+      <div class="pod-row-tag">{data.topic}{data.guests ? ` · con ${data.guests}` : ''}</div>
+      <h3 class="pod-row-title">{data.title}</h3>
+      <p class="pod-row-excerpt">{data.excerpt}</p>
+      <div class="pod-row-meta">{data.duration} min · {dateLabel}</div>
     </div>
-    <div class="pod-full-btn"><div class="pod-icon"></div></div>
+    <div class="pod-row-play">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1.5L13 8L1 14.5V1.5Z" fill="currentColor"/>
+      </svg>
+    </div>
   </a>
 )}
 
 <style>
-  .pod-link, .pod-full-card {
+  /* ── Mini variant ── */
+  .pod-link {
     text-decoration: none;
     color: inherit;
   }
-  .pod-full-card {
+
+  /* ── Full / editorial row ── */
+  .pod-row {
     display: flex;
     align-items: center;
-    gap: 22px;
-    padding: 22px 24px;
-    background: #fff;
-    border: 1px solid var(--light-border);
-    border-radius: 3px;
-    transition: box-shadow 0.2s, transform 0.2s;
+    gap: 28px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--light-border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+    cursor: pointer;
   }
-  .pod-full-card:hover {
-    box-shadow: 0 6px 18px rgba(26, 24, 20, 0.06);
-    transform: translateY(-1px);
+  .pod-row:first-child {
+    border-top: 1px solid var(--light-border);
   }
-  .pod-full-num {
+
+  /* Episode number */
+  .pod-row-num {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
+    font-size: 48px;
     font-weight: 300;
     color: var(--beige);
     flex-shrink: 0;
     line-height: 1;
-    min-width: 60px;
-    letter-spacing: 0.04em;
+    min-width: 64px;
+    text-align: right;
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
   }
-  .pod-full-info { flex: 1; }
-  .pod-full-tag {
+  .pod-row:hover .pod-row-num {
+    color: var(--terra);
+  }
+
+  /* Info block */
+  .pod-row-info { flex: 1; min-width: 0; }
+
+  .pod-row-tag {
     font-size: 9px;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--terra);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
-  .pod-full-title {
+  .pod-row-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 300;
-    line-height: 1.25;
+    line-height: 1.2;
     color: var(--dark);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    transition: color 0.2s;
   }
-  .pod-full-excerpt {
+  .pod-row:hover .pod-row-title {
+    color: var(--terra);
+  }
+  .pod-row-excerpt {
     font-size: 12px;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--muted);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .pod-full-meta {
+  .pod-row-meta {
     font-size: 9px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--sand);
   }
-  .pod-full-btn {
-    width: 42px;
-    height: 42px;
+
+  /* Play button */
+  .pod-row-play {
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px solid var(--terra);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: background 0.2s;
+    color: var(--terra);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    padding-left: 2px; /* optical centering for play icon */
   }
-  .pod-full-card:hover .pod-full-btn {
-    background: rgba(196, 133, 90, 0.1);
+  .pod-row:hover .pod-row-play {
+    background: var(--terra);
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .pod-row { gap: 16px; padding: 20px 0; }
+    .pod-row-num { font-size: 32px; min-width: 44px; }
+    .pod-row-title { font-size: 20px; }
+    .pod-row-excerpt { display: none; }
   }
 </style>
