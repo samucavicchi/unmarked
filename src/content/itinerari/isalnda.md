@@ -137,19 +137,19 @@ mapMarkers:
     label: Deadvley
     dayNumber: 2
   - lat: -24.518462
-    lng: 15800057
+    lng: 15.800057
     label: Sesriem Canyon
     dayNumber: 2
   - lat: -24.716104
-    lng: 15528289
+    lng: 15.528289
     label: Duna 44
     dayNumber: 3
   - lat: -23.893097
-    lng: 16006301
+    lng: 16.006301
     label: Solitaire
     dayNumber: 3
   - lat: -23.311218
-    lng: 15510781
+    lng: 15.510781
     label: Quever Tree
     dayNumber: 3
 localContacts:
