@@ -49,6 +49,9 @@ days:
       neroVulcano neroVulcano nero
     kmTotali: 300
     dormire: Sesriem Camp Site
+    gallery:
+      - image: ../../assets/articoli/231011-namibia-dune-roman.jpg
+        caption: Il Namib
   - isPremium: false
     dayNumber: 2
     title: Deadvley e il deserto del Namib
