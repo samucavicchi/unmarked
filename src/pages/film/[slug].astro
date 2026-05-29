@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FilmCard from '../../components/FilmCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const film = await getCollection('film');
+  return film.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'film'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { data } = entry;
+
+const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${data.youtubeId}?rel=0&modestbranding=1`;
+
+// Video consigliati: 3 film più recenti diversi da quello attuale
+const tutti = await getCollection('film');
+const consigliati = tutti
+  .filter((e) => e.slug !== entry.slug)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title={`${data.title} — Film — Unmarked`}
+  description={data.excerpt}
+  ogImage={data.coverImage.src}
+>
+  <article>
+    <header class="film-hero">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="film-hero-bg" />
+      <div class="film-hero-overlay"></div>
+      <div class="film-hero-content">
+        <div class="film-tag">{data.country} · {data.continent} · {data.type}</div>
+        <h1 class="film-title">{data.title}</h1>
+        {data.subtitle && <p class="film-subtitle">{data.subtitle}</p>}
+        <div class="film-meta">{data.duration} min · {formattedDate}</div>
+      </div>
+    </header>
+
+    <div class="film-player-wrap">
+      <div class="film-player">
+        <iframe
+          src={youtubeEmbedUrl}
+          title={data.title}
+          loading="lazy"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="film-body">
+      <Content />
+    </div>
+
+    {consigliati.length > 0 && (
+      <section class="film-recommended">
+        <div class="recommended-head">
+          <h2 class="recommended-title">Video consigliati</h2>
+          <a href="/film" class="recommended-link">Tutti i film →</a>
+        </div>
+        <div class="recommended-grid">
+          {consigliati.map((e) => <FilmCard entry={e} variant="grid" />)}
+        </div>
+      </section>
+    )}
+
+    <nav class="film-back">
+      <a href="/film" class="back-link">← Tutti i film</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .film-hero {
+    position: relative;
+    height: 380px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 52px 48px;
+  }
+  .film-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.82) 0%, rgba(26,24,20,0.3) 55%, rgba(26,24,20,0.05) 100%);
+  }
+  .film-hero-content {
+    position: relative;
+    color: #FAFAF8;
+    max-width: 800px;
+  }
+  .film-tag {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 14px;
+  }
+  .film-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
+  .film-subtitle {
+    font-size: 16px;
+    color: rgba(250, 250, 248, 0.75);
+    margin-bottom: 14px;
+  }
+  .film-meta {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 248, 0.55);
+  }
+
+  .film-player-wrap {
+    background: var(--dark);
+    padding: 40px;
+  }
+  .film-player {
+    max-width: 1100px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .film-player iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .film-body {
+    max-width: 720px;
+    margin: 60px auto;
+    padding: 0 40px;
+    font-size: 16px;
+    line-height: 1.78;
+    color: var(--dark);
+  }
+  .film-body :global(h2), .film-body :global(h3) {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    margin: 36px 0 14px;
+  }
+  .film-body :global(h2) { font-size: 30px; }
+  .film-body :global(h3) { font-size: 22px; }
+  .film-body :global(p) { margin-bottom: 18px; }
+  .film-body :global(blockquote) {
+    border-left: 2px solid var(--terra);
+    padding-left: 24px;
+    margin: 28px 0;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .film-recommended {
+    max-width: 1280px;
+    margin: 60px auto 60px;
+    padding: 0 40px;
+  }
+  .recommended-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--light-border);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .recommended-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  .recommended-link {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    text-decoration: none;
+  }
+  .recommended-link:hover { text-decoration: underline; }
+  .recommended-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .recommended-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .recommended-grid { grid-template-columns: 1fr; }
+  }
+
+  .film-back {
+    max-width: 720px;
+    margin: 0 auto 80px;
+    padding: 0 40px;
+  }
+  .back-link {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+</style>

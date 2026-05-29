@@ -1,0 +1,64 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import NewsletterPopup from '../components/NewsletterPopup.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'Unmarked — Luoghi non segnati sulle mappe',
+  description = 'Reportage fotografici, itinerari premium e racconti dai posti che non trovi sulle guide.',
+  ogImage = '/hero.jpg'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" is:inline></script>
+    <slot name="head" />
+</head>
+<body>
+  <Navbar />
+  <slot />
+  <Footer />
+  <NewsletterPopup />
+
+  <script is:inline>
+    // Inizializza il widget Netlify Identity dopo che lo script si è caricato
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", function (user) {
+        if (!user) {
+          window.netlifyIdentity.on("login", function () {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+
+      // Forza apertura della modal se l'URL contiene un token di invito o reset password
+      var hash = window.location.hash;
+      if (hash && (hash.indexOf("invite_token=") !== -1 || hash.indexOf("recovery_token=") !== -1 || hash.indexOf("confirmation_token=") !== -1)) {
+        window.netlifyIdentity.open();
+      }
+    }
+  </script>
+</body>
+</html>

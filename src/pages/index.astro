@@ -1,31 +1,321 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Newsletter from '../components/Newsletter.astro';
+import DestinazioneCard from '../components/DestinazioneCard.astro';
+import ItinerarioCard from '../components/ItinerarioCard.astro';
+import PodcastCard from '../components/PodcastCard.astro';
 import { getCollection } from 'astro:content';
 
-const postsRaw = await getCollection('destinazioni');
+const tutteLeDestinazioni = (await getCollection('destinazioni')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const featured = tutteLeDestinazioni.find((e) => e.data.featured) || tutteLeDestinazioni[0];
+const sideList = tutteLeDestinazioni.filter((e) => e.slug !== featured?.slug).slice(0, 3);
+const grid = tutteLeDestinazioni
+  .filter((e) => e.slug !== featured?.slug)
+  .filter((e) => !sideList.find((s) => s.slug === e.slug))
+  .slice(0, 3);
 
-const posts = postsRaw.filter((post) => {
-  const hasTitle = Boolean(post.data.title);
-  const hasCover = Boolean(post.data.cover);
-  const validDate = !isNaN(new Date(post.data.publishDate).getTime());
+const tuttiGliItinerari = (await getCollection('itinerari')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const itinerariHome = tuttiGliItinerari.slice(0, 4);
 
-  return hasTitle && hasCover && validDate;
-});
+const tuttiIFilm = (await getCollection('film')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const filmFeatured = tuttiIFilm.find((e) => e.data.featured) || tuttiIFilm[0];
+
+const tuttiIPodcast = (await getCollection('podcast')).sort(
+  (a, b) => b.data.episodeNumber - a.data.episodeNumber
+);
+const podcastHome = tuttiIPodcast.slice(0, 4);
+
+const formatDateShort = (date) =>
+  date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
 ---
 
-<h1>DEBUG DESTINAZIONI</h1>
+<BaseLayout
+  title="Unmarked — Luoghi che non trovi sulle guide"
+  description="Reportage fotografici, itinerari premium e racconti dai posti che non trovi sulle guide."
+>
+  <Hero />
 
-<p>Articoli totali letti: {postsRaw.length}</p>
-<p>Articoli validi: {posts.length}</p>
+  <!-- DESTINAZIONI -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Ultime destinazioni</h2>
+      <a href="/destinazioni" class="sec-link">Vedi tutte →</a>
+    </div>
 
-<hr />
+    {tutteLeDestinazioni.length === 0 && (
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
+        Le prime destinazioni stanno arrivando.
+      </div>
+    )}
 
-<h2>Tutti gli articoli letti</h2>
+    {featured && (
+      <div class="dest-featured">
+        <a href={`/destinazioni/${featured.slug}`} class="feat-img card-link">
+          <img src={featured.data.coverImage.src} alt={featured.data.coverImageAlt} class="feat-img-bg" style="object-fit: cover;" />
+          <div class="feat-ov"></div>
+          <div class="feat-content">
+            <div class="feat-tag">{featured.data.country} · {featured.data.continent}{featured.data.region ? ` · ${featured.data.region}` : ''}</div>
+            <div class="feat-title">{featured.data.title}</div>
+            {featured.data.subtitle && <div class="feat-subtitle">{featured.data.subtitle}</div>}
+          <div class="feat-cta-btn">Leggi il reportage</div>
+          </div>
+        </a>
 
-{postsRaw.map((post) => (
-  <div style="margin-bottom: 30px; padding: 20px; border: 1px solid #ccc;">
-    <h3>{post.slug}</h3>
-    <p><strong>Titolo:</strong> {String(post.data.title)}</p>
-    <p><strong>Data:</strong> {String(post.data.publishDate)}</p>
-    <p><strong>Cover:</strong> {String(post.data.cover)}</p>
+        <div class="side-list">
+          {sideList.map((entry) => (
+            <a href={`/destinazioni/${entry.slug}`} class="side-item card-link">
+              <div class="side-thumb">
+                <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} class="side-thumb-bg" style="object-fit: cover;" />
+              </div>
+              <div class="side-info">
+                <div class="side-tag">{entry.data.country} · {entry.data.continent}</div>
+                <div class="side-title">{entry.data.title}</div>
+                {entry.data.subtitle && <div class="side-subtitle">{entry.data.subtitle}</div>}
+              <div class="side-arrow">Leggi</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {grid.length > 0 && (
+      <div class="dest-grid pb60">
+        {grid.map((entry) => <DestinazioneCard entry={entry} />)}
+      </div>
+    )}
+  </section>
+
+  <!-- ITINERARI -->
+  <div class="itinerari-block">
+    <div>
+      <div class="it-label">Itinerari premium</div>
+      <h2 class="it-title">Guide complete.<br />Senza filtri.</h2>
+      <p class="it-body">
+        Itinerari giorno per giorno, contatti locali verificati, budget reali, mappe offline e
+        aggiornamenti stagionali. Quello che i blog non dicono mai.
+      </p>
+      <a href="/itinerari" class="btn-abbonati">Scopri gli itinerari</a>
+    </div>
+    <div class="it-cards">
+      {itinerariHome.length === 0 && (
+        <div class="it-card it-card-placeholder">
+          <div>
+            <div class="it-card-title">In arrivo · Itinerari premium</div>
+            <div class="it-card-meta">I primi itinerari sono in lavorazione.</div>
+          </div>
+        </div>
+      )}
+      {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="mini" />)}
+    </div>
   </div>
-))}
+
+  <!-- FILM (un solo film featured a tutta larghezza) -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Film di viaggio</h2>
+      <a href="/film" class="sec-link">Tutti i film →</a>
+    </div>
+
+    {tuttiIFilm.length === 0 && (
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
+        I primi film stanno per uscire.
+      </div>
+    )}
+
+    {filmFeatured && (
+      <div class="film-home-wide pb60">
+        <a href={`/film/${filmFeatured.slug}`} class="film-wide">
+          <div class="film-wide-img">
+            <img src={filmFeatured.data.coverImage.src} alt={filmFeatured.data.coverImageAlt} loading="lazy" />
+            <div class="film-wide-ov"></div>
+            <div class="film-wide-play"><div class="film-wide-play-icon"></div></div>
+            <div class="film-wide-content">
+              <div class="film-wide-tag">{filmFeatured.data.country} · {filmFeatured.data.continent} · {filmFeatured.data.type}</div>
+              <h3 class="film-wide-title">{filmFeatured.data.title}</h3>
+              {filmFeatured.data.subtitle && <p class="film-wide-subtitle">{filmFeatured.data.subtitle}</p>}
+              <div class="film-wide-meta">{filmFeatured.data.duration} min · {filmFeatured.data.publishDate.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}</div>
+            </div>
+          </div>
+          {filmFeatured.data.excerpt && <p class="film-wide-desc">{filmFeatured.data.excerpt}</p>}
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- PODCAST -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Il podcast</h2>
+      <a href="/podcast" class="sec-link">Tutti gli episodi →</a>
+    </div>
+
+    {tuttiIPodcast.length === 0 && (
+      <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
+        I primi episodi del podcast stanno arrivando.
+      </div>
+    )}
+
+    {podcastHome.length > 0 && (
+      <div class="pod-grid pb60">
+        {podcastHome.map((entry) => <PodcastCard entry={entry} variant="mini" />)}
+      </div>
+    )}
+  </section>
+
+  <!-- SHOP (placeholder) -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Shop</h2>
+      <a href="/shop" class="sec-link">Vedi tutto →</a>
+    </div>
+    <div class="shop-grid pb60">
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#ddd0be,#c4b598);"></div>
+          <div class="prod-badge">Nuovo</div>
+        </div>
+        <div class="prod-name">Pack Unmarked 32L</div>
+        <div class="prod-price">€149</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#d0c5b3,#bfb09c);"></div>
+        </div>
+        <div class="prod-name">Field Notes Edition</div>
+        <div class="prod-price">€24</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#cac0ae,#b9ad9b);"></div>
+          <div class="prod-badge">Limitato</div>
+        </div>
+        <div class="prod-name">Mappa Kirghizistan</div>
+        <div class="prod-price">€18</div>
+      </div>
+      <div class="prod">
+        <div class="prod-img">
+          <div class="prod-img-bg" style="background:linear-gradient(145deg,#c5bba9,#b4aa97);"></div>
+        </div>
+        <div class="prod-name">Bandana Unmarked</div>
+        <div class="prod-price">€16</div>
+      </div>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .card-link { text-decoration: none; color: inherit; display: block; }
+  .feat-img-bg, .side-thumb-bg { width: 100%; height: 100%; }
+  .it-card-placeholder { opacity: 0.6; cursor: default; }
+
+  /* Film a tutta larghezza, look cinematic 21:9 */
+  .film-home-wide { margin-top: 8px; }
+  .film-wide { text-decoration: none; color: inherit; display: block; }
+  .film-wide-img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--dark);
+    transition: transform 0.3s;
+  }
+  .film-wide:hover .film-wide-img { transform: scale(1.005); }
+  .film-wide-img img { width: 100%; height: 100%; object-fit: cover; }
+  .film-wide-ov {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.85) 0%, rgba(26,24,20,0.25) 50%, rgba(26,24,20,0.05) 100%);
+  }
+  .film-wide-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 24, 20, 0.4);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .film-wide:hover .film-wide-play {
+    background: rgba(196, 133, 90, 0.85);
+    border-color: var(--terra);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  .film-wide-play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 0 12px 22px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 5px;
+  }
+  .film-wide-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 32px 40px;
+    color: #FAFAF8;
+  }
+  .film-wide-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 10px;
+  }
+  .film-wide-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    line-height: 1.1;
+    color: #FAFAF8;
+    margin: 0 0 8px;
+    letter-spacing: 0.01em;
+    max-width: 800px;
+  }
+  .film-wide-subtitle {
+    font-size: 14px;
+    color: rgba(250, 250, 248, 0.75);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    max-width: 600px;
+  }
+  .film-wide-meta {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 248, 0.55);
+  }
+  .film-wide-desc {
+    font-size: 13px;
+    line-height: 1.72;
+    color: var(--muted);
+    margin-top: 18px;
+    max-width: 800px;
+  }
+
+  @media (max-width: 700px) {
+    .film-wide-content { padding: 20px; }
+    .film-wide-title { font-size: 28px; }
+    .film-wide-play { width: 60px; height: 60px; }
+    .film-wide-play-icon { border-width: 9px 0 9px 16px; }
+  }
+</style>

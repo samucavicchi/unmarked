@@ -1,6 +1,7 @@
 ---
-// Hero. Riusabile in homepage e potenzialmente in altre landing.
-// Accetta props per personalizzare. Default = home.
+// Hero della homepage — manifesto editoriale di Unmarked.
+// Senza CTA: la hero è dichiarazione di intenti, non vetrina di sezione.
+// Il CTA naturale è scrollare verso le sezioni sottostanti.
 
 export interface Props {
   tag?: string;
@@ -8,16 +9,14 @@ export interface Props {
   subtitle?: string;
   ctaLabel?: string;
   ctaHref?: string;
-  meta?: string;
 }
 
 const {
   tag = 'Reportage · Fotografia · Itinerari',
   title = 'I luoghi che non trovi<br>sulle guide',
   subtitle = 'Unmarked racconta i posti che esistono ancora. Reportage fotografici, itinerari scritti da chi ci è stato davvero, storie che non seguono le stagioni turistiche.',
-  ctaLabel = 'Esplora le destinazioni',
-  ctaHref = '/destinazioni',
-  meta = 'Reportage · Itinerari · Consulenze di viaggio'
+  ctaLabel,
+  ctaHref,
 } = Astro.props;
 ---
 
@@ -27,8 +26,10 @@ const {
   <div class="hero-tag">{tag}</div>
   <h1 class="hero-title" set:html={title}></h1>
   <p class="hero-sub">{subtitle}</p>
-  <div class="hero-bottom">
-    <a href={ctaHref} class="btn-hero">{ctaLabel}</a>
-    <span class="hero-meta">{meta}</span>
-  </div>
+
+  {ctaLabel && ctaHref && (
+    <div class="hero-bottom">
+      <a href={ctaHref} class="btn-hero">{ctaLabel}</a>
+    </div>
+  )}
 </div>

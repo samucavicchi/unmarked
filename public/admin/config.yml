@@ -1,0 +1,285 @@
+# Decap CMS configuration
+
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "src/assets/articoli"
+public_folder: "../../assets/articoli"
+
+site_url: https://unmarked-staging.netlify.app
+display_url: https://unmarked-staging.netlify.app
+logo_url: https://unmarked-staging.netlify.app/favicon.svg
+
+locale: 'it'
+
+collections:
+  - name: "destinazioni"
+    label: "Destinazioni"
+    label_singular: "Destinazione"
+    folder: "src/content/destinazioni"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{country}}"
+    sortable_fields: ["publishDate", "title", "country"]
+    fields:
+      - { label: "Titolo", name: "title", widget: "string" }
+      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
+      - { label: "Paese", name: "country", widget: "string" }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Regione", name: "region", widget: "string", required: false }
+      - { label: "Foto copertina", name: "coverImage", widget: "image" }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "SEO meta description", name: "seoMetaDescription", widget: "text", required: false }
+      - {
+          label: "Corpo articolo",
+          name: "body",
+          widget: "markdown",
+          buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
+          editor_components: ["image"],
+        }
+      # Wow pack — campi opzionali per arricchire la pagina destinazione
+      - { label: "Foto interludio (full-screen, mostrata dopo il body)", name: "interludeImage", widget: "image", required: false, hint: "Foto a tutto schermo. Lasciare vuoto per nessun interludio" }
+      - { label: "Didascalia foto interludio", name: "interludeCaption", widget: "string", required: false }
+      - { label: "Pull quote (citazione full-bleed)", name: "pullQuote", widget: "text", required: false, hint: "Una citazione potente estratta dal testo, mostrata grande e centrata su sfondo scuro" }
+      - { label: "Slug itinerario correlato", name: "relatedItinerary", widget: "string", required: false, hint: "Lo slug dell'itinerario relativo a questo posto. Es. 'kirghizistan-14-giorni'. Mostra un blocco CTA in fondo." }
+      - label: "Centro mappa (opzionale)"
+        name: "mapCenter"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
+      - label: "Marker mappa"
+        name: "mapMarkers"
+        widget: "list"
+        required: false
+        summary: "{{fields.label}}"
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Etichetta", name: "label", widget: "string" }
+
+  - name: "itinerari"
+    label: "Itinerari"
+    label_singular: "Itinerario"
+    folder: "src/content/itinerari"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{country}} ({{duration}}gg, €{{price}})"
+    sortable_fields: ["publishDate", "title", "country", "price"]
+    fields:
+      - { label: "Titolo", name: "title", widget: "string" }
+      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
+      - { label: "Paese", name: "country", widget: "string" }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Foto copertina", name: "coverImage", widget: "image" }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "Durata (giorni totali)", name: "duration", widget: "number", value_type: "int", min: 1, max: 90 }
+      - { label: "Budget", name: "budget", widget: "select", options: ["Economico", "Medio", "Alto"] }
+      - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Facile", "Medio", "Avventura"] }
+      - { label: "Periodo migliore", name: "bestSeason", widget: "string" }
+      - { label: "Trasporto", name: "transport", widget: "string" }
+      - { label: "Prezzo singolo (€)", name: "price", widget: "number", value_type: "int", min: 5, max: 50 }
+      - { label: "Lemon Squeezy Product ID", name: "lemonSqueezyProductId", widget: "string", required: false }
+      - { label: "Lemon Squeezy Checkout URL", name: "lemonSqueezyCheckoutUrl", widget: "string", required: false }
+      # Legacy: testi liberi (lasciare vuoti se usi i campi strutturati sotto)
+      - { label: "Vale il viaggio — intro libero (legacy)", name: "valeIlViaggio", widget: "text", required: false, hint: "Lascia vuoto se usi 'Vale il viaggio (strutturato)' sotto. Resta come paragrafo di apertura nel body." }
+      - { label: "Mainstream check — testo libero (legacy)", name: "mainstreamCheck", widget: "text", required: false, hint: "Lascia vuoto se usi 'Mainstream check (strutturato)' sotto." }
+      # Step B: Vale il viaggio strutturato (3 colonne)
+      - label: "Vale il viaggio (strutturato)"
+        name: "vale"
+        widget: "object"
+        required: false
+        collapsed: true
+        hint: "Sezione con 3 colonne — Dormire / Mangiare / Non perdere. Solo il primo item per colonna è libero, gli altri vanno sotto paywall."
+        fields:
+          - { label: "Intro (opzionale)", name: "intro", widget: "text", required: false }
+          - label: "Dormire"
+            name: "dormire"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località (breve sotto al nome)", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip (frase tra virgolette, evidenziata)", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo (testo libero, es. 'Da €65/notte')", name: "price", widget: "string", required: false }
+          - label: "Mangiare"
+            name: "mangiare"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo", name: "price", widget: "string", required: false }
+          - label: "Non perdere (tappe da non perdere)"
+            name: "tappe"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "select", options: [{ label: "Top pick / Tappa obbligata", value: "must" }, { label: "Da provare / Buona", value: "good" }, { label: "Hidden gem / Nascosto", value: "hidden" }], default: "must" }
+              - { label: "Località", name: "location", widget: "string", required: false }
+              - { label: "Descrizione", name: "description", widget: "text" }
+              - { label: "Tip", name: "tip", widget: "text", required: false }
+              - { label: "Prezzo / Accesso (es. 'Accesso libero')", name: "price", widget: "string", required: false }
+      # Step B: Mainstream check strutturato (lista con stelle 1-5)
+      - label: "Mainstream check (strutturato)"
+        name: "mainstream"
+        widget: "object"
+        required: false
+        collapsed: true
+        hint: "Cosa NON visiterai e perché — lista di luoghi turistici da evitare con alternative Unmarked."
+        fields:
+          - { label: "Intro (opzionale)", name: "intro", widget: "text", required: false }
+          - label: "Voci"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.rating}}/5"
+            fields:
+              - { label: "Nome luogo turistico", name: "name", widget: "string" }
+              - { label: "Tipo (Località / Attrazione / Sentiero...)", name: "type", widget: "string", required: false }
+              - { label: "Rating (1-5 stelle)", name: "rating", widget: "number", value_type: "int", min: 1, max: 5, default: 3 }
+              - { label: "Verdetto", name: "verdict", widget: "text" }
+              - { label: "Distanza (es. '12 km a est')", name: "distance", widget: "string", required: false }
+              - label: "Alternativa Unmarked (opzionale)"
+                name: "alternative"
+                widget: "object"
+                required: false
+                collapsed: true
+                fields:
+                  - { label: "Nome alternativa", name: "name", widget: "string" }
+                  - { label: "Perché preferirla", name: "reason", widget: "text" }
+      # Step B: Galleria itinerario (sotto la mappa)
+      - label: "Galleria itinerario"
+        name: "gallery"
+        widget: "list"
+        required: false
+        summary: "{{fields.caption}}"
+        hint: "Griglia 3 col × 2 righe. Il primo item può occupare 2 colonne (wide)."
+        fields:
+          - { label: "Foto", name: "image", widget: "image" }
+          - { label: "Didascalia", name: "caption", widget: "string", required: false }
+          - { label: "Wide (2 colonne)", name: "wide", widget: "boolean", default: false }
+      - label: "Giorni"
+        name: "days"
+        widget: "list"
+        summary: "Giorno {{fields.dayNumber}}: {{fields.title}}"
+        fields:
+          - { label: "Numero giorno", name: "dayNumber", widget: "number", value_type: "int", min: 1 }
+          - { label: "Titolo giorno", name: "title", widget: "string" }
+          - { label: "Descrizione", name: "description", widget: "markdown" }
+          - { label: "Km totali", name: "kmTotali", widget: "number", required: false }
+          - { label: "Dislivello", name: "dislivello", widget: "string", required: false }
+          - { label: "Dove dormire", name: "dormire", widget: "string", required: false }
+          - { label: "Dove mangiare", name: "mangiare", widget: "string", required: false }
+          - { label: "Premium (richiede acquisto)", name: "isPremium", widget: "boolean", default: false }
+          - label: "Galleria del giorno"
+            name: "gallery"
+            widget: "list"
+            required: false
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: "Foto", name: "image", widget: "image" }
+              - { label: "Didascalia", name: "caption", widget: "string", required: false }
+      - label: "Centro mappa"
+        name: "mapCenter"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
+      - label: "Marker mappa"
+        name: "mapMarkers"
+        widget: "list"
+        required: false
+        summary: "{{fields.label}}"
+        fields:
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Etichetta", name: "label", widget: "string" }
+          - { label: "Giorno (opzionale)", name: "dayNumber", widget: "number", value_type: "int", required: false }
+      - label: "Contatti locali (premium)"
+        name: "localContacts"
+        widget: "list"
+        required: false
+        summary: "{{fields.name}} — {{fields.role}}"
+        fields:
+          - { label: "Nome", name: "name", widget: "string" }
+          - { label: "Ruolo", name: "role", widget: "string" }
+          - { label: "Contatto", name: "contact", widget: "string" }
+          - { label: "Note", name: "notes", widget: "string", required: false }
+
+  - name: "film"
+    label: "Film"
+    label_singular: "Film"
+    folder: "src/content/film"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{country}} ({{duration}}min)"
+    sortable_fields: ["publishDate", "title", "country"]
+    fields:
+      - { label: "Titolo", name: "title", widget: "string" }
+      - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
+      - { label: "Paese", name: "country", widget: "string" }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Foto copertina", name: "coverImage", widget: "image" }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "YouTube ID", name: "youtubeId", widget: "string", hint: "Solo l'ID, es. 'dQw4w9WgXcQ'" }
+      - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
+      - { label: "Tipo", name: "type", widget: "select", options: ["Documentario", "Cortometraggio", "Reportage", "Essay", "Trailer"] }
+      - {
+          label: "Descrizione",
+          name: "body",
+          widget: "markdown",
+          buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list"],
+        }
+
+  - name: "podcast"
+    label: "Podcast"
+    label_singular: "Episodio podcast"
+    folder: "src/content/podcast"
+    create: true
+    slug: "{{slug}}"
+    summary: "Ep. {{episodeNumber}} — {{title}}"
+    sortable_fields: ["episodeNumber", "publishDate", "title"]
+    fields:
+      - { label: "Titolo episodio", name: "title", widget: "string" }
+      - { label: "Sottotitolo / Hook", name: "subtitle", widget: "string", required: false }
+      - { label: "Numero episodio", name: "episodeNumber", widget: "number", value_type: "int", min: 1 }
+      - { label: "Argomento", name: "topic", widget: "select", options: ["Destinazioni", "Pratiche", "Fotografia", "Storie", "Interviste"] }
+      - { label: "Ospiti", name: "guests", widget: "string", required: false }
+      - { label: "Foto copertina", name: "coverImage", widget: "image", required: false }
+      - { label: "Alt copertina", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
+      - { label: "Spotify Episode ID", name: "spotifyEpisodeId", widget: "string" }
+      - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
+      - {
+          label: "Show notes",
+          name: "body",
+          widget: "markdown",
+          buttons: ["bold", "italic", "link", "heading-three", "bulleted-list", "numbered-list"],
+        }

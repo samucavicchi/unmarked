@@ -1,0 +1,371 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const tutti = (await getCollection('film')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+// "In cantiere" — sezione descrittiva di 3 box, non cliccabili.
+// Modifica titolo/sub e immagini qui sotto. Le foto vanno in public/ con i nomi indicati.
+const cantiere = [
+  {
+    stage: 'Pre-produzione',
+    image: '/film-pipeline-pre.jpg',
+    fallback: 'linear-gradient(135deg, #c9b89a 0%, #b5a585 100%)',
+    title: 'Painted survivor',
+    sub: 'Quello che stiamo studiando: location, contatti, sopralluoghi, prima delle riprese.',
+  },
+  {
+    stage: 'In produzione',
+    image: '/film-pipeline-prod.jpg',
+    fallback: 'linear-gradient(135deg, #C4855A 0%, #a06d47 100%)',
+    title: 'Northern Line',
+    sub: 'Quello che stiamo girando ora, mentre leggi questa pagina.',
+  },
+  {
+    stage: 'Presto in arrivo',
+    image: '/film-pipeline-soon.jpg',
+    fallback: 'linear-gradient(135deg, #8A9E8C 0%, #6f8472 100%)',
+    title: 'Do it again',
+    sub: 'Quello che è in montaggio, prossimo alla pubblicazione.',
+  },
+];
+---
+
+<BaseLayout
+  title="Film di viaggio — Unmarked"
+  description="Documentari, cortometraggi e reportage video dai posti che non trovi sulle guide."
+>
+  <header class="film-archive-hero">
+    <div class="film-archive-hero-bg"></div>
+    <div class="film-archive-hero-overlay"></div>
+    <div class="film-archive-hero-content">
+      <div class="film-archive-eyebrow">Documentari · Cortometraggi · Reportage video</div>
+      <h1 class="film-archive-claim">Le storie<br />che dovevano restare<br />in movimento.</h1>
+      <p class="film-archive-sub">
+        Tre settimane in una valle del Tian Shan. Un'estate dietro un branco di renne. Un fine
+        settimana in un villaggio dimenticato. Cose che le parole non bastano a tenere.
+      </p>
+    </div>
+  </header>
+
+  <section>
+    {tutti.length === 0 && (
+      <div class="archive-empty">
+        <p>I primi film stanno per uscire. Torna fra qualche giorno.</p>
+      </div>
+    )}
+
+    <div class="film-stack">
+      {tutti.map((entry) => {
+        const data = entry.data;
+        const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+        const href = `/film/${entry.slug}`;
+        return (
+          <a href={href} class="film-wide">
+            <div class="film-wide-img">
+              <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+              <div class="film-wide-ov"></div>
+              <div class="film-wide-play"><div class="film-wide-play-icon"></div></div>
+              <div class="film-wide-content">
+                <div class="film-wide-tag">{data.country} · {data.continent} · {data.type}</div>
+                <h2 class="film-wide-title">{data.title}</h2>
+                {data.subtitle && <p class="film-wide-subtitle">{data.subtitle}</p>}
+                <div class="film-wide-meta">{data.duration} min · {dateLabel}</div>
+              </div>
+            </div>
+            {data.excerpt && <p class="film-wide-desc">{data.excerpt}</p>}
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- IN CANTIERE — 3 box descrittivi non cliccabili -->
+    <div class="cantiere-section">
+      <div class="cantiere-head">
+        <h2 class="cantiere-title">In cantiere</h2>
+        <p class="cantiere-sub">Quello a cui stiamo lavorando, in tutte le sue fasi.</p>
+      </div>
+      <div class="cantiere-grid pb60">
+        {cantiere.map((c) => (
+          <div class="cantiere-box">
+            <div class="cantiere-img" style={`background-image: url(${c.image}), ${c.fallback};`}>
+              <span class="cantiere-stage">{c.stage}</span>
+            </div>
+            <div class="cantiere-info">
+              <h3 class="cantiere-box-title">{c.title}</h3>
+              <p class="cantiere-box-sub">{c.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero archivio film */
+  .film-archive-hero {
+    position: relative;
+    min-height: 460px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 70px 48px 64px;
+    margin-bottom: 60px;
+  }
+  .film-archive-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/film-hero.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #1a1814;
+  }
+  .film-archive-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(26,24,20,0.55) 0%, rgba(26,24,20,0.2) 60%, rgba(26,24,20,0) 100%),
+      linear-gradient(to top, rgba(26,24,20,0.75) 0%, rgba(26,24,20,0.2) 60%, rgba(26,24,20,0.05) 100%);
+  }
+  .film-archive-hero-content {
+    position: relative;
+    color: #FAFAF8;
+    max-width: 760px;
+  }
+  .film-archive-eyebrow {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .film-archive-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--terra);
+  }
+  .film-archive-claim {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 1.0;
+    color: #FAFAF8;
+    margin: 0 0 22px;
+    letter-spacing: 0.01em;
+  }
+  .film-archive-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(250, 250, 248, 0.72);
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0;
+  }
+
+  .archive-empty {
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Stack dei film */
+  .film-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+  .film-wide {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .film-wide-img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--dark);
+    transition: transform 0.3s;
+  }
+  .film-wide:hover .film-wide-img { transform: scale(1.005); }
+  .film-wide-img img { width: 100%; height: 100%; object-fit: cover; }
+  .film-wide-ov {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.85) 0%, rgba(26,24,20,0.25) 50%, rgba(26,24,20,0.05) 100%);
+  }
+  .film-wide-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 24, 20, 0.4);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .film-wide:hover .film-wide-play {
+    background: rgba(196, 133, 90, 0.85);
+    border-color: var(--terra);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  .film-wide-play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 0 12px 22px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 5px;
+  }
+  .film-wide-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 32px 40px;
+    color: #FAFAF8;
+  }
+  .film-wide-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 10px;
+  }
+  .film-wide-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    line-height: 1.1;
+    color: #FAFAF8;
+    margin: 0 0 8px;
+    letter-spacing: 0.01em;
+    max-width: 800px;
+  }
+  .film-wide-subtitle {
+    font-size: 14px;
+    color: rgba(250, 250, 248, 0.75);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    max-width: 600px;
+  }
+  .film-wide-meta {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250, 250, 248, 0.55);
+  }
+  .film-wide-desc {
+    font-size: 13px;
+    line-height: 1.72;
+    color: var(--muted);
+    margin-top: 18px;
+    max-width: 800px;
+  }
+
+  /* Sezione "In cantiere" */
+  .cantiere-section {
+    margin-top: 80px;
+  }
+  .cantiere-head {
+    border-bottom: 1px solid var(--light-border);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .cantiere-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+  }
+  .cantiere-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .cantiere-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .cantiere-box {
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: default;
+  }
+  .cantiere-img {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+  }
+  .cantiere-stage {
+    background: rgba(26, 24, 20, 0.85);
+    color: #FAFAF8;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+  .cantiere-info {
+    padding: 20px 22px 24px;
+  }
+  .cantiere-box-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin: 0 0 10px;
+  }
+  .cantiere-box-sub {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .cantiere-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .film-archive-hero { padding: 50px 24px 44px; min-height: 380px; }
+    .film-archive-claim { font-size: 40px; }
+    .film-wide-content { padding: 20px; }
+    .film-wide-title { font-size: 28px; }
+    .film-wide-play { width: 60px; height: 60px; }
+    .film-wide-play-icon { border-width: 9px 0 9px 16px; }
+    .film-stack { gap: 36px; }
+    .cantiere-grid { grid-template-columns: 1fr; }
+    .cantiere-title { font-size: 28px; }
+  }
+</style>
