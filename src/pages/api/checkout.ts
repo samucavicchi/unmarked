@@ -23,8 +23,13 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
     };
 
     // Auth — utente loggato (opzionale: il pagamento funziona anche senza account)
-    const auth = locals.auth();
-    const userId = auth?.userId ?? null;
+    let userId: string | null = null;
+    try {
+      const auth = typeof locals.auth === 'function' ? locals.auth() : null;
+      userId = auth?.userId ?? null;
+    } catch (_authErr) {
+      // Clerk non disponibile — procedi senza userId
+    }
 
     const origin = url.origin;
     const successUrl = slug
