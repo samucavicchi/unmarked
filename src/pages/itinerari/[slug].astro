@@ -398,6 +398,11 @@ const gallery = data.gallery || [];
         data-points={JSON.stringify(mapPoints)}
       ></div>
       <div class="it-map-caption">I punti sbloccati mostrano il percorso completo · Giorni premium disponibili con l'acquisto</div>
+      {data.mapMarkers?.length > 0 && (
+        <a href={`/itinerari/${entry.slug}.kml`} download class="kml-download-btn">
+          ↓ Scarica mappa per Google Maps / GPS
+        </a>
+      )}
     </div>
   )}
 
@@ -728,6 +733,28 @@ const gallery = data.gallery || [];
   .consulenza-strip-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
   .consulenza-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(196,133,90,0.3); padding-bottom: 1px; flex-shrink: 0; }
   .consulenza-strip-cta:hover { border-color: var(--terra); }
+
+  /* KML DOWNLOAD */
+  .kml-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--light-border);
+    padding: 7px 14px;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .kml-download-btn:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
 
   @media (max-width: 900px) {
     .it-body { grid-template-columns: 1fr; gap: 32px; }
