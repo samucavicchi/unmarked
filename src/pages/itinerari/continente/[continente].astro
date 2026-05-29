@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ItinerariArchive from '../../../components/ItinerariArchive.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tutti = await getCollection('itinerari');
+  const continenti = [...new Set(tutti.map((e) => e.data.continent))];
+  return continenti.map((continente) => ({
+    params: { continente: continente.toLowerCase().replace(/\s+/g, '-') },
+    props: {
+      continente,
+      entries: tutti
+        .filter((e) => e.data.continent === continente)
+        .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+      allContinenti: [...new Set(tutti.map((e) => e.data.continent))].sort(),
+    },
+  }));
+}
+
+const { continente, entries, allContinenti } = Astro.props;
+const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
+---
+
+<BaseLayout
+  title={`Itinerari ${continente} — Unmarked`}
+  description={`Itinerari in ${continente} — guide complete giorno per giorno.`}
+>
+  <ItinerariArchive
+    items={entries}
+    continenti={allContinenti}
+    eyebrow="Itinerari · Continente"
+    title={continente}
+    description={`${entries.length} ${entries.length === 1 ? 'itinerario' : 'itinerari'} dal continente ${continente}.`}
+    currentContinent={slugify(continente)}
+    backLink={true}
+  />
+</BaseLayout>

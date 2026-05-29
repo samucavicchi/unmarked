@@ -1,0 +1,156 @@
+---
+// Card riusabile per gli episodi del podcast.
+// 'mini' = riga compatta per home
+// 'full' = riga editoriale per archivio (numero · info · play)
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'podcast'>;
+  variant?: 'mini' | 'full';
+}
+
+const { entry, variant = 'full' } = Astro.props;
+const { data } = entry;
+const href = `/podcast/${entry.slug}`;
+const numLabel = String(data.episodeNumber).padStart(2, '0');
+const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+---
+
+{variant === 'mini' && (
+  <a href={href} class="pod-ep pod-link">
+    <div class="pod-num">{numLabel}</div>
+    <div style="flex:1;">
+      <div class="pod-tag">{data.topic}</div>
+      <div class="pod-title">{data.title}</div>
+      <div class="pod-dur">{data.duration} min · {dateLabel}</div>
+    </div>
+    <div class="pod-btn"><div class="pod-icon"></div></div>
+  </a>
+)}
+
+{variant === 'full' && (
+  <a href={href} class="pod-row">
+    <div class="pod-row-num">{numLabel}</div>
+    <div class="pod-row-info">
+      <div class="pod-row-tag">{data.topic}{data.guests ? ` · con ${data.guests}` : ''}</div>
+      <h3 class="pod-row-title">{data.title}</h3>
+      <p class="pod-row-excerpt">{data.excerpt}</p>
+      <div class="pod-row-meta">{data.duration} min · {dateLabel}</div>
+    </div>
+    <div class="pod-row-play">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1.5L13 8L1 14.5V1.5Z" fill="currentColor"/>
+      </svg>
+    </div>
+  </a>
+)}
+
+<style>
+  /* ── Mini variant ── */
+  .pod-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* ── Full / editorial row ── */
+  .pod-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--light-border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .pod-row:first-child {
+    border-top: 1px solid var(--light-border);
+  }
+
+  /* Episode number */
+  .pod-row-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--beige);
+    flex-shrink: 0;
+    line-height: 1;
+    min-width: 64px;
+    text-align: right;
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
+  }
+  .pod-row:hover .pod-row-num {
+    color: var(--terra);
+  }
+
+  /* Info block */
+  .pod-row-info { flex: 1; min-width: 0; }
+
+  .pod-row-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .pod-row-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+  .pod-row:hover .pod-row-title {
+    color: var(--terra);
+  }
+  .pod-row-excerpt {
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pod-row-meta {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+
+  /* Play button */
+  .pod-row-play {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--terra);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--terra);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    padding-left: 2px; /* optical centering for play icon */
+  }
+  .pod-row:hover .pod-row-play {
+    background: var(--terra);
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .pod-row { gap: 16px; padding: 20px 0; }
+    .pod-row-num { font-size: 32px; min-width: 44px; }
+    .pod-row-title { font-size: 20px; }
+    .pod-row-excerpt { display: none; }
+  }
+</style>

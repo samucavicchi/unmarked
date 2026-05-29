@@ -1,0 +1,646 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Consulenza di viaggio — Unmarked"
+  description="Un itinerario costruito su misura per te. Non un pacchetto preconfezionato: un progetto di viaggio che parte da dove vuoi andare davvero."
+>
+
+  <!-- ── HERO ── -->
+  <header class="con-hero">
+    <div class="con-hero-inner">
+      <div class="con-eyebrow">Servizio personale</div>
+      <h1 class="con-title">Consulenza<br>di viaggio</h1>
+      <p class="con-sub">
+        Non un pacchetto preconfezionato. Un progetto di viaggio costruito
+        a partire da dove vuoi andare davvero — fatto con chi lo conosce di persona.
+      </p>
+    </div>
+  </header>
+
+  <!-- ── LEAD ── -->
+  <div class="con-lead">
+    <div class="con-lead-inner">
+      <div class="con-lead-text">
+        <p>
+          Ogni consulenza comincia da una domanda semplice: <em>cosa cerchi, davvero?</em>
+          Non le attrazioni, non il tour da Instagram — ma il tipo di viaggio che ti rimane.
+          Lavoriamo su destinazioni che conosciamo in prima persona, con contatti locali verificati
+          e un approccio che privilegia la qualità all'efficienza.
+        </p>
+        <p>
+          Il risultato è un itinerario che puoi seguire o adattare, con tutto quello
+          che ti serve per muoverti in autonomia — senza sorprese.
+        </p>
+      </div>
+      <div class="con-lead-stats">
+        <div class="con-stat">
+          <div class="con-stat-num">48h</div>
+          <div class="con-stat-lbl">Tempo di risposta</div>
+        </div>
+        <div class="con-stat">
+          <div class="con-stat-num">100%</div>
+          <div class="con-stat-lbl">Destinazioni visitate</div>
+        </div>
+        <div class="con-stat">
+          <div class="con-stat-num">Su misura</div>
+          <div class="con-stat-lbl">Ogni progetto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PACCHETTI ── -->
+  <section class="con-piani">
+    <div class="con-piani-head">
+      <div class="con-section-eyebrow">I pacchetti</div>
+      <h2 class="con-section-title">Scegli il livello di supporto</h2>
+    </div>
+
+    <div class="con-piani-grid">
+
+      <!-- Pacchetto 1 -->
+      <div class="con-piano">
+        <div class="con-piano-top">
+          <div class="con-piano-tag">Base</div>
+          <div class="con-piano-name">Orientamento</div>
+          <div class="con-piano-price-row">
+            <div class="con-piano-price">€89</div>
+            <div class="con-piano-freq">pagamento unico</div>
+          </div>
+          <p class="con-piano-desc">
+            Una videochiamata di 45 minuti per mettere a fuoco la destinazione giusta,
+            il periodo ideale e un primo tracciato del viaggio.
+          </p>
+        </div>
+        <ul class="con-piano-list">
+          <li>Videochiamata 45 min</li>
+          <li>Analisi destinazione e periodo</li>
+          <li>Schema itinerario in formato PDF</li>
+          <li>3 raccomandazioni chiave (dove dormire, dove mangiare, cosa non fare)</li>
+          <li>Risposta a domande via email entro 48h</li>
+        </ul>
+        <a href="#contatto" data-piano="Orientamento — €89" class="con-piano-btn">Richiedi →</a>
+      </div>
+
+      <!-- Pacchetto 2 — evidenziato -->
+      <div class="con-piano featured">
+        <div class="con-piano-badge">Più richiesto</div>
+        <div class="con-piano-top">
+          <div class="con-piano-tag">Standard</div>
+          <div class="con-piano-name">Itinerario completo</div>
+          <div class="con-piano-price-row">
+            <div class="con-piano-price">€249</div>
+            <div class="con-piano-freq">pagamento unico</div>
+          </div>
+          <p class="con-piano-desc">
+            Un itinerario giorno per giorno costruito su di te, con alloggi selezionati,
+            contatti locali verificati e una mappa offline scaricabile.
+          </p>
+        </div>
+        <ul class="con-piano-list">
+          <li>Videochiamata iniziale 60 min</li>
+          <li>Itinerario giorno per giorno (formato PDF + Notion)</li>
+          <li>Selezione alloggi con link diretti (no intermediari)</li>
+          <li>Contatti locali verificati (guide, trasporti, ristoranti)</li>
+          <li>Mappa offline scaricabile</li>
+          <li>Budget dettagliato per categoria</li>
+          <li>Revisione illimitata entro 7 giorni</li>
+          <li>Supporto via email fino alla partenza</li>
+        </ul>
+        <a href="#contatto" data-piano="Itinerario completo — €249" class="con-piano-btn featured-btn">Richiedi →</a>
+      </div>
+
+      <!-- Pacchetto 3 -->
+      <div class="con-piano">
+        <div class="con-piano-top">
+          <div class="con-piano-tag">Premium</div>
+          <div class="con-piano-name">Viaggio chiavi in mano</div>
+          <div class="con-piano-price-row">
+            <div class="con-piano-price">€499</div>
+            <div class="con-piano-freq">pagamento unico</div>
+          </div>
+          <p class="con-piano-desc">
+            Tutto quello del pacchetto Standard, più il coordinamento delle prenotazioni
+            e il supporto diretto durante il viaggio.
+          </p>
+        </div>
+        <ul class="con-piano-list">
+          <li>Tutto il pacchetto Itinerario completo</li>
+          <li>Coordinamento prenotazioni alloggi e trasporti</li>
+          <li>Piano B per imprevisti (meteo, chiusure, variazioni)</li>
+          <li>Supporto WhatsApp durante il viaggio</li>
+          <li>Debriefing post-viaggio (30 min)</li>
+        </ul>
+        <a href="#contatto" data-piano="Viaggio chiavi in mano — €499" class="con-piano-btn">Richiedi →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── COME FUNZIONA ── -->
+  <section class="con-steps">
+    <div class="con-steps-inner">
+      <div class="con-section-eyebrow">Come funziona</div>
+      <h2 class="con-section-title">Tre passi, nessuna sorpresa</h2>
+      <div class="con-steps-grid">
+        <div class="con-step">
+          <div class="con-step-num">01</div>
+          <div class="con-step-title">Compila il form</div>
+          <div class="con-step-body">Raccontaci dove vorresti andare, quando e cosa cerchi. Bastano 5 minuti.</div>
+        </div>
+        <div class="con-step">
+          <div class="con-step-num">02</div>
+          <div class="con-step-title">Videochiamata iniziale</div>
+          <div class="con-step-body">Definiamo insieme il progetto. Ti risponderemo entro 48 ore per fissare la chiamata.</div>
+        </div>
+        <div class="con-step">
+          <div class="con-step-num">03</div>
+          <div class="con-step-title">Ricevi il tuo itinerario</div>
+          <div class="con-step-body">In 5–7 giorni lavorativi hai tutto quello che ti serve. Pronti a partire.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FORM CONTATTO ── -->
+  <section class="con-form-section" id="contatto">
+    <div class="con-form-inner">
+      <div class="con-form-left">
+        <div class="con-section-eyebrow">Inizia qui</div>
+        <h2 class="con-form-title">Raccontaci<br>il tuo viaggio</h2>
+        <p class="con-form-sub">
+          Compila il form e ti risponderemo entro 48 ore. Nessun impegno,
+          nessun pagamento prima della call.
+        </p>
+        <div class="con-form-note">
+          <div class="con-form-note-icon">✦</div>
+          <div>Accettiamo un numero limitato di consulenze al mese per garantire la qualità del servizio.</div>
+        </div>
+      </div>
+
+      <form
+        class="con-form"
+        name="consulenza"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+      >
+        <input type="hidden" name="form-name" value="consulenza" />
+        <input type="hidden" name="pacchetto" id="pacchetto-hidden" value="" />
+        <p class="hidden"><label>Non compilare: <input name="bot-field" /></label></p>
+
+        <div class="con-field-row">
+          <div class="con-field">
+            <label class="con-label" for="nome">Nome</label>
+            <input class="con-input" type="text" id="nome" name="nome" placeholder="Il tuo nome" required />
+          </div>
+          <div class="con-field">
+            <label class="con-label" for="email">Email</label>
+            <input class="con-input" type="email" id="email" name="email" placeholder="La tua email" required />
+          </div>
+        </div>
+
+        <div class="con-field">
+          <label class="con-label" for="pacchetto-sel">Pacchetto di interesse</label>
+          <select class="con-input con-select" id="pacchetto-sel" name="pacchetto_selezionato">
+            <option value="">Scegli un pacchetto...</option>
+            <option value="Orientamento — €89">Orientamento — €89</option>
+            <option value="Itinerario completo — €249">Itinerario completo — €249</option>
+            <option value="Viaggio chiavi in mano — €499">Viaggio chiavi in mano — €499</option>
+            <option value="Non so ancora">Non so ancora, parliamone</option>
+          </select>
+        </div>
+
+        <div class="con-field-row">
+          <div class="con-field">
+            <label class="con-label" for="destinazione">Destinazione</label>
+            <input class="con-input" type="text" id="destinazione" name="destinazione" placeholder="Es. Giappone, Patagonia..." />
+          </div>
+          <div class="con-field">
+            <label class="con-label" for="periodo">Periodo</label>
+            <input class="con-input" type="text" id="periodo" name="periodo" placeholder="Es. settembre 2025" />
+          </div>
+        </div>
+
+        <div class="con-field">
+          <label class="con-label" for="messaggio">Raccontaci il viaggio</label>
+          <textarea class="con-input con-textarea" id="messaggio" name="messaggio" placeholder="Quante persone, cosa cercate, stile di viaggio, budget indicativo..." rows="5"></textarea>
+        </div>
+
+        <button type="submit" class="con-submit">Invia la richiesta →</button>
+        <div class="con-privacy">Nessuno spam. I tuoi dati non vengono ceduti a terzi.</div>
+      </form>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script is:inline>
+  // Pre-seleziona il pacchetto dal bottone cliccato
+  document.querySelectorAll('a[data-piano]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var piano = btn.getAttribute('data-piano');
+      var sel = document.getElementById('pacchetto-sel');
+      var hidden = document.getElementById('pacchetto-hidden');
+      if (sel) sel.value = piano;
+      if (hidden) hidden.value = piano;
+      var target = document.getElementById('contatto');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+<style>
+  /* ── Hero ── */
+  .con-hero {
+    background: var(--dark);
+    padding: 80px 40px 64px;
+    border-bottom: 1px solid rgba(201, 185, 154, 0.12);
+  }
+  .con-hero-inner { max-width: 760px; }
+  .con-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .con-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--terra);
+  }
+  .con-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 1.0;
+    color: #FAFAF8;
+    margin-bottom: 24px;
+    letter-spacing: 0.01em;
+  }
+  .con-sub {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(250, 250, 248, 0.6);
+    max-width: 540px;
+  }
+
+  /* ── Lead ── */
+  .con-lead {
+    border-bottom: 1px solid var(--light-border);
+    padding: 56px 40px;
+  }
+  .con-lead-inner {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+  }
+  .con-lead-text p {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--dark);
+    margin-bottom: 18px;
+  }
+  .con-lead-text p:last-child { margin-bottom: 0; }
+  .con-lead-text em { font-style: italic; color: var(--terra); }
+  .con-lead-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-left: 40px;
+    border-left: 1px solid var(--light-border);
+  }
+  .con-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .con-stat-lbl {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Section headers ── */
+  .con-section-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 12px;
+  }
+  .con-section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.1;
+    margin-bottom: 0;
+  }
+
+  /* ── Pacchetti ── */
+  .con-piani { padding: 64px 40px; border-bottom: 1px solid var(--light-border); }
+  .con-piani-head { margin-bottom: 48px; }
+  .con-piani-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .con-piano {
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .con-piano:hover {
+    border-color: var(--sand);
+    box-shadow: 0 4px 24px rgba(26, 24, 20, 0.06);
+  }
+  .con-piano.featured {
+    border-color: var(--dark);
+    box-shadow: 0 4px 32px rgba(26, 24, 20, 0.1);
+  }
+
+  .con-piano-badge {
+    position: absolute;
+    top: -12px;
+    left: 28px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: var(--terra);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  .con-piano-top { margin-bottom: 24px; }
+  .con-piano-tag {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .con-piano-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .con-piano-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--light-border);
+  }
+  .con-piano-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+  }
+  .con-piano-freq {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+  }
+  .con-piano-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .con-piano-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+  }
+  .con-piano-list li {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--dark);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--light-border);
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    line-height: 1.5;
+  }
+  .con-piano-list li:last-child { border-bottom: none; }
+  .con-piano-list li::before {
+    content: '✓';
+    color: var(--terra);
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .con-piano-btn {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s, background 0.2s;
+    background: var(--cream);
+    color: var(--dark);
+    border: 1px solid var(--dark);
+  }
+  .con-piano-btn:hover { opacity: 0.85; }
+  .featured-btn {
+    background: var(--dark);
+    color: #FAFAF8;
+    border-color: var(--dark);
+  }
+
+  /* ── Come funziona ── */
+  .con-steps {
+    background: var(--cream);
+    border-bottom: 1px solid var(--light-border);
+    padding: 64px 40px;
+  }
+  .con-steps-inner { max-width: 1100px; }
+  .con-section-eyebrow { margin-bottom: 10px; }
+  .con-steps .con-section-title { margin-bottom: 48px; }
+  .con-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .con-step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--beige);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .con-step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 10px;
+  }
+  .con-step-body {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── Form ── */
+  .con-form-section {
+    padding: 64px 40px 80px;
+    scroll-margin-top: 80px;
+  }
+  .con-form-inner {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1100px;
+  }
+  .con-form-left { position: sticky; top: 80px; }
+  .con-form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .con-form-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 28px;
+  }
+  .con-form-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #FDF0E8;
+    border: 1px solid rgba(196, 133, 90, 0.2);
+    border-radius: 3px;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.6;
+  }
+  .con-form-note-icon { color: var(--terra); flex-shrink: 0; font-size: 14px; }
+
+  /* Form fields */
+  .hidden { display: none; }
+  .con-form { display: flex; flex-direction: column; gap: 20px; }
+  .con-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .con-field { display: flex; flex-direction: column; gap: 6px; }
+  .con-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .con-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--dark);
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 2px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .con-input:focus { border-color: var(--dark); }
+  .con-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7e6a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+  .con-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+  .con-submit {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: #FAFAF8;
+    border: none;
+    border-radius: 2px;
+    padding: 15px 28px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    align-self: flex-start;
+  }
+  .con-submit:hover { opacity: 0.85; }
+  .con-privacy {
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: -8px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .con-lead-inner { grid-template-columns: 1fr; gap: 40px; }
+    .con-lead-stats { flex-direction: row; padding-left: 0; border-left: none; border-top: 1px solid var(--light-border); padding-top: 28px; }
+    .con-form-inner { grid-template-columns: 1fr; gap: 40px; }
+    .con-form-left { position: static; }
+  }
+  @media (max-width: 860px) {
+    .con-piani-grid { grid-template-columns: 1fr; max-width: 480px; }
+    .con-steps-grid { grid-template-columns: 1fr; gap: 32px; }
+    .con-hero { padding: 56px 24px 48px; }
+    .con-title { font-size: 52px; }
+    .con-piani, .con-steps, .con-form-section, .con-lead { padding-left: 24px; padding-right: 24px; }
+    .con-field-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .con-title { font-size: 40px; }
+  }
+</style>

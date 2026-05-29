@@ -1,0 +1,853 @@
+---
+// SSR: verifica auth server-side ad ogni richiesta
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+// Recupera l'itinerario dal parametro slug
+const { slug } = Astro.params;
+const entry = await getEntry('itinerari', slug!);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { data } = entry;
+
+// ── Auth Clerk ────────────────────────────────────────────────────────────
+// currentUser() fa una chiamata all'API Clerk per avere metadati sempre freschi
+// (più affidabile dei sessionClaims che vengono aggiornati solo al re-login)
+const currentUser = await Astro.locals.currentUser();
+
+const userIsPremium: boolean = !!(
+  (currentUser?.publicMetadata?.isPremium) ||
+  ((currentUser?.publicMetadata?.purchasedItinerari as string[] | undefined)?.includes(entry.slug))
+);
+
+// ── Logica giorni (paywall ignorato se utente premium) ────────────────────
+const days = (data.days || []).slice().sort((a, b) => a.dayNumber - b.dayNumber);
+const firstPremiumIdx = userIsPremium ? -1 : days.findIndex((d) => d.isPremium);
+const freeDays = firstPremiumIdx === -1 ? days : days.slice(0, firstPremiumIdx);
+const premiumDays = firstPremiumIdx === -1 ? [] : days.slice(firstPremiumIdx);
+
+// Stripe checkout gestito via JS → /api/checkout (non più LemonSqueezy)
+const checkoutUrl = '#checkout';
+
+const updatedDate = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+
+// Map markers: per ogni giorno, prendi il marker con stesso dayNumber
+const mapPoints = days.map((d) => {
+  const m = (data.mapMarkers || []).find((mm: any) => mm.dayNumber === d.dayNumber);
+  if (!m) return null;
+  return {
+    num: d.dayNumber,
+    title: d.title,
+    sub: (d.description || '').split('\n')[0].slice(0, 90),
+    locked: !!d.isPremium,
+    lat: m.lat,
+    lng: m.lng,
+  };
+}).filter(Boolean);
+
+const hasMap = !!data.mapCenter && mapPoints.length > 0;
+
+// Step B: "Vale il viaggio" strutturato (3 colonne con primo item free + paywall sui restanti)
+const vale = data.vale || null;
+const valeCols = vale ? [
+  { key: 'dormire', label: 'Dormire', items: vale.dormire || [] },
+  { key: 'mangiare', label: 'Mangiare', items: vale.mangiare || [] },
+  { key: 'tappe', label: 'Non perdere', items: vale.tappe || [] },
+] : [];
+const valeHasPaywall = valeCols.some((c) => c.items.length > 1);
+const badgeLabels: Record<string, string> = {
+  must: 'Top pick',
+  good: 'Da provare',
+  hidden: 'Hidden gem',
+};
+
+// Step B: "Mainstream check" strutturato
+const ms = data.mainstream || null;
+const msFreeItems = ms ? (ms.items || []).slice(0, 1) : [];
+const msPremiumItems = ms ? (ms.items || []).slice(1) : [];
+
+// Galleria itinerario
+const gallery = data.gallery || [];
+---
+
+<BaseLayout
+  title={`${data.title} — Itinerario — Unmarked`}
+  description={data.excerpt}
+  ogImage={data.coverImage.src}
+>
+  {hasMap && (
+    <link
+      slot="head"
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+  )}
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>→</span>
+    <a href="/itinerari">Itinerari</a>
+    <span>→</span>
+    <span class="breadcrumb-current">{data.country} · {data.continent}</span>
+  </div>
+
+  <div class="it-hero">
+    <div class="it-badges">
+      <div class="badge badge-prem">Premium</div>
+      <div class="badge badge-dur">{data.duration} giorni</div>
+      <div class="badge badge-lvl">Livello {data.difficulty.toLowerCase()}</div>
+    </div>
+    <h1 class="it-title">{data.title}</h1>
+    {data.subtitle && <p class="it-subtitle">{data.subtitle}</p>}
+    <div class="it-meta-row">
+      <div class="it-meta-item"><div class="it-meta-val">{data.duration}</div><div class="it-meta-label">Giorni</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.budget}</div><div class="it-meta-label">Budget</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.difficulty}</div><div class="it-meta-label">Difficoltà</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.bestSeason}</div><div class="it-meta-label">Periodo</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.transport}</div><div class="it-meta-label">Trasporto</div></div>
+    </div>
+  </div>
+
+  <div class="it-hero-img">
+    <img src={data.coverImage.src} alt={data.coverImageAlt} />
+  </div>
+
+  <div class="it-body">
+    <div class="it-text">
+      {data.valeIlViaggio && <p class="it-intro">{data.valeIlViaggio}</p>}
+      {vale?.intro && <p class="it-intro">{vale.intro}</p>}
+
+      {freeDays.length > 0 && <div class="preview-badge">Anteprima gratuita — {freeDays.length === 1 ? 'giorno 1' : `giorni 1–${freeDays.length}`}</div>}
+
+      <div class="it-section-label">Programma giornaliero</div>
+
+      <div class="it-days">
+        {freeDays.map((day) => (
+          <div class="it-day">
+            <div class="it-day-num">{String(day.dayNumber).padStart(2, '0')}</div>
+            <div class="it-day-content">
+              <div class="it-day-title">{day.title}</div>
+              <div class="it-day-sub" set:html={(day.description || '').replace(/\n/g, '<br>')}></div>
+              <div class="it-day-tags">
+                {day.kmTotali && <div class="it-day-tag">{day.kmTotali} km</div>}
+                {day.dislivello && <div class="it-day-tag">{day.dislivello}</div>}
+                {day.dormire && <div class="it-day-tag">Dormi: {day.dormire}</div>}
+                {day.mangiare && <div class="it-day-tag">Mangi: {day.mangiare}</div>}
+              </div>
+              {day.gallery && day.gallery.length > 0 && (
+                <>
+                  <div class="day-gallery-toggle">
+                    <span class="day-gallery-toggle-icon">+</span>
+                    <span>{day.gallery.length} {day.gallery.length === 1 ? 'foto' : 'foto'}</span>
+                  </div>
+                  <div class="day-gallery">
+                    {day.gallery.map((g: any) => (
+                      <div class="day-gallery-img" data-caption={g.caption || ''}>
+                        <img src={g.image.src} alt={g.caption || ''} />
+                      </div>
+                    ))}
+                    {day.gallery[0]?.caption && (
+                      <div class="day-gallery-caption-row">{day.gallery.map((g: any) => g.caption).filter(Boolean).join(' · ')}</div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {premiumDays.length > 0 && (
+        <div class="paywall-wrap">
+          <div class="paywall-blur-content">
+            <div class="it-days">
+              {premiumDays.map((day) => (
+                <div class="it-day">
+                  <div class="it-day-num">{String(day.dayNumber).padStart(2, '0')}</div>
+                  <div class="it-day-content">
+                    <div class="it-day-title">{day.title}</div>
+                    <div class="it-day-sub" set:html={(day.description || '').replace(/\n/g, '<br>')}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="paywall-overlay"></div>
+
+          <div class="paywall-box">
+            <div class="pw-icon">⌛</div>
+            <div class="pw-title">Sblocca l'itinerario completo</div>
+            <div class="pw-sub">{premiumDays.length} giorni dettagliati, mappe offline, dove dormire, dove mangiare, contatti locali verificati e aggiornamenti stagionali inclusi.</div>
+
+            <div class="pw-options">
+              <div class="pw-opt">
+                <div class="pw-opt-label">Solo questo</div>
+                <div class="pw-opt-price">€{data.price}</div>
+                <div class="pw-opt-period">acquisto unico</div>
+                <div class="pw-opt-desc">Accesso permanente a questo itinerario</div>
+              </div>
+              <div class="pw-opt featured">
+                <div class="pw-opt-label">Tutto illimitato</div>
+                <div class="pw-opt-price">€29</div>
+                <div class="pw-opt-period">al mese</div>
+                <div class="pw-opt-desc">Tutti gli itinerari + nuovi ogni mese</div>
+              </div>
+            </div>
+
+            <button class="pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="pw-btn-single" data-checkout="single">Acquista solo questo — €{data.price}</button>
+            <div class="pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <div class="it-sidebar">
+      <div class="price-box">
+        <div class="price-box-title">Sblocca l'itinerario</div>
+        <div class="price-main">
+          <div class="price-amount">€{data.price}</div>
+          <div class="price-period">acquisto unico</div>
+        </div>
+        <div class="price-or">oppure</div>
+        <div class="price-sub-opt">
+          <span class="price-sub-label">Con abbonamento</span>
+          <span class="price-sub-val">€29/mese</span>
+        </div>
+        <div class="price-includes">
+          <div class="price-item"><div class="price-dot"></div><div>{data.duration} giorni dettagliati giorno per giorno</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Mappa offline scaricabile</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Dove dormire e dove mangiare</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Contatti locali verificati</div></div>
+          <div class="price-item"><div class="price-dot"></div><div>Aggiornamenti stagionali inclusi</div></div>
+        </div>
+        <button class="btn-buy" data-checkout="single">Acquista — €{data.price}</button>
+        <button class="btn-sub-sidebar" data-checkout="subscription">Abbonati e accedi a tutto</button>
+        <div class="price-already">Sei abbonato? <a href="/sign-in">Accedi</a></div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-title">Dettagli</div>
+        <div class="info-item"><span class="info-label">Destinazione</span><span class="info-val">{data.country}</span></div>
+        <div class="info-item"><span class="info-label">Durata</span><span class="info-val">{data.duration} giorni</span></div>
+        <div class="info-item"><span class="info-label">Budget</span><span class="info-val">{data.budget}</span></div>
+        <div class="info-item"><span class="info-label">Periodo</span><span class="info-val">{data.bestSeason}</span></div>
+        <div class="info-item"><span class="info-label">Difficoltà</span><span class="info-val">{data.difficulty}</span></div>
+        <div class="info-item"><span class="info-label">Trasporto</span><span class="info-val">{data.transport}</span></div>
+        <div class="info-item"><span class="info-label">Aggiornato</span><span class="info-val">{updatedDate}</span></div>
+      </div>
+    </div>
+  </div>
+
+  {/* Step B: Vale il viaggio (strutturato) */}
+  {vale && valeCols.some((c) => c.items.length > 0) && (
+    <div class="vale">
+      <div class="vale-head">
+        <div class="vale-title">Vale il viaggio</div>
+        <div class="vale-sub">Strutture e posti selezionati di persona — non sponsorizzati</div>
+      </div>
+
+      <div class="vale-grid">
+        {valeCols.map((col) => (
+          <div>
+            <div class="vale-col-label">{col.label}</div>
+            {col.items.slice(0, 1).map((it: any) => (
+              <div class="vale-item">
+                <div class="vale-item-header">
+                  <div class="vale-item-name">{it.name}</div>
+                  <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+                </div>
+                {it.location && <div class="vale-item-loc">{it.location}</div>}
+                <div class="vale-item-desc">{it.description}</div>
+                {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+                {it.price && <div class="vale-item-price" set:html={it.price.replace(/(€\d[\d.,]*|Da €\d[\d.,]*\/[^\s,]+|Circa €\d[\d.,]*[^\s,]*|\d+€\/[^\s,]+|gratuito|libero)/i, '<strong>$1</strong>')}></div>}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {valeHasPaywall && (
+        <div class="vale-paywall-wrap">
+          <div class="vale-blur">
+            <div class="vale-grid">
+              {valeCols.map((col) => (
+                <div>
+                  {col.items.slice(1).map((it: any) => (
+                    <div class="vale-item">
+                      <div class="vale-item-header">
+                        <div class="vale-item-name">{it.name}</div>
+                        <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+                      </div>
+                      {it.location && <div class="vale-item-loc">{it.location}</div>}
+                      <div class="vale-item-desc">{it.description}</div>
+                      {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+                      {it.price && <div class="vale-item-price">{it.price}</div>}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="vale-overlay"></div>
+          <div class="vale-pw-box">
+            <div class="vale-pw-title">Altri consigli riservati agli abbonati</div>
+            <div class="vale-pw-sub">Dove dormire davvero, dove mangiare senza finire in trappola turistica e cosa non perdere per nessun motivo.</div>
+            <button class="vale-pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
+            <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+
+  {/* Step B: Mainstream check (strutturato) */}
+  {(ms || data.mainstreamCheck) && (
+    <div class="ms">
+      <div class="ms-head">
+        <div class="ms-title">Mainstream check</div>
+        <div class="ms-sub">Cosa <em>non</em> visiterai e perché</div>
+      </div>
+      {ms?.intro && <p class="ms-intro">{ms.intro}</p>}
+      {!ms && data.mainstreamCheck && <p class="ms-intro">{data.mainstreamCheck}</p>}
+
+      {ms && msFreeItems.length > 0 && (
+        <div class="ms-list">
+          {msFreeItems.map((it: any) => (
+            <div class="ms-item">
+              <div class="ms-item-grid">
+                <div class="ms-item-info">
+                  <div class="ms-item-head">
+                    <div class="ms-item-name">{it.name}</div>
+                    {it.type && <div class="ms-item-type">{it.type}</div>}
+                  </div>
+                  <div class="ms-item-rating">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <span class={`ms-star ${i < it.rating ? 'ms-star-filled' : ''}`}>★</span>
+                    ))}
+                    <span class="ms-rating-num">{it.rating}/5</span>
+                  </div>
+                  <div class="ms-item-verdict">{it.verdict}</div>
+                  {it.alternative && (
+                    <div class="ms-item-alt">
+                      <div class="ms-item-alt-label">Alternativa Unmarked</div>
+                      <div class="ms-item-alt-name">{it.alternative.name}</div>
+                      <div class="ms-item-alt-reason">{it.alternative.reason}</div>
+                    </div>
+                  )}
+                </div>
+                {it.distance && <div class="ms-item-distance">{it.distance}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {ms && msPremiumItems.length > 0 && (
+        <div class="ms-paywall-wrap">
+          <div class="ms-blur">
+            <div class="ms-list">
+              {msPremiumItems.map((it: any) => (
+                <div class="ms-item">
+                  <div class="ms-item-grid">
+                    <div class="ms-item-info">
+                      <div class="ms-item-head">
+                        <div class="ms-item-name">{it.name}</div>
+                        {it.type && <div class="ms-item-type">{it.type}</div>}
+                      </div>
+                      <div class="ms-item-rating">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span class={`ms-star ${i < it.rating ? 'ms-star-filled' : ''}`}>★</span>
+                        ))}
+                        <span class="ms-rating-num">{it.rating}/5</span>
+                      </div>
+                      <div class="ms-item-verdict">{it.verdict}</div>
+                      {it.alternative && (
+                        <div class="ms-item-alt">
+                          <div class="ms-item-alt-label">Alternativa Unmarked</div>
+                          <div class="ms-item-alt-name">{it.alternative.name}</div>
+                          <div class="ms-item-alt-reason">{it.alternative.reason}</div>
+                        </div>
+                      )}
+                    </div>
+                    {it.distance && <div class="ms-item-distance">{it.distance}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="vale-overlay"></div>
+          <div class="vale-pw-box">
+            <div class="vale-pw-title">Altri mainstream check riservati agli abbonati</div>
+            <div class="vale-pw-sub">Cosa NON visiterai, e cosa vedere al suo posto.</div>
+            <button class="vale-pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
+            <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+
+  {hasMap && (
+    <div class="it-map">
+      <div class="it-map-label">Mappa dell'itinerario</div>
+      <div
+        id="it-map"
+        class="it-map-container"
+        data-center={JSON.stringify(data.mapCenter)}
+        data-points={JSON.stringify(mapPoints)}
+      ></div>
+      <div class="it-map-caption">I punti sbloccati mostrano il percorso completo · Giorni premium disponibili con l'acquisto</div>
+      {data.mapMarkers?.length > 0 && (
+        <a href={`/itinerari/${entry.slug}.kml`} download class="kml-download-btn">
+          ↓ Scarica mappa per Google Maps / GPS
+        </a>
+      )}
+    </div>
+  )}
+
+  {/* Step B: Galleria itinerario (sotto la mappa) */}
+  {gallery.length > 0 && (
+    <div class="it-gallery">
+      <div class="it-gallery-label">Fotografie dall'itinerario</div>
+      <div class="it-gallery-grid">
+        {gallery.map((g: any) => (
+          <div class={`gal-item ${g.wide ? 'wide' : ''}`} data-caption={g.caption || ''}>
+            <img src={g.image.src} alt={g.caption || ''} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <div class="consulenza-strip">
+    <div class="consulenza-strip-left">
+      <div class="consulenza-strip-icon">✦</div>
+      <div class="consulenza-strip-text">
+        <div class="consulenza-strip-title">Vuoi un itinerario costruito su misura?</div>
+        <div class="consulenza-strip-sub">Una consulenza con noi per il tuo viaggio specifico.</div>
+      </div>
+    </div>
+    <a href="/consulenze" class="consulenza-strip-cta">Scopri →</a>
+  </div>
+
+  {/* Lightbox per gallerie */}
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-close" id="lb-close">✕</div>
+    <img class="lightbox-img" id="lb-img" src="" alt="" />
+    <div class="lightbox-caption" id="lb-caption"></div>
+  </div>
+
+  <script is:inline>
+    // Toggle gallerie giorno
+    document.querySelectorAll('.day-gallery-toggle').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var gallery = btn.nextElementSibling;
+        btn.classList.toggle('open');
+        if (gallery) gallery.classList.toggle('open');
+      });
+    });
+
+    // Lightbox: click su qualsiasi foto in galleria
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lb-img');
+    var lbCap = document.getElementById('lb-caption');
+    function openLb(src, caption){
+      if (!lb || !lbImg) return;
+      lbImg.src = src;
+      if (lbCap) lbCap.textContent = caption || '';
+      lb.classList.add('open');
+    }
+    function closeLb(){ if (lb) lb.classList.remove('open'); }
+    document.querySelectorAll('.day-gallery-img, .gal-item').forEach(function(el){
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        var img = el.querySelector('img');
+        if (img) openLb(img.src, el.dataset.caption || img.alt || '');
+      });
+    });
+    if (lb) lb.addEventListener('click', closeLb);
+    var close = document.getElementById('lb-close');
+    if (close) close.addEventListener('click', function(e){ e.stopPropagation(); closeLb(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLb(); });
+  </script>
+
+  {/* Banner "acquisto completato" — visibile solo con ?upgraded=1 */}
+  <div class="upgrade-banner" id="upgrade-banner" style="display:none">
+    <div class="upgrade-banner-inner">
+      <div class="upgrade-banner-icon">✓</div>
+      <div>
+        <div class="upgrade-banner-title">Acquisto completato!</div>
+        <div class="upgrade-banner-sub">Ricarica la pagina se alcuni contenuti non sono ancora visibili.</div>
+      </div>
+      <button class="upgrade-banner-close" onclick="this.closest('#upgrade-banner').style.display='none'">✕</button>
+    </div>
+  </div>
+
+  {/* Script Stripe checkout — gestisce tutti i bottoni [data-checkout] */}
+  <script is:inline define:vars={{ itSlug: entry.slug, itPrice: data.price, itTitle: data.title }}>
+    // Mostra il banner se ?upgraded=1
+    if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
+      var banner = document.getElementById('upgrade-banner');
+      if (banner) banner.style.display = 'block';
+      // Pulisce l'URL senza ricaricare
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    // Checkout Stripe
+    async function startCheckout(type) {
+      var allBtns = document.querySelectorAll('[data-checkout]');
+      allBtns.forEach(function(b){ b.disabled = true; b.style.opacity = '0.6'; });
+
+      try {
+        var res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: type,
+            slug: itSlug,
+            price: itPrice,
+            title: itTitle,
+          }),
+        });
+        var data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert('Errore durante il reindirizzamento al checkout. Riprova.');
+        }
+      } catch (err) {
+        alert('Errore di rete. Controlla la connessione e riprova.');
+      } finally {
+        allBtns.forEach(function(b){ b.disabled = false; b.style.opacity = ''; });
+      }
+    }
+
+    document.querySelectorAll('[data-checkout]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        startCheckout(btn.dataset.checkout);
+      });
+    });
+  </script>
+
+  {hasMap && (
+    <>
+      <script
+        is:inline
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+      ></script>
+      <script is:inline>
+        function initItMap() {
+          var el = document.getElementById('it-map');
+          if (!el) return;
+          if (typeof L === 'undefined') { setTimeout(initItMap, 50); return; }
+          var center = JSON.parse(el.dataset.center);
+          var points = JSON.parse(el.dataset.points || '[]');
+          var map = L.map('it-map', { center: [center.lat, center.lng], zoom: center.zoom || 9, scrollWheelZoom: false });
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            maxZoom: 18
+          }).addTo(map);
+          var coordsAll = points.map(function(p){ return [p.lat, p.lng]; });
+          var coordsFree = points.filter(function(p){ return !p.locked; }).map(function(p){ return [p.lat, p.lng]; });
+          if (coordsAll.length > 1) {
+            L.polyline(coordsAll, { color: '#C9B99A', weight: 1.5, opacity: 0.4, dashArray: '6, 8' }).addTo(map);
+          }
+          if (coordsFree.length > 1) {
+            L.polyline(coordsFree, { color: '#C4855A', weight: 2, opacity: 0.8 }).addTo(map);
+          }
+          points.forEach(function(p){
+            var icon = L.divIcon({
+              className: '',
+              html: '<div class="map-marker ' + (p.locked ? 'locked' : '') + '">' + (p.locked ? '🔒' : p.num) + '</div>',
+              iconSize: [28, 28],
+              iconAnchor: [14, 14],
+              popupAnchor: [0, -16]
+            });
+            var popup = p.locked
+              ? '<div class="popup-day">Giorno ' + p.num + '</div><div class="popup-title">' + p.title + '</div><div class="popup-locked">🔒 Disponibile con l\'acquisto</div>'
+              : '<div class="popup-day">Giorno ' + p.num + '</div><div class="popup-title">' + p.title + '</div><div class="popup-sub">' + p.sub + '</div>';
+            L.marker([p.lat, p.lng], { icon: icon }).addTo(map).bindPopup(popup);
+          });
+        }
+        if (document.readyState !== 'loading') initItMap();
+        else window.addEventListener('load', initItMap);
+      </script>
+    </>
+  )}
+</BaseLayout>
+
+<style>
+  /* BREADCRUMB */
+  .breadcrumb { padding: 16px 40px; font-size: 9px; font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sand); border-bottom: 1px solid var(--light-border); display: flex; align-items: center; gap: 8px; }
+  .breadcrumb a { color: var(--sand); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--terra); }
+  .breadcrumb-current { color: var(--terra); }
+
+  /* HERO */
+  .it-hero { padding: 52px 40px 0; }
+  .it-badges { display: flex; gap: 8px; margin-bottom: 16px; }
+  .badge { font-size: 8px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
+  .badge-prem { background: var(--dark); color: var(--sand); }
+  .badge-dur { background: var(--beige); color: var(--muted); }
+  .badge-lvl { background: var(--beige); color: var(--muted); }
+
+  .it-title { font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300; line-height: 1.05; color: var(--dark); margin-bottom: 16px; max-width: 760px; }
+  .it-subtitle { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300; line-height: 1.5; color: var(--muted); margin-bottom: 28px; max-width: 640px; }
+
+  .it-meta-row { display: flex; gap: 0; border-top: 1px solid var(--light-border); border-bottom: 1px solid var(--light-border); margin-bottom: 0; }
+  .it-meta-item { padding: 18px 28px; border-right: 1px solid var(--light-border); text-align: center; flex: 1; }
+  .it-meta-item:first-child { padding-left: 0; text-align: left; }
+  .it-meta-item:last-child { border-right: none; }
+  .it-meta-val { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 4px; }
+  .it-meta-label { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+  /* FOTO HERO */
+  .it-hero-img { width: 100%; height: 560px; position: relative; overflow: hidden; margin-top: 40px; }
+  .it-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* BODY LAYOUT */
+  .it-body { display: grid; grid-template-columns: 1fr 300px; gap: 60px; padding: 52px 40px 0; }
+
+  .it-intro { font-size: 16px; font-weight: 300; line-height: 1.85; color: var(--dark); margin-bottom: 32px; }
+
+  .preview-badge { display: inline-block; font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; background: #EAF0EA; color: var(--sage); padding: 5px 12px; border-radius: 2px; margin-bottom: 20px; }
+
+  .it-section-label { font-size: 9px; font-weight: 300; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-section-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--terra); }
+
+  /* GIORNI */
+  .it-days { margin-bottom: 0; }
+  .it-day { border-bottom: 1px solid var(--light-border); padding: 22px 0; display: flex; gap: 20px; align-items: flex-start; }
+  .it-day:first-child { border-top: 1px solid var(--light-border); }
+  .it-day-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--beige); min-width: 52px; line-height: 1; flex-shrink: 0; padding-top: 2px; }
+  .it-day-content { flex: 1; min-width: 0; }
+  .it-day-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--dark); margin-bottom: 6px; }
+  .it-day-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.65; }
+  .it-day-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .it-day-tag { font-size: 8px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--light-border); border-radius: 2px; color: var(--muted); }
+
+  /* PAYWALL */
+  .paywall-wrap { position: relative; margin-top: 0; }
+  .paywall-blur-content { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+  .paywall-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.97) 35%, rgba(250,250,248,1) 100%); }
+  .paywall-box { position: relative; text-align: center; padding: 40px 0 60px; }
+  .pw-icon { font-size: 28px; margin-bottom: 14px; }
+  .pw-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); margin-bottom: 8px; }
+  .pw-sub { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 28px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .pw-options { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+  .pw-opt { flex: 1; max-width: 200px; border: 1px solid var(--light-border); border-radius: 3px; padding: 18px 16px; text-align: left; }
+  .pw-opt.featured { border-color: var(--dark); }
+  .pw-opt-label { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+  .pw-opt-price { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 2px; }
+  .pw-opt-period { font-size: 10px; font-weight: 300; color: var(--muted); margin-bottom: 10px; }
+  .pw-opt-desc { font-size: 11px; font-weight: 300; color: var(--muted); line-height: 1.5; }
+  .pw-btn-sub { display: block; width: 100%; max-width: 412px; margin: 0 auto 8px; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; border: none; cursor: pointer; }
+  .pw-btn-single { display: block; width: 100%; max-width: 412px; margin: 0 auto 14px; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; cursor: pointer; }
+  .pw-login { font-size: 10px; font-weight: 300; color: var(--sand); }
+  .pw-login a { color: var(--terra); text-decoration: none; }
+  .pw-login a:hover { text-decoration: underline; }
+
+  /* SIDEBAR */
+  .it-sidebar { position: sticky; top: 76px; align-self: start; }
+  .price-box { border: 1px solid var(--dark); border-radius: 3px; padding: 24px; margin-bottom: 16px; }
+  .price-box-title { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .price-main { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--dark); line-height: 1; }
+  .price-period { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .price-or { font-size: 10px; font-weight: 300; color: var(--muted); margin: 10px 0; text-align: center; display: flex; align-items: center; gap: 8px; }
+  .price-or::before, .price-or::after { content: ''; flex: 1; height: 1px; background: var(--light-border); }
+  .price-sub-opt { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--light-border); margin-bottom: 14px; }
+  .price-sub-label { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .price-sub-val { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dark); }
+  .price-includes { margin-bottom: 20px; }
+  .price-item { display: flex; gap: 9px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--light-border); font-size: 11px; font-weight: 300; color: var(--dark); line-height: 1.5; }
+  .price-item:last-child { border-bottom: none; }
+  .price-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); flex-shrink: 0; margin-top: 6px; }
+  .btn-buy { display: block; width: 100%; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; margin-bottom: 8px; border: none; cursor: pointer; }
+  .btn-sub-sidebar { display: block; width: 100%; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; margin-bottom: 12px; cursor: pointer; }
+  .price-already { font-size: 10px; font-weight: 300; color: var(--sand); text-align: center; }
+  .price-already a { color: var(--terra); text-decoration: none; }
+  .price-already a:hover { text-decoration: underline; }
+  .info-box { border: 1px solid var(--light-border); border-radius: 3px; padding: 20px; margin-bottom: 16px; }
+  .info-box-title { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .info-item { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--light-border); font-size: 11px; }
+  .info-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .info-label { font-weight: 300; color: var(--muted); }
+  .info-val { font-weight: 500; color: var(--dark); }
+
+  /* VALE IL VIAGGIO (Step B) */
+  .vale { padding: 60px 40px 0; }
+  .vale-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .vale-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
+  .vale-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .vale-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+  .vale-col-label { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .vale-col-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--terra); }
+  .vale-item { padding: 18px 0; border-bottom: 1px solid var(--light-border); }
+  .vale-item:last-child { border-bottom: none; }
+  .vale-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dark); line-height: 1.2; }
+  .vale-item-badge { font-size: 8px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+  .badge-must { background: #FDF0E8; color: var(--terra); }
+  .badge-good { background: var(--beige); color: var(--muted); }
+  .badge-hidden { background: #EAF0EA; color: var(--sage); }
+  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--sand); margin-bottom: 6px; }
+  .vale-item-desc { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.68; }
+  .vale-item-tip { margin-top: 10px; padding: 8px 12px; background: var(--cream); border-left: 2px solid var(--terra); font-size: 11px; font-weight: 300; color: var(--dark); line-height: 1.6; font-style: italic; }
+  .vale-item-price { margin-top: 8px; font-size: 10px; font-weight: 300; color: var(--muted); }
+  .vale-item-price strong { font-weight: 500; color: var(--dark); }
+
+  .vale-paywall-wrap { position: relative; margin-top: 0; }
+  .vale-blur { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+  .vale-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.96) 30%, rgba(250,250,248,1) 100%); }
+  .vale-pw-box { position: relative; text-align: center; padding: 32px 16px 52px; }
+  .vale-pw-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--dark); margin-bottom: 7px; }
+  .vale-pw-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 22px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; margin-right: 8px; border: none; cursor: pointer; }
+  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; cursor: pointer; }
+  .vale-pw-login { font-size: 10px; font-weight: 300; color: var(--sand); margin-top: 12px; }
+  .vale-pw-login a { color: var(--terra); text-decoration: none; }
+  .vale-pw-login a:hover { text-decoration: underline; }
+  /* Banner acquisto completato */
+  .upgrade-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 9000; background: var(--sage); }
+  .upgrade-banner-inner { display: flex; align-items: center; gap: 14px; padding: 12px 24px; max-width: 900px; margin: 0 auto; }
+  .upgrade-banner-icon { font-size: 18px; color: #fff; flex-shrink: 0; }
+  .upgrade-banner-title { font-size: 12px; font-weight: 500; color: #fff; letter-spacing: 0.06em; }
+  .upgrade-banner-sub { font-size: 10px; font-weight: 300; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .upgrade-banner-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 16px; cursor: pointer; flex-shrink: 0; }
+
+  /* MAINSTREAM CHECK (Step B) */
+  .ms { padding: 60px 40px 0; }
+  .ms-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .ms-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
+  .ms-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .ms-intro { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 20px; max-width: 760px; }
+  .ms-list { display: flex; flex-direction: column; gap: 0; }
+  .ms-item { padding: 22px 0; border-bottom: 1px solid var(--light-border); }
+  .ms-item:first-child { border-top: 1px solid var(--light-border); }
+  .ms-item-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; }
+  .ms-item-info { min-width: 0; }
+  .ms-item-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .ms-item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--dark); line-height: 1.2; }
+  .ms-item-type { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sand); }
+  .ms-item-rating { display: flex; align-items: center; gap: 3px; margin-bottom: 8px; }
+  .ms-star { font-size: 14px; color: var(--light-border); line-height: 1; }
+  .ms-star-filled { color: var(--terra); }
+  .ms-rating-num { margin-left: 6px; font-size: 11px; font-weight: 300; color: var(--muted); }
+  .ms-item-verdict { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+  .ms-item-alt { background: #EAF0EA; border-left: 2px solid var(--sage); padding: 10px 14px; border-radius: 2px; margin-top: 10px; }
+  .ms-item-alt-label { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); margin-bottom: 4px; }
+  .ms-item-alt-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; color: var(--dark); margin-bottom: 4px; }
+  .ms-item-alt-reason { font-size: 11px; font-weight: 300; color: var(--muted); line-height: 1.55; }
+  .ms-item-distance { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--sand); text-transform: uppercase; white-space: nowrap; align-self: start; padding-top: 4px; }
+  .ms-paywall-wrap { position: relative; margin-top: 0; }
+  .ms-blur { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+
+  /* MAPPA */
+  .it-map { padding: 60px 40px 0; }
+  .it-map-label { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-map-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--muted); }
+  .it-map-container { width: 100%; height: 480px; border-radius: 3px; overflow: hidden; border: 1px solid var(--light-border); }
+  .it-map-caption { font-size: 10px; font-weight: 300; color: var(--muted); margin-top: 10px; letter-spacing: 0.06em; }
+
+  :global(.map-marker) { width: 28px; height: 28px; border-radius: 50%; background: var(--dark); color: var(--sand); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; border: 2px solid var(--terra); box-shadow: 0 2px 8px rgba(26,24,20,0.25); }
+  :global(.map-marker.locked) { background: var(--beige); color: var(--sand); border-color: var(--light-border); opacity: 0.6; }
+  :global(.leaflet-popup-content-wrapper) { border-radius: 3px !important; box-shadow: 0 4px 20px rgba(26,24,20,0.12) !important; font-family: 'Inter', sans-serif !important; font-weight: 300 !important; }
+  :global(.leaflet-popup-content) { margin: 14px 18px !important; }
+  :global(.popup-day) { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #C4855A; margin-bottom: 4px; }
+  :global(.popup-title) { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; color: #1a1814; margin-bottom: 4px; }
+  :global(.popup-sub) { font-size: 11px; font-weight: 300; color: #8a7e6a; line-height: 1.5; }
+  :global(.popup-locked) { font-size: 10px; font-weight: 300; color: #C9B99A; font-style: italic; }
+
+  /* GALLERIA ITINERARIO (Step B) */
+  .it-gallery { padding: 60px 40px 0; }
+  .it-gallery-label { font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .it-gallery-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--muted); }
+  .it-gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-auto-rows: 300px; gap: 10px; }
+  .gal-item { border-radius: 3px; position: relative; overflow: hidden; cursor: zoom-in; background: var(--beige); }
+  .gal-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s; }
+  .gal-item:hover img { filter: brightness(0.92); }
+  .gal-item.wide { grid-column: span 2; }
+
+  /* GALLERIA DEL GIORNO (Step B) — toggle */
+  .day-gallery-toggle { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; cursor: pointer; font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--light-border); padding: 5px 12px; border-radius: 2px; transition: all 0.2s; user-select: none; }
+  .day-gallery-toggle:hover { border-color: var(--terra); color: var(--terra); }
+  .day-gallery-toggle.open { border-color: var(--terra); color: var(--terra); }
+  .day-gallery-toggle-icon { font-size: 11px; line-height: 1; transition: transform 0.25s; display: inline-block; }
+  .day-gallery-toggle.open .day-gallery-toggle-icon { transform: rotate(45deg); }
+  .day-gallery { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; overflow: hidden; }
+  .day-gallery.open { display: grid; animation: fadeInGallery 0.25s ease; }
+  @keyframes fadeInGallery { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .day-gallery-img { height: 160px; border-radius: 3px; position: relative; overflow: hidden; cursor: zoom-in; background: var(--beige); }
+  .day-gallery-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s; }
+  .day-gallery-img:hover img { filter: brightness(0.9); }
+  .day-gallery-caption-row { grid-column: 1 / -1; font-size: 10px; font-weight: 300; color: var(--muted); letter-spacing: 0.06em; }
+
+  /* LIGHTBOX */
+  .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(26,24,20,0.92); align-items: center; justify-content: center; cursor: zoom-out; padding: 24px; }
+  .lightbox.open { display: flex; }
+  .lightbox-img { max-width: 90vw; max-height: 80vh; border-radius: 3px; display: block; cursor: default; }
+  .lightbox-close { position: fixed; top: 24px; right: 28px; font-size: 22px; color: rgba(250,250,248,0.7); cursor: pointer; font-weight: 300; line-height: 1; z-index: 10000; }
+  .lightbox-caption { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.5); letter-spacing: 0.1em; max-width: 80vw; text-align: center; }
+
+  /* CONSULENZA STRIP */
+  .consulenza-strip { margin: 48px 40px 80px; background: var(--beige); border: 1px solid #d8cec0; border-radius: 3px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .consulenza-strip-left { display: flex; align-items: center; gap: 14px; }
+  .consulenza-strip-icon { font-size: 18px; flex-shrink: 0; color: var(--terra); }
+  .consulenza-strip-title { font-size: 13px; font-weight: 300; color: var(--dark); margin-bottom: 2px; }
+  .consulenza-strip-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  .consulenza-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(196,133,90,0.3); padding-bottom: 1px; flex-shrink: 0; }
+  .consulenza-strip-cta:hover { border-color: var(--terra); }
+
+  /* KML DOWNLOAD */
+  .kml-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--light-border);
+    padding: 7px 14px;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .kml-download-btn:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
+
+  @media (max-width: 900px) {
+    .it-body { grid-template-columns: 1fr; gap: 32px; }
+    .it-sidebar { position: static; }
+    .it-meta-row { flex-wrap: wrap; }
+    .it-meta-item { flex: 1 1 33%; border-right: none; border-bottom: 1px solid var(--light-border); }
+    .it-title { font-size: 38px; }
+    .it-hero-img { height: 360px; }
+    .pw-options { flex-direction: column; align-items: stretch; }
+    .pw-opt { max-width: 100%; }
+    .consulenza-strip { flex-direction: column; align-items: flex-start; }
+    .vale-grid { grid-template-columns: 1fr; gap: 8px; }
+    .ms-item-grid { grid-template-columns: 1fr; gap: 8px; }
+    .ms-item-distance { padding-top: 0; }
+    .it-gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 220px; }
+    .gal-item.wide { grid-column: span 2; }
+  }
+</style>

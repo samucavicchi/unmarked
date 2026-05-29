@@ -1,0 +1,246 @@
+---
+// Card riusabile per i film.
+// 'main'    = featured grande con play overlay (homepage left + archivio top)
+// 'episode' = card verticale con thumb 16:9 grande (lista a destra del featured)
+// 'grid'    = card per archivio in griglia uniforme
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'film'>;
+  variant?: 'main' | 'episode' | 'grid';
+}
+
+const { entry, variant = 'grid' } = Astro.props;
+const { data } = entry;
+const href = `/film/${entry.slug}`;
+const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+---
+
+{variant === 'main' && (
+  <a href={href} class="film-main-link">
+    <div class="film-main-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} class="film-main-bg-img" />
+      <div class="film-main-ov"></div>
+      <div class="film-main-content">
+        <div class="film-play"><div class="film-play-icon"></div></div>
+        <div class="film-main-tag">{data.country} · {data.type}</div>
+        <div class="film-main-title">{data.title}</div>
+        <div class="film-main-dur">{data.duration} min · {data.publishDate.getFullYear()}</div>
+      </div>
+    </div>
+    <div class="film-main-desc">{data.excerpt}</div>
+  </a>
+)}
+
+{variant === 'episode' && (
+  <a href={href} class="film-ep-card">
+    <div class="film-ep-thumb">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+      <div class="film-ep-thumb-ov"></div>
+      <div class="film-ep-thumb-play"><div class="film-ep-thumb-play-icon"></div></div>
+    </div>
+    <div class="film-ep-info">
+      <div class="film-ep-tag">{data.country} · {data.type}</div>
+      <div class="film-ep-title">{data.title}</div>
+      <div class="film-ep-dur">{data.duration} min · {dateLabel}</div>
+    </div>
+  </a>
+)}
+
+{variant === 'grid' && (
+  <a href={href} class="film-grid-card">
+    <div class="film-grid-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+      <div class="film-grid-ov"></div>
+      <div class="film-grid-play"><div class="film-grid-play-icon"></div></div>
+    </div>
+    <div class="film-grid-info">
+      <div class="film-grid-tag">{data.country} · {data.type}</div>
+      <h3 class="film-grid-title">{data.title}</h3>
+      <div class="film-grid-meta">{data.duration} min · {dateLabel}</div>
+    </div>
+  </a>
+)}
+
+<style>
+  .film-main-link, .film-ep-card, .film-grid-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  /* MAIN — featured grande */
+  .film-main-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-main-content {
+    position: relative;
+  }
+
+  /* EPISODE — card verticale a destra del featured con thumb 16:9 cinematica */
+  .film-ep-card {
+    background: #fff;
+    border-radius: 3px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .film-ep-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26, 24, 20, 0.06);
+  }
+  .film-ep-card:hover .film-ep-thumb-play {
+    background: rgba(196, 133, 90, 0.85);
+    border-color: var(--terra);
+  }
+  .film-ep-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--dark);
+    border-radius: 3px;
+  }
+  .film-ep-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-ep-thumb-ov {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.35) 0%, rgba(26,24,20,0) 50%);
+  }
+  .film-ep-thumb-play {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 24, 20, 0.45);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .film-ep-thumb-play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 3px;
+  }
+  .film-ep-info {
+    padding: 12px 4px 0;
+  }
+  .film-ep-tag {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .film-ep-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.25;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+  .film-ep-dur {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+
+  /* GRID — card per archivio uniforme */
+  .film-grid-card {
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .film-grid-card:hover {
+    box-shadow: 0 6px 20px rgba(26, 24, 20, 0.08);
+    transform: translateY(-2px);
+  }
+  .film-grid-img {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--dark);
+  }
+  .film-grid-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .film-grid-ov {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,24,20,0.55) 0%, rgba(26,24,20,0) 55%);
+  }
+  .film-grid-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 24, 20, 0.35);
+    transition: background 0.2s;
+  }
+  .film-grid-card:hover .film-grid-play {
+    background: rgba(196, 133, 90, 0.85);
+    border-color: var(--terra);
+  }
+  .film-grid-play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 4px;
+  }
+  .film-grid-info {
+    padding: 18px 20px 22px;
+  }
+  .film-grid-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .film-grid-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 10px;
+  }
+  .film-grid-meta {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+</style>

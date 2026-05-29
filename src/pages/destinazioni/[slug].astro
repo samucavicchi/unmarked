@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const destinazioni = await getCollection('destinazioni');
+
+  return destinazioni.map((item) => ({
+    params: { slug: item.slug },
+    props: { item }
+  }));
+}
+
+const { item } = Astro.props;
+
+const formattedDate = new Date(item.data.publishDate).toLocaleDateString('it-IT', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+---
+
+<Layout title={`${item.data.title} — Unmarked`}>
+  <Navbar />
+
+  <article>
+    <header class="article-hero">
+      <div
+        class="article-hero-bg"
+        style={`background-image: linear-gradient(to top, rgba(26,24,20,0.85) 0%, rgba(26,24,20,0.4) 40%, rgba(26,24,20,0.05) 100%), url(${item.data.cover});`}
+      ></div>
+
+      <div class="article-hero-content">
+        <div class="article-kicker">
+          {item.data.country} · {item.data.continent}
+        </div>
+
+        <h1 class="article-title">
+          {item.data.title}
+        </h1>
+
+        <p class="article-excerpt">
+          {item.data.excerpt}
+        </p>
+
+        <div class="article-meta">
+          Unmarked · {formattedDate}
+        </div>
+      </div>
+    </header>
+
+    <section class="article-body">
+      <div class="article-content" set:html={item.body} />
+    </section>
+  </article>
+</Layout>
