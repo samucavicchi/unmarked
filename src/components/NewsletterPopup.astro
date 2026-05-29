@@ -1,55 +1,59 @@
 ---
-// NewsletterPopup.astro — Fascia slide-up newsletter dopo 10-15s
+// NewsletterPopup.astro — Flag laterale slide-up, angolo in basso a destra
 ---
 
 <div id="nl-popup" class="nl-popup" aria-hidden="true">
-  <div class="nl-popup-inner">
-    <div class="nl-popup-left">
-      <div class="nl-popup-tag">Newsletter</div>
-      <div class="nl-popup-title">I posti che non trovi<br>sulle guide.</div>
-      <div class="nl-popup-sub">Reportage, destinazioni e storie vere — ogni settimana.</div>
-    </div>
-    <form class="nl-popup-form" name="newsletter-popup" method="POST" data-netlify="true">
-      <input type="hidden" name="form-name" value="newsletter-popup" />
-      <div class="nl-popup-row">
-        <input type="email" name="email" placeholder="La tua email" class="nl-popup-input" required />
-        <button type="submit" class="nl-popup-btn">Iscriviti</button>
-      </div>
-      <div class="nl-popup-legal">Niente spam. Puoi disiscriverti in qualsiasi momento.</div>
-    </form>
-    <button class="nl-popup-close" aria-label="Chiudi popup">&times;</button>
-  </div>
+  <button class="nl-popup-close" aria-label="Chiudi">&times;</button>
+  <div class="nl-popup-tag">Newsletter</div>
+  <div class="nl-popup-title">I posti che non trovi sulle guide.</div>
+  <div class="nl-popup-sub">Reportage, destinazioni e storie vere — ogni settimana nella tua casella.</div>
+  <form class="nl-popup-form" name="newsletter-popup" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="newsletter-popup" />
+    <input type="email" name="email" placeholder="La tua email" class="nl-popup-input" required />
+    <button type="submit" class="nl-popup-btn">Iscriviti</button>
+  </form>
+  <div class="nl-popup-legal">Niente spam. Disiscrizione in un click.</div>
 </div>
 
 <style>
   .nl-popup {
     position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
+    right: 32px;
     z-index: 200;
-    transform: translateY(100%);
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-    background: var(--dark);
-    border-top: 1px solid rgba(201, 185, 154, 0.18);
+    width: 300px;
+    background: rgba(26, 24, 20, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(201, 185, 154, 0.15);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    padding: 28px 24px 24px;
+    transform: translateY(calc(100% + 1px));
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.25);
   }
 
   .nl-popup.is-visible {
     transform: translateY(0);
   }
 
-  .nl-popup-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 28px 40px;
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    position: relative;
+  .nl-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: rgba(250, 250, 248, 0.35);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    transition: color 0.2s;
   }
 
-  .nl-popup-left {
-    flex-shrink: 0;
+  .nl-popup-close:hover {
+    color: #FAFAF8;
   }
 
   .nl-popup-tag {
@@ -58,71 +62,70 @@
     letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--terra);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
 
   .nl-popup-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 300;
     color: #FAFAF8;
     line-height: 1.2;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
   .nl-popup-sub {
     font-size: 11px;
     font-weight: 300;
     color: rgba(250, 250, 248, 0.45);
-    line-height: 1.6;
+    line-height: 1.65;
+    margin-bottom: 20px;
   }
 
   .nl-popup-form {
-    flex: 1;
-  }
-
-  .nl-popup-row {
     display: flex;
+    flex-direction: column;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .nl-popup-input {
-    flex: 1;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(201, 185, 154, 0.25);
+    border: 1px solid rgba(201, 185, 154, 0.22);
     color: #FAFAF8;
-    padding: 11px 16px;
-    font-size: 13px;
+    padding: 11px 14px;
+    font-size: 12px;
     font-weight: 300;
     font-family: 'Inter', sans-serif;
     outline: none;
     border-radius: 2px;
     transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .nl-popup-input:focus {
-    border-color: rgba(201, 185, 154, 0.55);
+    border-color: rgba(201, 185, 154, 0.5);
   }
 
   .nl-popup-input::placeholder {
-    color: rgba(250, 250, 248, 0.3);
+    color: rgba(250, 250, 248, 0.28);
   }
 
   .nl-popup-btn {
     background: var(--terra);
     color: #fff;
     border: none;
-    padding: 11px 24px;
-    font-size: 10px;
+    padding: 11px;
+    font-size: 9px;
     font-weight: 500;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     cursor: pointer;
     border-radius: 2px;
     font-family: 'Inter', sans-serif;
-    white-space: nowrap;
     transition: background 0.2s;
+    width: 100%;
   }
 
   .nl-popup-btn:hover {
@@ -132,36 +135,17 @@
   .nl-popup-legal {
     font-size: 10px;
     font-weight: 300;
-    color: rgba(250, 250, 248, 0.28);
+    color: rgba(250, 250, 248, 0.22);
   }
 
-  .nl-popup-close {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: rgba(250, 250, 248, 0.4);
-    font-size: 22px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
-    transition: color 0.2s;
-  }
-
-  .nl-popup-close:hover {
-    color: #FAFAF8;
-  }
-
-  @media (max-width: 768px) {
-    .nl-popup-inner {
-      flex-direction: column;
-      gap: 20px;
-      padding: 24px 20px 28px;
+  @media (max-width: 420px) {
+    .nl-popup {
+      right: 0;
+      width: 100%;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
     }
-    .nl-popup-title { font-size: 22px; }
-    .nl-popup-row { flex-direction: column; }
-    .nl-popup-btn { width: 100%; padding: 13px; }
   }
 </style>
 
@@ -169,12 +153,10 @@
   const popup = document.getElementById('nl-popup');
   const closeBtn = popup?.querySelector('.nl-popup-close');
 
-  const delay = Math.random() * 5000 + 10000;
-
   setTimeout(() => {
     popup?.classList.add('is-visible');
     popup?.setAttribute('aria-hidden', 'false');
-  }, delay);
+  }, 8000);
 
   closeBtn?.addEventListener('click', () => {
     popup?.classList.remove('is-visible');
