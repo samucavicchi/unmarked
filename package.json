@@ -13,6 +13,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.16.18"
+    "@astrojs/netlify": "^5.5.4",
+    "@clerk/astro": "^1.5.0",
+    "astro": "^4.16.18",
+    "stripe": "^16.12.0"
   }
 }
