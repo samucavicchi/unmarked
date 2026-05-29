@@ -15,7 +15,12 @@ if (!entry) {
 const { data } = entry;
 
 // ── Auth Clerk ─────────────────────────────────────────────────────────────
-const currentUser = await Astro.locals.currentUser();
+let currentUser: Awaited<ReturnType<typeof Astro.locals.currentUser>> = null;
+try {
+  currentUser = await Astro.locals.currentUser();
+} catch (clerkErr) {
+  console.error('[slug] Clerk currentUser() failed:', clerkErr);
+}
 
 const userIsPremium: boolean = !!(
   (currentUser?.publicMetadata?.isPremium) ||
