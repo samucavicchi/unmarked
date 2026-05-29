@@ -1,28 +1,35 @@
 ---
+// SSR: verifica auth server-side ad ogni richiesta
+export const prerender = false;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
 
-export async function getStaticPaths() {
-  const itinerari = await getCollection('itinerari');
-  return itinerari.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+const { slug } = Astro.params;
+const entry = await getEntry('itinerari', slug!);
+
+if (!entry) {
+  return Astro.redirect('/404');
 }
 
-interface Props {
-  entry: CollectionEntry<'itinerari'>;
-}
-
-const { entry } = Astro.props;
 const { data } = entry;
 
+// ── Auth Clerk ─────────────────────────────────────────────────────────────
+const currentUser = await Astro.locals.currentUser();
+
+const userIsPremium: boolean = !!(
+  (currentUser?.publicMetadata?.isPremium) ||
+  ((currentUser?.publicMetadata?.purchasedItinerari as string[] | undefined)?.includes(entry.slug))
+);
+
+// ── Logica giorni (paywall ignorato se utente premium) ─────────────────────
 const days = (data.days || []).slice().sort((a, b) => a.dayNumber - b.dayNumber);
-const firstPremiumIdx = days.findIndex((d) => d.isPremium);
+const firstPremiumIdx = userIsPremium ? -1 : days.findIndex((d) => d.isPremium);
 const freeDays = firstPremiumIdx === -1 ? days : days.slice(0, firstPremiumIdx);
 const premiumDays = firstPremiumIdx === -1 ? [] : days.slice(firstPremiumIdx);
 
-const checkoutUrl = data.lemonSqueezyCheckoutUrl || '#abbonati';
+// Stripe checkout via /api/checkout
+const checkoutUrl = '#checkout';
 
 const updatedDate = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
 
@@ -192,9 +199,9 @@ const gallery = data.gallery || [];
               </div>
             </div>
 
-            <a href="/abbonati" class="pw-btn-sub">Abbonati — €29/mese</a>
-            <a href={checkoutUrl} class="pw-btn-single">Acquista solo questo — €{data.price}</a>
-            <div class="pw-login">Hai già un account? <span>Accedi</span></div>
+            <button class="pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="pw-btn-single" data-checkout="single">Acquista solo questo — €{data.price}</button>
+            <div class="pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
           </div>
         </div>
       )}
@@ -219,9 +226,9 @@ const gallery = data.gallery || [];
           <div class="price-item"><div class="price-dot"></div><div>Contatti locali verificati</div></div>
           <div class="price-item"><div class="price-dot"></div><div>Aggiornamenti stagionali inclusi</div></div>
         </div>
-        <a href={checkoutUrl} class="btn-buy">Acquista — €{data.price}</a>
-        <a href="/abbonati" class="btn-sub-sidebar">Abbonati e accedi a tutto</a>
-        <div class="price-already">Sei abbonato? <span>Accedi</span></div>
+        <button class="btn-buy" data-checkout="single">Acquista — €{data.price}</button>
+        <button class="btn-sub-sidebar" data-checkout="subscription">Abbonati e accedi a tutto</button>
+        <div class="price-already">Sei abbonato? <a href="/sign-in">Accedi</a></div>
       </div>
 
       <div class="info-box">
@@ -291,9 +298,9 @@ const gallery = data.gallery || [];
           <div class="vale-pw-box">
             <div class="vale-pw-title">Altri consigli riservati agli abbonati</div>
             <div class="vale-pw-sub">Dove dormire davvero, dove mangiare senza finire in trappola turistica e cosa non perdere per nessun motivo.</div>
-            <a href="/abbonati" class="vale-pw-btn-sub">Abbonati — €29/mese</a>
-            <a href={checkoutUrl} class="vale-pw-btn-single">Acquista questo itinerario — €{data.price}</a>
-            <div class="vale-pw-login">Hai già un account? <span>Accedi</span></div>
+            <button class="vale-pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
+            <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
           </div>
         </div>
       )}
@@ -379,9 +386,9 @@ const gallery = data.gallery || [];
           <div class="vale-pw-box">
             <div class="vale-pw-title">Altri mainstream check riservati agli abbonati</div>
             <div class="vale-pw-sub">Cosa NON visiterai, e cosa vedere al suo posto.</div>
-            <a href="/abbonati" class="vale-pw-btn-sub">Abbonati — €29/mese</a>
-            <a href={checkoutUrl} class="vale-pw-btn-single">Acquista questo itinerario — €{data.price}</a>
-            <div class="vale-pw-login">Hai già un account? <span>Accedi</span></div>
+            <button class="vale-pw-btn-sub" data-checkout="subscription">Abbonati — €29/mese</button>
+            <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
+            <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
           </div>
         </div>
       )}
@@ -471,6 +478,54 @@ const gallery = data.gallery || [];
     if (close) close.addEventListener('click', function(e){ e.stopPropagation(); closeLb(); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLb(); });
   </script>
+
+  {/* Banner acquisto completato */}
+  <div class="upgrade-banner" id="upgrade-banner" style="display:none">
+    <div class="upgrade-banner-inner">
+      <div class="upgrade-banner-icon">✓</div>
+      <div>
+        <div class="upgrade-banner-title">Acquisto completato!</div>
+        <div class="upgrade-banner-sub">Ricarica la pagina se alcuni contenuti non sono ancora visibili.</div>
+      </div>
+      <button class="upgrade-banner-close" onclick="this.closest('#upgrade-banner').style.display='none'">✕</button>
+    </div>
+  </div>
+
+  {/* Script Stripe checkout */}
+  <script is:inline define:vars={{ itSlug: entry.slug, itPrice: data.price, itTitle: data.title }}>
+    if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
+      var banner = document.getElementById('upgrade-banner');
+      if (banner) banner.style.display = 'block';
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    async function startCheckout(type) {
+      var allBtns = document.querySelectorAll('[data-checkout]');
+      allBtns.forEach(function(b){ b.disabled = true; b.style.opacity = '0.6'; });
+      try {
+        var res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: type, slug: itSlug, price: itPrice, title: itTitle }),
+        });
+        var json = await res.json();
+        if (json.url) {
+          window.location.href = json.url;
+        } else {
+          alert('Errore nel checkout: ' + (json.error || 'risposta inattesa'));
+        }
+      } catch (err) {
+        alert('Errore di rete. Riprova.');
+      } finally {
+        allBtns.forEach(function(b){ b.disabled = false; b.style.opacity = ''; });
+      }
+    }
+
+    document.querySelectorAll('[data-checkout]').forEach(function(btn) {
+      btn.addEventListener('click', function() { startCheckout(btn.dataset.checkout); });
+    });
+  </script>
+
 
   {hasMap && (
     <>
@@ -586,9 +641,24 @@ const gallery = data.gallery || [];
   .pw-opt-price { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 2px; }
   .pw-opt-period { font-size: 10px; font-weight: 300; color: var(--muted); margin-bottom: 10px; }
   .pw-opt-desc { font-size: 11px; font-weight: 300; color: var(--muted); line-height: 1.5; }
-  .pw-btn-sub { display: block; width: 100%; max-width: 412px; margin: 0 auto 8px; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; }
-  .pw-btn-single { display: block; width: 100%; max-width: 412px; margin: 0 auto 14px; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; text-decoration: none; }
+  .pw-btn-sub { display: block; width: 100%; max-width: 412px; margin: 0 auto 8px; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; border: none; cursor: pointer; }
+  .pw-btn-single { display: block; width: 100%; max-width: 412px; margin: 0 auto 14px; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; cursor: pointer; }
   .pw-login { font-size: 10px; font-weight: 300; color: var(--sand); }
+  .pw-login a { color: var(--terra); text-decoration: none; }
+  .btn-buy { display: block; width: 100%; background: var(--dark); color: #FAFAF8; padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; border: none; cursor: pointer; margin-bottom: 8px; }
+  .btn-sub-sidebar { display: block; width: 100%; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 13px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-align: center; cursor: pointer; margin-bottom: 12px; }
+  .price-already { font-size: 10px; font-weight: 300; color: var(--sand); text-align: center; }
+  .price-already a { color: var(--terra); text-decoration: none; }
+  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; border: none; cursor: pointer; margin-right: 8px; }
+  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; cursor: pointer; }
+  .vale-pw-login { font-size: 10px; font-weight: 300; color: var(--sand); margin-top: 12px; }
+  .vale-pw-login a { color: var(--terra); text-decoration: none; }
+  .upgrade-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 9000; background: var(--sage); }
+  .upgrade-banner-inner { display: flex; align-items: center; gap: 14px; padding: 12px 24px; }
+  .upgrade-banner-icon { font-size: 18px; color: #fff; }
+  .upgrade-banner-title { font-size: 12px; font-weight: 500; color: #fff; }
+  .upgrade-banner-sub { font-size: 10px; font-weight: 300; color: rgba(255,255,255,0.8); }
+  .upgrade-banner-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 16px; cursor: pointer; }
   .pw-login span { color: var(--terra); cursor: pointer; }
 
   /* SIDEBAR */
