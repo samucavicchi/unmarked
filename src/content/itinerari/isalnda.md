@@ -45,12 +45,12 @@ days:
     title: Vulcano verde
     description: Vulcano neroVulcano neroVulcano neroVulcano neroVulcano neroVulcano
       neroVulcano neroVulcano nero
-  - isPremium: true
+  - isPremium: false
     dayNumber: 2
     title: Vulcano rosso
     description: Vulcano rossoVulcano rossoVulcano rossoVulcano rossoVulcano
       rossoVulcano rossoVulcano rossoVulcano rossoVulcano rosso
-  - isPremium: true
+  - isPremium: false
     title: Vulcano nero
     description: Vulcano neroVulcano neroVulcano neroVulcano neroVulcano neroVulcano nero
     dayNumber: 3
