@@ -120,20 +120,20 @@ days:
     kmTotali: 250
     dormire: Okakuejo
 mapCenter:
-  lat: 64.9631
-  lng: -19.0208
-  zoom: 4
+  lat: -22.548856
+  lng: 17.065958
+  zoom: 6
 mapMarkers:
   - lat: -22.548856
-    lng: 17065958
+    lng: 17.065958
     label: Windhoek
     dayNumber: 1
   - lat: -24.486607
-    lng: 15799281
+    lng: 15.799281
     label: Sesrielm
     dayNumber: 1
   - lat: -24.758057
-    lng: 15291213
+    lng: 15.291213
     label: Deadvley
     dayNumber: 2
   - lat: -24.518462
