@@ -316,30 +316,13 @@ const formatDateShort = (date) =>
     border-radius: 3px;
     overflow: hidden;
     border: 1px solid rgba(201,185,154,0.2);
+    box-shadow: inset 100px 0 60px -20px #FAFAF8, inset -100px 0 60px -20px #FAFAF8;
   }
   .home-map-canvas {
     width: 100%;
     height: 420px;
     cursor: pointer;
     display: block;
-  }
-  .home-map-wrap::before,
-  .home-map-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 120px;
-    z-index: 800;
-    pointer-events: none;
-  }
-  .home-map-wrap::before {
-    left: 0;
-    background: linear-gradient(to right, #FAFAF8, transparent);
-  }
-  .home-map-wrap::after {
-    right: 0;
-    background: linear-gradient(to left, #FAFAF8, transparent);
   }
 
   .card-link { text-decoration: none; color: inherit; display: block; }
