@@ -261,7 +261,7 @@ const gallery = data.gallery || [];
         {valeCols.map((col) => (
           <div>
             <div class="vale-col-label">{col.label}</div>
-            {col.items.slice(0, 1).map((it: any) => (
+            {(userIsPremium ? col.items : col.items.slice(0, 1)).map((it: any) => (
               <div class="vale-item">
                 <div class="vale-item-header">
                   <div class="vale-item-name">{it.name}</div>
@@ -277,7 +277,7 @@ const gallery = data.gallery || [];
         ))}
       </div>
 
-      {valeHasPaywall && (
+      {!userIsPremium && valeHasPaywall && (
         <div class="vale-paywall-wrap">
           <div class="vale-blur">
             <div class="vale-grid">
@@ -322,9 +322,9 @@ const gallery = data.gallery || [];
       {ms?.intro && <p class="ms-intro">{ms.intro}</p>}
       {!ms && data.mainstreamCheck && <p class="ms-intro">{data.mainstreamCheck}</p>}
 
-      {ms && msFreeItems.length > 0 && (
+      {ms && (userIsPremium ? ms.items : msFreeItems).length > 0 && (
         <div class="ms-list">
-          {msFreeItems.map((it: any) => (
+          {(userIsPremium ? ms.items : msFreeItems).map((it: any) => (
             <div class="ms-item">
               <div class="ms-item-grid">
                 <div class="ms-item-info">
@@ -354,7 +354,7 @@ const gallery = data.gallery || [];
         </div>
       )}
 
-      {ms && msPremiumItems.length > 0 && (
+      {!userIsPremium && ms && msPremiumItems.length > 0 && (
         <div class="ms-paywall-wrap">
           <div class="ms-blur">
             <div class="ms-list">
@@ -410,7 +410,7 @@ const gallery = data.gallery || [];
         data-points={JSON.stringify(mapPoints)}
       ></div>
       <div class="it-map-caption">I punti sbloccati mostrano il percorso completo · Giorni premium disponibili con l'acquisto</div>
-      {data.mapMarkers?.length > 0 && (
+      {userIsPremium && data.mapMarkers?.length > 0 && (
         <a href={`/itinerari/${entry.slug}.kml`} download class="kml-download-btn">
           ↓ Scarica mappa per Google Maps / GPS
         </a>
