@@ -1,3 +1,7 @@
+---
+import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
+---
+
 <nav>
   <a href="/" class="nav-logo">Unmarked</a>
 
@@ -18,6 +22,20 @@
       <path d="M10 2a6 6 0 016 6c0 3.5-6 10-6 10S4 11.5 4 8a6 6 0 016-6z" stroke-linecap="round"/>
       <circle cx="10" cy="8" r="2"/>
     </svg>
-    <a href="/sign-in" class="btn-abbonati">Accedi</a>
+    <SignedOut>
+      <a href="/sign-in" class="btn-abbonati">Accedi</a>
+    </SignedOut>
+    <SignedIn>
+      <div class="nav-user-btn">
+        <UserButton />
+      </div>
+    </SignedIn>
   </div>
 </nav>
+
+<style>
+  .nav-user-btn {
+    display: flex;
+    align-items: center;
+  }
+</style>
