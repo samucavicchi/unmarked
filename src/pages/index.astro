@@ -149,7 +149,10 @@ const formatDateShort = (date) =>
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 14,
+        noWrap: true,
       }).addTo(map);
+
+      map.setMaxBounds([[-90, -180], [90, 180]]);
 
       const destIcon = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#C4855A;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
       const itIcon  = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#2c2c2c;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
