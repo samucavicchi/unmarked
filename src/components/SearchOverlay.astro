@@ -1,0 +1,237 @@
+---
+import { getCollection } from 'astro:content';
+
+const destinazioni = await getCollection('destinazioni');
+const itinerari = await getCollection('itinerari');
+
+const searchData = [
+  ...destinazioni.map((e) => ({
+    type: 'destinazione',
+    title: e.data.title,
+    subtitle: e.data.subtitle || '',
+    country: e.data.country,
+    continent: e.data.continent,
+    slug: `/destinazioni/${e.slug}`,
+    img: e.data.coverImage.src,
+  })),
+  ...itinerari.map((e) => ({
+    type: 'itinerario',
+    title: e.data.title,
+    subtitle: e.data.subtitle || '',
+    country: e.data.country,
+    continent: e.data.continent,
+    slug: `/itinerari/${e.slug}`,
+    img: e.data.coverImage.src,
+  })),
+];
+---
+
+<div id="search-overlay" class="search-overlay" aria-hidden="true">
+  <div class="search-backdrop"></div>
+  <div class="search-panel">
+    <div class="search-bar">
+      <svg class="search-icon-sm" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="9" cy="9" r="6"/>
+        <path d="M15 15l3 3" stroke-linecap="round"/>
+      </svg>
+      <input id="search-input" class="search-input" type="text" placeholder="Cerca destinazioni, itinerari, paesi…" autocomplete="off" />
+      <button id="search-close" class="search-close" aria-label="Chiudi">✕</button>
+    </div>
+    <div id="search-results" class="search-results"></div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ searchData }}>
+  const overlay = document.getElementById('search-overlay');
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  const closeBtn = document.getElementById('search-close');
+  const backdrop = overlay.querySelector('.search-backdrop');
+
+  function openSearch() {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => input.focus(), 50);
+    renderResults('');
+  }
+
+  function closeSearch() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    input.value = '';
+    results.innerHTML = '';
+  }
+
+  closeBtn.addEventListener('click', closeSearch);
+  backdrop.addEventListener('click', closeSearch);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
+
+  // Apertura dalla lente nel navbar
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#nav-search-btn')) openSearch();
+  });
+
+  function renderResults(query) {
+    const q = query.toLowerCase().trim();
+    const filtered = q.length < 1
+      ? searchData.slice(0, 8)
+      : searchData.filter((d) =>
+          d.title.toLowerCase().includes(q) ||
+          d.country.toLowerCase().includes(q) ||
+          d.continent.toLowerCase().includes(q) ||
+          d.subtitle.toLowerCase().includes(q)
+        ).slice(0, 10);
+
+    if (filtered.length === 0) {
+      results.innerHTML = '<div class="search-empty">Nessun risultato trovato.</div>';
+      return;
+    }
+
+    const label = q.length < 1 ? 'Tutti i contenuti' : `${filtered.length} risultat${filtered.length === 1 ? 'o' : 'i'}`;
+    results.innerHTML = `
+      <div class="search-label">${label}</div>
+      ${filtered.map((d) => `
+        <a href="${d.slug}" class="search-item" onclick="closeSearch ? closeSearch() : null">
+          <div class="search-item-img"><img src="${d.img}" alt="${d.title}" /></div>
+          <div class="search-item-info">
+            <div class="search-item-type">${d.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${d.country}</div>
+            <div class="search-item-title">${d.title}</div>
+          </div>
+          <div class="search-item-arrow">→</div>
+        </a>
+      `).join('')}
+    `;
+
+    results.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', closeSearch);
+    });
+  }
+
+  input.addEventListener('input', () => renderResults(input.value));
+</script>
+
+<style>
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 80px;
+  }
+  .search-overlay.open { display: flex; }
+
+  .search-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 24, 20, 0.55);
+    backdrop-filter: blur(3px);
+  }
+
+  .search-panel {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    background: var(--parchment, #FAFAF8);
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(26, 24, 20, 0.25);
+    overflow: hidden;
+    margin: 0 20px;
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(201,185,154,0.2);
+  }
+  .search-icon-sm {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .search-input {
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--dark);
+    outline: none;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-close {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 2px;
+    transition: color 0.2s;
+  }
+  .search-close:hover { color: var(--dark); }
+
+  .search-results {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+  .search-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 20px;
+  }
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+  .search-item:hover { background: rgba(201,185,154,0.1); }
+  .search-item-img {
+    width: 52px;
+    height: 38px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .search-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .search-item-type {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 2px;
+  }
+  .search-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--dark);
+  }
+  .search-item-arrow {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .search-empty {
+    padding: 24px 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

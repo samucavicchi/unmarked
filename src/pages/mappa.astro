@@ -1,0 +1,266 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const destinazioni = await getCollection('destinazioni');
+const itinerari = await getCollection('itinerari');
+
+// Coordinate di default per paese (fallback se non c'è mapCenter)
+const countryCoords: Record<string, [number, number]> = {
+  'Namibia': [-22.55, 17.08],
+  'Islanda': [64.96, -19.02],
+  'Albania': [41.15, 20.17],
+  'Georgia': [42.31, 43.35],
+  'Giappone': [36.20, 138.25],
+  'Kirghizistan': [41.20, 74.76],
+};
+
+const destPins = destinazioni
+  .filter((e) => e.data.coverImage)
+  .map((e) => {
+    const center = e.data.mapCenter;
+    const coords = center
+      ? [center.lat, center.lng]
+      : countryCoords[e.data.country] ?? null;
+    if (!coords) return null;
+    return {
+      type: 'destinazione',
+      lat: coords[0],
+      lng: coords[1],
+      title: e.data.title,
+      country: e.data.country,
+      slug: `/destinazioni/${e.slug}`,
+      img: e.data.coverImage.src,
+    };
+  })
+  .filter(Boolean);
+
+const itPins = itinerari
+  .filter((e) => e.data.coverImage)
+  .map((e) => {
+    const center = e.data.mapCenter;
+    const coords = center
+      ? [center.lat, center.lng]
+      : countryCoords[e.data.country] ?? null;
+    if (!coords) return null;
+    return {
+      type: 'itinerario',
+      lat: coords[0],
+      lng: coords[1],
+      title: e.data.title,
+      country: e.data.country,
+      slug: `/itinerari/${e.slug}`,
+      img: e.data.coverImage.src,
+      price: e.data.price,
+      duration: e.data.duration,
+    };
+  })
+  .filter(Boolean);
+
+const allPins = [...destPins, ...itPins];
+---
+
+<BaseLayout title="Mappa — Unmarked" description="Tutti i luoghi raccontati da Unmarked su una mappa interattiva.">
+  <link slot="head" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <div class="mappa-wrap">
+    <div class="mappa-header">
+      <h1 class="mappa-title">Il mondo di Unmarked</h1>
+      <p class="mappa-sub">Destinazioni e itinerari su una mappa.</p>
+      <div class="mappa-filters">
+        <button class="mappa-filter active" data-filter="tutti">Tutti</button>
+        <button class="mappa-filter" data-filter="destinazione">Destinazioni</button>
+        <button class="mappa-filter" data-filter="itinerario">Itinerari</button>
+      </div>
+    </div>
+    <div id="world-map" class="mappa-map"></div>
+  </div>
+</BaseLayout>
+
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script is:inline define:vars={{ allPins }}>
+  const map = L.map('world-map', {
+    center: [20, 15],
+    zoom: 2,
+    zoomControl: true,
+    scrollWheelZoom: true,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 14,
+  }).addTo(map);
+
+  const destIcon = L.divIcon({
+    className: '',
+    html: '<div class="map-pin map-pin-dest"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+  });
+
+  const itIcon = L.divIcon({
+    className: '',
+    html: '<div class="map-pin map-pin-it"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+  });
+
+  const markers = [];
+
+  allPins.forEach((pin) => {
+    const icon = pin.type === 'destinazione' ? destIcon : itIcon;
+    const extraInfo = pin.type === 'itinerario'
+      ? `<div class="pop-meta">${pin.duration} giorni · €${pin.price}</div>`
+      : '';
+    const marker = L.marker([pin.lat, pin.lng], { icon })
+      .addTo(map)
+      .bindPopup(`
+        <a href="${pin.slug}" class="pop-link">
+          <img src="${pin.img}" class="pop-img" alt="${pin.title}" />
+          <div class="pop-body">
+            <div class="pop-type">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div>
+            <div class="pop-title">${pin.title}</div>
+            ${extraInfo}
+            <div class="pop-cta">Scopri →</div>
+          </div>
+        </a>
+      `, { maxWidth: 220, className: 'unmarked-popup' });
+
+    markers.push({ marker, type: pin.type });
+  });
+
+  // Filtri
+  document.querySelectorAll('.mappa-filter').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mappa-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      markers.forEach(({ marker, type }) => {
+        if (filter === 'tutti' || filter === type) {
+          marker.addTo(map);
+        } else {
+          marker.remove();
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .mappa-wrap {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 60px);
+  }
+  .mappa-header {
+    padding: 40px var(--gutter, 40px) 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .mappa-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--dark);
+    margin: 0;
+  }
+  .mappa-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .mappa-filters {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .mappa-filter {
+    background: none;
+    border: 1px solid rgba(201,185,154,0.3);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mappa-filter.active,
+  .mappa-filter:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
+  .mappa-map {
+    flex: 1;
+    min-height: 500px;
+  }
+
+  /* Pin personalizzati */
+  :global(.map-pin) {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  :global(.map-pin-dest) { background: var(--terra, #C4855A); }
+  :global(.map-pin-it) { background: #2c2c2c; }
+
+  /* Popup */
+  :global(.unmarked-popup .leaflet-popup-content-wrapper) {
+    border-radius: 3px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(26,24,20,0.18);
+    border: none;
+  }
+  :global(.unmarked-popup .leaflet-popup-content) {
+    margin: 0;
+    width: 200px !important;
+  }
+  :global(.unmarked-popup .leaflet-popup-tip-container) { display: none; }
+  :global(.pop-link) {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  :global(.pop-img) {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    display: block;
+  }
+  :global(.pop-body) { padding: 12px 14px; }
+  :global(.pop-type) {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #C4855A;
+    margin-bottom: 4px;
+  }
+  :global(.pop-title) {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: #1a1814;
+    margin-bottom: 4px;
+  }
+  :global(.pop-meta) {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  :global(.pop-cta) {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #C4855A;
+  }
+</style>

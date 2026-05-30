@@ -2,6 +2,7 @@
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import NewsletterPopup from '../components/NewsletterPopup.astro';
+import SearchOverlay from '../components/SearchOverlay.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -41,6 +42,7 @@ const {
   <slot />
   <Footer />
   <NewsletterPopup />
+  <SearchOverlay />
 
   <script is:inline>
     // Inizializza il widget Netlify Identity dopo che lo script si è caricato

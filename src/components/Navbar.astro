@@ -14,14 +14,18 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
   </ul>
 
   <div class="nav-icons">
-    <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-      <circle cx="9" cy="9" r="6"/>
-      <path d="M15 15l3 3" stroke-linecap="round"/>
-    </svg>
-    <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-      <path d="M10 2a6 6 0 016 6c0 3.5-6 10-6 10S4 11.5 4 8a6 6 0 016-6z" stroke-linecap="round"/>
-      <circle cx="10" cy="8" r="2"/>
-    </svg>
+    <button id="nav-search-btn" class="nav-icon-btn" aria-label="Cerca">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="9" cy="9" r="6"/>
+        <path d="M15 15l3 3" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <a href="/mappa" class="nav-icon-btn" aria-label="Mappa">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M10 2a6 6 0 016 6c0 3.5-6 10-6 10S4 11.5 4 8a6 6 0 016-6z" stroke-linecap="round"/>
+        <circle cx="10" cy="8" r="2"/>
+      </svg>
+    </a>
     <SignedOut>
       <a href="/sign-in" class="btn-abbonati">Accedi</a>
     </SignedOut>
@@ -37,6 +41,16 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
 </nav>
 
 <style>
+  .nav-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+  }
   .nav-account-link {
     display: flex;
     align-items: center;
