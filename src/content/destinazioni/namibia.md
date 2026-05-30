@@ -13,7 +13,7 @@ featured: false
 interludeImage: ../../assets/articoli/3-1-dimensioni-grandi.jpeg
 interludeCaption: ciao
 pullQuote: una piccola africa
-relatedItinerary: ""
+relatedItinerary: Namibia
 mapCenter:
   zoom: -41
   lng: 17.873338
