@@ -634,8 +634,8 @@ const gallery = data.gallery || [];
 
   /* PAYWALL */
   .paywall-wrap { position: relative; margin-top: 0; }
-  .paywall-blur-content { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
-  .paywall-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.97) 35%, rgba(250,250,248,1) 100%); }
+  .paywall-blur-content { max-height: 420px; overflow: hidden; filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+  .paywall-overlay { position: absolute; top: 0; left: 0; right: 0; height: 420px; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.85) 55%, rgba(250,250,248,1) 100%); pointer-events: none; }
   .paywall-box { position: relative; text-align: center; padding: 40px 0 60px; }
   .pw-icon { font-size: 28px; margin-bottom: 14px; }
   .pw-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--dark); margin-bottom: 8px; }
