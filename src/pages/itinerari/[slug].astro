@@ -498,7 +498,7 @@ const gallery = data.gallery || [];
   </div>
 
   {/* Script Stripe checkout */}
-  <script is:inline define:vars={{ itSlug: entry.slug, itPrice: data.price, itTitle: data.title }}>
+  <script is:inline define:vars={{ itSlug: entry.slug, itPrice: data.price, itTitle: data.title, userIsLoggedIn: !!currentUser }}>
     if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
       var banner = document.getElementById('upgrade-banner');
       if (banner) banner.style.display = 'block';
@@ -506,6 +506,11 @@ const gallery = data.gallery || [];
     }
 
     async function startCheckout(type) {
+      // Se non loggato, manda al login con redirect back all'itinerario
+      if (!userIsLoggedIn) {
+        window.location.href = '/sign-in?redirect_url=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
       var allBtns = document.querySelectorAll('[data-checkout]');
       allBtns.forEach(function(b){ b.disabled = true; b.style.opacity = '0.6'; });
       try {
