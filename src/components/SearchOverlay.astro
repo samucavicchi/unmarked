@@ -29,6 +29,39 @@ const searchData = [
 <div id="search-overlay" class="search-overlay" aria-hidden="true">
   <div class="search-backdrop"></div>
   <div class="search-panel">
+    <div class="search-world">
+      <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" class="world-svg">
+        <!-- Nord America -->
+        <path d="M120,80 L160,60 L200,55 L230,70 L240,100 L220,130 L200,160 L180,190 L160,210 L140,230 L120,220 L100,200 L90,170 L95,140 L110,110 Z" />
+        <path d="M200,55 L240,45 L270,50 L280,70 L260,90 L240,100 Z" />
+        <!-- Groenlandia -->
+        <path d="M280,20 L320,15 L350,25 L360,50 L340,70 L310,75 L285,60 Z" />
+        <!-- Sud America -->
+        <path d="M180,250 L210,240 L230,260 L235,290 L230,330 L220,370 L200,400 L180,410 L165,390 L160,360 L165,320 L170,280 Z" />
+        <!-- Europa -->
+        <path d="M440,60 L470,55 L490,65 L495,85 L480,100 L460,105 L445,95 L438,78 Z" />
+        <path d="M460,105 L480,100 L500,110 L510,130 L500,150 L480,155 L462,145 L455,128 Z" />
+        <!-- Africa -->
+        <path d="M440,160 L480,150 L510,160 L525,190 L530,230 L525,270 L515,310 L500,340 L480,355 L460,350 L445,330 L435,295 L430,255 L432,215 L435,185 Z" />
+        <!-- Russia / Asia Nord -->
+        <path d="M510,50 L580,40 L660,45 L720,55 L760,65 L780,80 L770,100 L740,110 L700,115 L660,110 L620,105 L580,100 L545,90 L520,75 Z" />
+        <!-- Asia centrale -->
+        <path d="M560,110 L620,105 L670,115 L700,130 L710,155 L695,175 L665,185 L630,180 L600,170 L575,155 L558,135 Z" />
+        <!-- Asia sud-est / India -->
+        <path d="M590,175 L625,180 L650,195 L660,225 L650,255 L630,270 L605,265 L588,245 L582,215 L585,190 Z" />
+        <!-- Cina/Giappone -->
+        <path d="M670,115 L720,120 L750,135 L765,160 L755,185 L730,195 L700,190 L678,175 L668,150 Z" />
+        <path d="M770,130 L790,125 L805,140 L800,160 L782,165 L768,152 Z" />
+        <!-- Australia -->
+        <path d="M720,280 L780,270 L830,280 L855,305 L855,340 L840,370 L810,385 L775,380 L748,360 L732,330 L725,300 Z" />
+        <!-- Nuova Zelanda -->
+        <path d="M870,340 L885,330 L895,345 L888,365 L872,368 Z" />
+        <!-- Medio Oriente -->
+        <path d="M510,155 L555,150 L575,165 L570,190 L548,200 L520,195 L508,178 Z" />
+        <!-- Madagascar -->
+        <path d="M520,300 L530,285 L542,295 L545,320 L535,340 L520,335 L514,315 Z" />
+      </svg>
+    </div>
     <div class="search-bar">
       <svg class="search-icon-sm" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="9" cy="9" r="6"/>
@@ -132,6 +165,22 @@ const searchData = [
     max-width: 580px;
     margin: 0 24px;
     background: transparent;
+  }
+  .search-world {
+    margin-bottom: 20px;
+    opacity: 0.18;
+  }
+  .world-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .world-svg path {
+    fill: none;
+    stroke: #FAFAF8;
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
   }
 
   .search-bar {
