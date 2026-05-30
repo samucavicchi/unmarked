@@ -11,7 +11,7 @@ featured: false
 interludeImage: ../../assets/articoli/marco-1.jpg
 interludeCaption: prova foto
 pullQuote: questo è un test per provare la grafica
-relatedItinerary: islanda
+relatedItinerary: tra ghiaccio e fuoco
 mapCenter:
   lat: 64.9631
   lng: -19.0208
