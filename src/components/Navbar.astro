@@ -27,7 +27,10 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
     </SignedOut>
     <SignedIn>
       <a href="/account" class="nav-account-link" title="Il mio account">
-        <div class="nav-avatar-dot"></div>
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="10" cy="7" r="3"/>
+          <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke-linecap="round"/>
+        </svg>
       </a>
     </SignedIn>
   </div>
