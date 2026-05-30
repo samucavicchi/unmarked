@@ -1,5 +1,5 @@
 ---
-import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
+import { SignedIn, SignedOut } from '@clerk/astro/components';
 ---
 
 <nav>
@@ -27,7 +27,7 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
     </SignedOut>
     <SignedIn>
       <a href="/account" class="nav-account-link" title="Il mio account">
-        <UserButton />
+        <div class="nav-avatar-dot"></div>
       </a>
     </SignedIn>
   </div>
@@ -38,5 +38,16 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
     display: flex;
     align-items: center;
     text-decoration: none;
+  }
+  .nav-avatar-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--terra);
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+  .nav-account-link:hover .nav-avatar-dot {
+    opacity: 1;
   }
 </style>
