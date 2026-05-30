@@ -90,10 +90,7 @@ const allPins = [...destPins, ...itPins];
     attribution: '© OpenStreetMap © CARTO',
     subdomains: 'abcd',
     maxZoom: 14,
-    noWrap: true,
   }).addTo(map);
-
-  map.setMaxBounds([[-90, -180], [90, 180]]);
 
   const destIcon = L.divIcon({
     className: '',
