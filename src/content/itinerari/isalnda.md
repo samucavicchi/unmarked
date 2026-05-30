@@ -27,6 +27,14 @@ vale:
         parco ad alba, tramonto e soprattutto di notte, dove potresti vedere
         stelle che non pensavi potessero esistere.
       tip: La Notte piu bella del viaggio
+    - badge: good
+      name: Dusterbrook Guestfarm
+      location: 30' da windhoke
+      description: Ottimo per l'ultima notte prima del rientro, sei vicinissimo alla
+        città, ma in un oasi splendida, un ranch circondato da babbuini, dove in
+        riserva hanno oltre a molte antilopi, 2 leopardi e un lago pieno di
+        ippopotami, animale impossibile da vedere in questa zona della namibia.
+      tip: Ultima coccola prima della partenza
   mangiare:
     - badge: must
       name: L'Apple Pie di Solitaire
@@ -52,7 +60,7 @@ days:
     gallery:
       - image: ../../assets/articoli/231011-namibia-dune-roman.jpg
         caption: Il Namib
-  - isPremium: true
+  - isPremium: false
     dayNumber: 2
     title: Deadvley e il deserto del Namib
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
@@ -63,7 +71,7 @@ days:
       via. Raggiunto il parcheggio finale, 10 minuti a piedi e si raggiunge uno
       dei luoghi. piu surreali del pianeta
     dormire: Sesriem Campsite
-  - isPremium: true
+  - isPremium: false
     title: Vulcano nero
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
       parco apre si percorrono i 50 km che separano Sesriem da Sossusvlay,
@@ -73,7 +81,7 @@ days:
       via. Raggiunto il parcheggio finale, 10 minuti a piedi e si raggiunge uno
       dei luoghi. piu surreali del pianeta
     dayNumber: 3
-  - isPremium: true
+  - isPremium: false
     dayNumber: 4
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
       parco apre si percorrono i 50 km che separano Sesriem da Sossusvlay,
@@ -86,7 +94,7 @@ days:
     kmTotali: 400
     dormire: Swakopmund
     mangiare: Solitaire
-  - isPremium: true
+  - isPremium: false
     dayNumber: 5
     title: Sandwich Harbour
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
@@ -110,7 +118,7 @@ days:
     kmTotali: 250
     dormire: Spitzkope Campsite
     mangiare: Selfcatering
-  - isPremium: true
+  - isPremium: false
     dayNumber: 7
     title: Inizia il Safari
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
