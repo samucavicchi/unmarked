@@ -60,7 +60,7 @@ days:
     gallery:
       - image: ../../assets/articoli/231011-namibia-dune-roman.jpg
         caption: Il Namib
-  - isPremium: false
+  - isPremium: true
     dayNumber: 2
     title: Deadvley e il deserto del Namib
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
@@ -71,7 +71,7 @@ days:
       via. Raggiunto il parcheggio finale, 10 minuti a piedi e si raggiunge uno
       dei luoghi. piu surreali del pianeta
     dormire: Sesriem Campsite
-  - isPremium: false
+  - isPremium: true
     title: Vulcano nero
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
       parco apre si percorrono i 50 km che separano Sesriem da Sossusvlay,
@@ -81,7 +81,7 @@ days:
       via. Raggiunto il parcheggio finale, 10 minuti a piedi e si raggiunge uno
       dei luoghi. piu surreali del pianeta
     dayNumber: 3
-  - isPremium: false
+  - isPremium: true
     dayNumber: 4
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
       parco apre si percorrono i 50 km che separano Sesriem da Sossusvlay,
@@ -94,7 +94,7 @@ days:
     kmTotali: 400
     dormire: Swakopmund
     mangiare: Solitaire
-  - isPremium: false
+  - isPremium: true
     dayNumber: 5
     title: Sandwich Harbour
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
@@ -118,7 +118,7 @@ days:
     kmTotali: 250
     dormire: Spitzkope Campsite
     mangiare: Selfcatering
-  - isPremium: false
+  - isPremium: true
     dayNumber: 7
     title: Inizia il Safari
     description: Inizia la vera avventura, si parte all'alba, appena il cancello del
