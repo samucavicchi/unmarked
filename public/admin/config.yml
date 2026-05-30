@@ -45,7 +45,7 @@ collections:
       - { label: "Foto interludio (full-screen, mostrata dopo il body)", name: "interludeImage", widget: "image", required: false, hint: "Foto a tutto schermo. Lasciare vuoto per nessun interludio" }
       - { label: "Didascalia foto interludio", name: "interludeCaption", widget: "string", required: false }
       - { label: "Pull quote (citazione full-bleed)", name: "pullQuote", widget: "text", required: false, hint: "Una citazione potente estratta dal testo, mostrata grande e centrata su sfondo scuro" }
-      - { label: "Itinerario correlato", name: "relatedItinerary", widget: "relation", collection: "itinerari", search_fields: ["title", "country"], value_field: "title", display_fields: ["title", "country"], required: false, hint: "Seleziona l'itinerario da collegare a questa destinazione." }
+      - { label: "Itinerario correlato", name: "relatedItinerary", widget: "string", required: false, hint: "Scrivi il titolo esatto dell'itinerario da collegare (es. 'Namibia'). Lascia vuoto se non c'è un itinerario correlato." }
       - label: "Centro mappa (opzionale)"
         name: "mapCenter"
         widget: "object"
