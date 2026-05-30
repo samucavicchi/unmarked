@@ -52,7 +52,6 @@ const searchData = [
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     setTimeout(() => input.focus(), 50);
-    renderResults('');
   }
 
   function closeSearch() {
@@ -73,21 +72,21 @@ const searchData = [
 
   function renderResults(query) {
     const q = query.toLowerCase().trim();
-    const filtered = q.length < 1
-      ? searchData.slice(0, 8)
-      : searchData.filter((d) =>
-          d.title.toLowerCase().includes(q) ||
-          d.country.toLowerCase().includes(q) ||
-          d.continent.toLowerCase().includes(q) ||
-          d.subtitle.toLowerCase().includes(q)
-        ).slice(0, 10);
+    if (q.length < 1) { results.innerHTML = ''; return; }
+
+    const filtered = searchData.filter((d) =>
+      d.title.toLowerCase().includes(q) ||
+      d.country.toLowerCase().includes(q) ||
+      d.continent.toLowerCase().includes(q) ||
+      d.subtitle.toLowerCase().includes(q)
+    ).slice(0, 8);
 
     if (filtered.length === 0) {
-      results.innerHTML = '<div class="search-empty">Nessun risultato trovato.</div>';
+      results.innerHTML = '<div style="padding:20px;font-size:13px;color:#999;">Nessun risultato trovato.</div>';
       return;
     }
 
-    const label = q.length < 1 ? 'Tutti i contenuti' : `${filtered.length} risultat${filtered.length === 1 ? 'o' : 'i'}`;
+    const label = `${filtered.length} risultat${filtered.length === 1 ? 'o' : 'i'}`;
     results.innerHTML = `
       <div style="font-size:9px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#999;padding:10px 20px 6px;">${label}</div>
       ${filtered.map((d) => `
