@@ -1,0 +1,300 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SignOutButton } from '@clerk/astro/components';
+
+// Auth
+let currentUser: Awaited<ReturnType<typeof Astro.locals.currentUser>> = null;
+try {
+  currentUser = await Astro.locals.currentUser();
+} catch (_) {}
+
+if (!currentUser) {
+  return Astro.redirect('/sign-in?redirect_url=/account');
+}
+
+const isPremium = !!(currentUser.publicMetadata?.isPremium);
+const plan = (currentUser.publicMetadata?.plan as string) ?? null;
+const purchasedSlugs = (currentUser.publicMetadata?.purchasedItinerari as string[]) ?? [];
+const stripeCustomerId = (currentUser.publicMetadata?.stripeCustomerId as string) ?? null;
+
+// Itinerari acquistati
+const tuttiItinerari = await getCollection('itinerari');
+const itinerariAcquistati = tuttiItinerari.filter((it) => purchasedSlugs.includes(it.slug));
+
+const userName = currentUser.firstName
+  ? `${currentUser.firstName}${currentUser.lastName ? ' ' + currentUser.lastName : ''}`
+  : null;
+const userEmail = currentUser.emailAddresses?.[0]?.emailAddress ?? '';
+const avatarUrl = currentUser.imageUrl ?? null;
+---
+
+<BaseLayout title="Il mio account — Unmarked" description="Gestisci il tuo account Unmarked">
+  <div class="account-wrap">
+
+    <!-- HEADER UTENTE -->
+    <div class="acc-header">
+      <div class="acc-avatar">
+        {avatarUrl
+          ? <img src={avatarUrl} alt={userName || 'Avatar'} class="acc-avatar-img" />
+          : <div class="acc-avatar-placeholder">{(userName || userEmail)[0].toUpperCase()}</div>
+        }
+      </div>
+      <div class="acc-user-info">
+        {userName && <div class="acc-name">{userName}</div>}
+        <div class="acc-email">{userEmail}</div>
+      </div>
+    </div>
+
+    <!-- ABBONAMENTO -->
+    <section class="acc-section">
+      <h2 class="acc-section-title">Abbonamento</h2>
+      {isPremium ? (
+        <div class="acc-plan-box acc-plan-active">
+          <div class="acc-plan-badge">Attivo</div>
+          <div class="acc-plan-name">{plan === 'subscription' ? 'Piano mensile — €29/mese' : 'Accesso Premium'}</div>
+          <div class="acc-plan-desc">Hai accesso completo a tutti gli itinerari Unmarked.</div>
+          {stripeCustomerId && (
+            <a href={`https://billing.stripe.com/p/login/test_28o3fF0Ym4MI3s4000?prefilled_email=${encodeURIComponent(userEmail)}`} class="acc-manage-link" target="_blank" rel="noopener">
+              Gestisci abbonamento →
+            </a>
+          )}
+        </div>
+      ) : (
+        <div class="acc-plan-box acc-plan-inactive">
+          <div class="acc-plan-name">Nessun abbonamento attivo</div>
+          <div class="acc-plan-desc">Abbonati per accedere a tutti gli itinerari senza limiti.</div>
+          <a href="/itinerari" class="acc-cta-btn">Scopri gli itinerari →</a>
+        </div>
+      )}
+    </section>
+
+    <!-- ITINERARI ACQUISTATI -->
+    {(itinerariAcquistati.length > 0 || purchasedSlugs.length > 0) && (
+      <section class="acc-section">
+        <h2 class="acc-section-title">Itinerari acquistati</h2>
+        <div class="acc-itinerari-list">
+          {itinerariAcquistati.map((it) => (
+            <a href={`/itinerari/${it.slug}`} class="acc-it-row">
+              <div class="acc-it-img">
+                <img src={it.data.coverImage.src} alt={it.data.coverImageAlt} />
+              </div>
+              <div class="acc-it-info">
+                <div class="acc-it-tag">{it.data.country} · {it.data.duration} giorni</div>
+                <div class="acc-it-title">{it.data.title}</div>
+              </div>
+              <div class="acc-it-arrow">→</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- LOGOUT -->
+    <section class="acc-section acc-section-logout">
+      <SignOutButton redirectUrl="/">
+        <button class="acc-logout-btn">Esci dall'account</button>
+      </SignOutButton>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .account-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* HEADER */
+  .acc-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border, rgba(201,185,154,0.2));
+  }
+  .acc-avatar-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .acc-avatar-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--terra);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+  }
+  .acc-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 2px;
+  }
+  .acc-email {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* SEZIONI */
+  .acc-section {
+    margin-bottom: 48px;
+  }
+  .acc-section-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  /* PIANO */
+  .acc-plan-box {
+    border-radius: 4px;
+    padding: 24px 28px;
+    border: 1px solid;
+  }
+  .acc-plan-active {
+    border-color: rgba(201,185,154,0.3);
+    background: rgba(201,185,154,0.06);
+  }
+  .acc-plan-inactive {
+    border-color: rgba(201,185,154,0.2);
+    background: transparent;
+  }
+  .acc-plan-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--terra);
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+  .acc-plan-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .acc-plan-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .acc-manage-link {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    text-decoration: none;
+  }
+  .acc-manage-link:hover { text-decoration: underline; }
+  .acc-cta-btn {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--terra);
+    padding: 10px 20px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .acc-cta-btn:hover { opacity: 0.85; }
+
+  /* ITINERARI */
+  .acc-itinerari-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .acc-it-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid rgba(201,185,154,0.2);
+    border-radius: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+  .acc-it-row:hover { border-color: var(--terra); }
+  .acc-it-img {
+    width: 60px;
+    height: 44px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .acc-it-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .acc-it-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 3px;
+  }
+  .acc-it-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--dark);
+  }
+  .acc-it-arrow {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* LOGOUT */
+  .acc-section-logout {
+    padding-top: 24px;
+    border-top: 1px solid rgba(201,185,154,0.15);
+  }
+  .acc-logout-btn {
+    background: none;
+    border: 1px solid rgba(201,185,154,0.3);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .acc-logout-btn:hover {
+    border-color: var(--dark);
+    color: var(--dark);
+  }
+</style>
