@@ -32,19 +32,13 @@ const correlati = tutte
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
   .slice(0, 3);
 
-// Itinerario correlato (se settato relatedItinerary)
-// Il CMS salva il titolo — cerchiamo prima per slug poi per titolo
+// Itinerario correlato — il CMS salva il titolo, cerchiamo per titolo
 let itinerarioCorrelato: CollectionEntry<'itinerari'> | undefined;
 if (data.relatedItinerary) {
-  try {
-    itinerarioCorrelato = await getEntry('itinerari', data.relatedItinerary);
-  } catch (_) {
-    // Fallback: cerca per titolo (valore salvato dal widget relation del CMS)
-    const tutti = await getCollection('itinerari');
-    itinerarioCorrelato = tutti.find(
-      (it) => it.data.title.toLowerCase() === data.relatedItinerary!.toLowerCase()
-    );
-  }
+  const tuttiItinerari = await getCollection('itinerari');
+  itinerarioCorrelato = tuttiItinerari.find(
+    (it) => it.data.title.toLowerCase() === data.relatedItinerary!.toLowerCase()
+  );
 }
 ---
 
