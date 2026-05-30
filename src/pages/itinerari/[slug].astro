@@ -38,15 +38,16 @@ const checkoutUrl = '#checkout';
 
 const updatedDate = data.publishDate.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
 
-// Map markers: per ogni giorno, prendi il marker con stesso dayNumber
+// Map markers: solo giorni free (o tutti se utente premium)
 const mapPoints = days.map((d) => {
+  if (!userIsPremium && d.isPremium) return null; // nascondi punti premium agli utenti non paganti
   const m = (data.mapMarkers || []).find((mm: any) => mm.dayNumber === d.dayNumber);
   if (!m) return null;
   return {
     num: d.dayNumber,
     title: d.title,
     sub: (d.description || '').split('\n')[0].slice(0, 90),
-    locked: !!d.isPremium,
+    locked: false,
     lat: m.lat,
     lng: m.lng,
   };
