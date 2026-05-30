@@ -7,12 +7,40 @@ import ItinerarioCard from '../components/ItinerarioCard.astro';
 import PodcastCard from '../components/PodcastCard.astro';
 import { getCollection } from 'astro:content';
 
-const tutteLeDestinazioni = (await getCollection('destinazioni')).sort(
+// Coordinate per la sezione mappa in homepage
+const countryCoords: Record<string, [number, number]> = {
+  'Namibia': [-22.55, 17.08],
+  'Islanda': [64.96, -19.02],
+  'Albania': [41.15, 20.17],
+  'Georgia': [42.31, 43.35],
+  'Giappone': [36.20, 138.25],
+  'Kirghizistan': [41.20, 74.76],
+};
+
+const tutteLeDestinazioni = await getCollection('destinazioni');
+const tuttiItinerariPerMappa = await getCollection('itinerari');
+
+const homePins = [
+  ...tutteLeDestinazioni.filter(e => e.data.coverImage).map(e => {
+    const c = e.data.mapCenter;
+    const coords = c ? [c.lat, c.lng] : countryCoords[e.data.country] ?? null;
+    if (!coords) return null;
+    return { type: 'destinazione', lat: coords[0], lng: coords[1], title: e.data.title, country: e.data.country, slug: `/destinazioni/${e.slug}` };
+  }).filter(Boolean),
+  ...tuttiItinerariPerMappa.filter(e => e.data.coverImage).map(e => {
+    const c = e.data.mapCenter;
+    const coords = c ? [c.lat, c.lng] : countryCoords[e.data.country] ?? null;
+    if (!coords) return null;
+    return { type: 'itinerario', lat: coords[0], lng: coords[1], title: e.data.title, country: e.data.country, slug: `/itinerari/${e.slug}` };
+  }).filter(Boolean),
+];
+
+const tutteLeDestinazioni_sorted = tutteLeDestinazioni.sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-const featured = tutteLeDestinazioni.find((e) => e.data.featured) || tutteLeDestinazioni[0];
-const sideList = tutteLeDestinazioni.filter((e) => e.slug !== featured?.slug).slice(0, 3);
-const grid = tutteLeDestinazioni
+const featured = tutteLeDestinazioni_sorted.find((e) => e.data.featured) || tutteLeDestinazioni_sorted[0];
+const sideList = tutteLeDestinazioni_sorted.filter((e) => e.slug !== featured?.slug).slice(0, 3);
+const grid = tutteLeDestinazioni_sorted
   .filter((e) => e.slug !== featured?.slug)
   .filter((e) => !sideList.find((s) => s.slug === e.slug))
   .slice(0, 3);
@@ -49,7 +77,7 @@ const formatDateShort = (date) =>
       <a href="/destinazioni" class="sec-link">Vedi tutte →</a>
     </div>
 
-    {tutteLeDestinazioni.length === 0 && (
+    {tutteLeDestinazioni_sorted.length === 0 && (
       <div style="padding: 60px 0; text-align: center; color: var(--muted); font-style: italic;">
         Le prime destinazioni stanno arrivando.
       </div>
@@ -87,6 +115,59 @@ const formatDateShort = (date) =>
     )}
 
   </section>
+
+  <!-- MAPPA -->
+  <section class="home-map-section">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <div class="home-map-head">
+      <div>
+        <h2 class="sec-title">Il mondo di Unmarked</h2>
+        <p class="home-map-sub">{homePins.length} luoghi raccontati finora.</p>
+      </div>
+      <a href="/mappa" class="sec-link">Esplora la mappa →</a>
+    </div>
+    <div id="home-map" class="home-map-canvas"></div>
+  </section>
+
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script is:inline define:vars={{ homePins }}>
+    (function () {
+      if (!document.getElementById('home-map')) return;
+      const map = L.map('home-map', {
+        center: [20, 15],
+        zoom: 2,
+        zoomControl: false,
+        scrollWheelZoom: false,
+        dragging: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        touchZoom: false,
+        attributionControl: false,
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 14,
+      }).addTo(map);
+
+      const destIcon = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#C4855A;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
+      const itIcon  = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#2c2c2c;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
+
+      homePins.forEach((pin) => {
+        L.marker([pin.lat, pin.lng], { icon: pin.type === 'destinazione' ? destIcon : itIcon })
+          .addTo(map)
+          .bindPopup(`<a href="${pin.slug}" style="display:block;text-decoration:none;color:inherit;padding:8px 12px;font-family:sans-serif;"><div style="font-size:8px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;margin-bottom:3px;">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:#1a1814;">${pin.title}</div></a>`, { maxWidth: 200, className: 'unmarked-popup' });
+      });
+
+      // Rende la mappa cliccabile per aprire /mappa
+      document.getElementById('home-map').addEventListener('click', function (e) {
+        if (!e.target.closest('.leaflet-popup')) {
+          window.location.href = '/mappa';
+        }
+      });
+    })();
+  </script>
 
   <!-- ITINERARI -->
   <div class="itinerari-block">
@@ -209,6 +290,32 @@ const formatDateShort = (date) =>
 </BaseLayout>
 
 <style>
+  /* MAPPA HOME */
+  .home-map-section {
+    padding: 0 var(--gutter, 40px) 80px;
+  }
+  .home-map-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .home-map-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+  .home-map-canvas {
+    width: 100%;
+    height: 420px;
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(201,185,154,0.2);
+  }
+
   .card-link { text-decoration: none; color: inherit; display: block; }
   .feat-img-bg, .side-thumb-bg { width: 100%; height: 100%; }
   .it-card-placeholder { opacity: 0.6; cursor: default; }
