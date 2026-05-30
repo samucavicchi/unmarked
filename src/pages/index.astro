@@ -155,16 +155,15 @@ const formatDateShort = (date) =>
       const itIcon  = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#2c2c2c;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
 
       homePins.forEach((pin) => {
-        L.marker([pin.lat, pin.lng], { icon: pin.type === 'destinazione' ? destIcon : itIcon })
+        const marker = L.marker([pin.lat, pin.lng], { icon: pin.type === 'destinazione' ? destIcon : itIcon })
           .addTo(map)
           .bindPopup(`<a href="${pin.slug}" style="display:block;text-decoration:none;color:inherit;padding:8px 12px;font-family:sans-serif;"><div style="font-size:8px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;margin-bottom:3px;">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:#1a1814;">${pin.title}</div></a>`, { maxWidth: 200, className: 'unmarked-popup' });
+        marker.on('click', function (e) { L.DomEvent.stopPropagation(e); });
       });
 
-      // Rende la mappa cliccabile per aprire /mappa
-      document.getElementById('home-map').addEventListener('click', function (e) {
-        if (!e.target.closest('.leaflet-popup')) {
-          window.location.href = '/mappa';
-        }
+      // Cliccando sulla mappa (non su un pin) va a /mappa
+      map.on('click', function () {
+        window.location.href = '/mappa';
       });
     })();
   </script>
