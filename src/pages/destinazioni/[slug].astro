@@ -474,18 +474,19 @@ if (data.relatedItinerary) {
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    display: block;
+    display: grid;
+    grid-template-columns: 200px 1fr;
     box-shadow: 0 8px 28px rgba(26, 24, 20, 0.12);
     transition: transform 0.25s, box-shadow 0.25s;
   }
   .cta-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 12px 36px rgba(26, 24, 20, 0.18);
   }
   .cta-card-img {
     position: relative;
-    aspect-ratio: 16 / 9;
     overflow: hidden;
+    min-height: 140px;
   }
   .cta-card-img img {
     width: 100%;
@@ -494,18 +495,21 @@ if (data.relatedItinerary) {
   }
   .cta-card-price {
     position: absolute;
-    bottom: 14px;
-    right: 14px;
+    bottom: 10px;
+    right: 10px;
     background: var(--terra);
     color: #fff;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    padding: 6px 18px;
+    font-size: 18px;
+    padding: 4px 12px;
     border-radius: 2px;
     letter-spacing: 0.02em;
   }
   .cta-card-info {
-    padding: 22px 26px 26px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .cta-card-tag {
     font-size: 9px;
@@ -517,17 +521,17 @@ if (data.relatedItinerary) {
   }
   .cta-card-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 300;
     line-height: 1.2;
     color: var(--dark);
-    margin: 0 0 10px;
+    margin: 0 0 6px;
   }
   .cta-card-excerpt {
-    font-size: 13px;
-    line-height: 1.7;
+    font-size: 12px;
+    line-height: 1.6;
     color: var(--muted);
-    margin: 0 0 14px;
+    margin: 0 0 10px;
   }
   .cta-card-action {
     font-size: 11px;
