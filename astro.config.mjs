@@ -12,7 +12,10 @@ export default defineConfig({
   adapter: netlify(),
 
   integrations: [
-    clerk(),
+    clerk({
+      signInUrl: '/sign-in',
+      signUpUrl: '/sign-up',
+    }),
   ],
 
   i18n: {

@@ -1,0 +1,21 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SignIn } from '@clerk/astro/components';
+---
+
+<BaseLayout title="Accedi — Unmarked" description="Accedi al tuo account Unmarked">
+  <div class="signin-wrap">
+    <SignIn />
+  </div>
+</BaseLayout>
+
+<style>
+  .signin-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 60px 20px;
+  }
+</style>
