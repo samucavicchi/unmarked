@@ -26,18 +26,17 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/astro/components';
       <a href="/sign-in" class="btn-abbonati">Accedi</a>
     </SignedOut>
     <SignedIn>
-      <div class="nav-user-btn">
-        <a href="/account" class="nav-account-link" title="Il mio account">
-          <UserButton />
-        </a>
-      </div>
+      <a href="/account" class="nav-account-link" title="Il mio account">
+        <UserButton />
+      </a>
     </SignedIn>
   </div>
 </nav>
 
 <style>
-  .nav-user-btn {
+  .nav-account-link {
     display: flex;
     align-items: center;
+    text-decoration: none;
   }
 </style>
