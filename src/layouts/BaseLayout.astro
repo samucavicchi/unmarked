@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import NewsletterPopup from '../components/NewsletterPopup.astro';
 import SearchOverlay from '../components/SearchOverlay.astro';
 import PodcastMiniPlayer from '../components/PodcastMiniPlayer.astro';
+import { ViewTransitions } from 'astro:transitions';
 import '../styles/global.css';
 
 export interface Props {
@@ -35,6 +36,7 @@ const {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <ViewTransitions />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" is:inline></script>
     <slot name="head" />
 </head>
