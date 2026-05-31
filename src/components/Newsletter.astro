@@ -37,11 +37,42 @@ const {
       </div>
     </div>
     <div>
-      <form class="nl-form" action="#" method="post">
+      <form class="nl-form" id="nl-form-home">
         <input class="nl-input" type="email" name="email" placeholder="la tua email" required />
         <button class="nl-btn" type="submit">Iscriviti — è gratis</button>
       </form>
+      <div id="nl-msg-home" style="display:none;margin-top:8px;font-size:12px;color:var(--terra);"></div>
       <div class="nl-legal" style="margin-top:8px;">Nessuno spam. Disiscrizione in un click.</div>
+
+      <script is:inline>
+        document.getElementById('nl-form-home').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const email = this.email.value;
+          const btn = this.querySelector('button');
+          const msg = document.getElementById('nl-msg-home');
+          btn.disabled = true;
+          btn.textContent = '...';
+          try {
+            const res = await fetch('/.netlify/functions/newsletter-subscribe', {
+              method: 'POST',
+              body: JSON.stringify({ email }),
+            });
+            if (res.ok) {
+              msg.textContent = 'Grazie! Sei iscritto alla newsletter.';
+              msg.style.display = 'block';
+              this.reset();
+            } else {
+              msg.textContent = 'Qualcosa è andato storto. Riprova.';
+              msg.style.display = 'block';
+            }
+          } catch {
+            msg.textContent = 'Errore di connessione. Riprova.';
+            msg.style.display = 'block';
+          }
+          btn.disabled = false;
+          btn.textContent = 'Iscriviti — è gratis';
+        });
+      </script>
     </div>
   </div>
 </div>

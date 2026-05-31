@@ -7,12 +7,40 @@
   <div class="nl-popup-tag">Newsletter</div>
   <div class="nl-popup-title">I posti che non trovi sulle guide.</div>
   <div class="nl-popup-sub">Reportage, destinazioni e storie vere — ogni settimana nella tua casella.</div>
-  <form class="nl-popup-form" name="newsletter-popup" method="POST" data-netlify="true">
-    <input type="hidden" name="form-name" value="newsletter-popup" />
+  <form class="nl-popup-form" id="nl-form-popup">
     <input type="email" name="email" placeholder="La tua email" class="nl-popup-input" required />
     <button type="submit" class="nl-popup-btn">Iscriviti</button>
   </form>
+  <div id="nl-msg-popup" style="display:none;font-size:11px;color:var(--terra);margin-top:6px;"></div>
   <div class="nl-popup-legal">Niente spam. Disiscrizione in un click.</div>
+
+  <script is:inline>
+    document.getElementById('nl-form-popup').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = this.email.value;
+      const btn = this.querySelector('button');
+      const msg = document.getElementById('nl-msg-popup');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/.netlify/functions/newsletter-subscribe', {
+          method: 'POST',
+          body: JSON.stringify({ email }),
+        });
+        if (res.ok) {
+          msg.textContent = 'Grazie! Sei iscritto.';
+          msg.style.display = 'block';
+          this.reset();
+        } else {
+          msg.textContent = 'Qualcosa è andato storto.';
+          msg.style.display = 'block';
+        }
+      } catch {
+        msg.textContent = 'Errore di connessione.';
+        msg.style.display = 'block';
+      }
+      btn.disabled = false;
+    });
+  </script>
 </div>
 
 <style>
