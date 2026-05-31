@@ -13,6 +13,14 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
     <li><a href="/consulenze">Consulenze</a></li>
   </ul>
 
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" style="display:none;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <line x1="2" y1="5" x2="18" y2="5"/>
+      <line x1="2" y1="10" x2="18" y2="10"/>
+      <line x1="2" y1="15" x2="18" y2="15"/>
+    </svg>
+  </button>
+
   <div class="nav-icons">
     <button id="nav-search-btn" class="nav-icon-btn" aria-label="Cerca">
       <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -40,7 +48,28 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
   </div>
 </nav>
 
+<script is:inline>
+  document.getElementById('nav-hamburger').addEventListener('click', function () {
+    document.querySelector('nav').classList.toggle('nav-open');
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('nav')) {
+      document.querySelector('nav').classList.remove('nav-open');
+    }
+  });
+</script>
+
 <style>
+  .nav-hamburger {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--muted);
+    display: none;
+    align-items: center;
+    order: -1;
+  }
   .nav-icon-btn {
     background: none;
     border: none;
