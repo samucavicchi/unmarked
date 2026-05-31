@@ -30,7 +30,7 @@
     function openPlayer(spotifyId, title) {
       // Prende solo l'ID base (senza parametri extra)
       const cleanId = spotifyId.split('/')[0].split('?')[0];
-      const src = `https://open.spotify.com/embed/episode/${cleanId}?utm_source=generator`;
+      const src = `https://open.spotify.com/embed/episode/${cleanId}?utm_source=generator&autoplay=1`;
       iframe.src = src;
       titleEl.textContent = title;
       player.classList.add('open');
