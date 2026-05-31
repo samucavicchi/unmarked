@@ -164,6 +164,18 @@ const subscriberCount = items.length;
 
   .iti-card { border: 1px solid var(--light-border); border-radius: 3px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--cream); }
   .iti-card:hover { border-color: var(--sand); }
+
+  /* Featured: solo desktop */
+  @media (min-width: 769px) {
+    .iti-card-feat {
+      grid-column: span 2;
+      border-color: rgba(26,24,20,0.25);
+    }
+    .iti-card-feat .iti-card-img { height: 320px; }
+    .iti-card-feat .iti-card-name { font-size: 28px; }
+    .iti-card-feat .iti-card-desc { font-size: 13px; }
+  }
+
   @media (max-width: 768px) {
     .iti-card-feat {
       background: var(--terra);
