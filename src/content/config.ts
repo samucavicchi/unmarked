@@ -198,6 +198,7 @@ const podcast = defineCollection({
       publishDate: z.date(),
       featured: z.boolean().default(false),
       spotifyEpisodeId: z.string(),
+      audioUrl: z.string().optional(),
       episodeNumber: z.number().int().positive(),
       duration: z.number().int().positive(),
       topic: z.enum(['Destinazioni', 'Pratiche', 'Fotografia', 'Storie', 'Interviste']),

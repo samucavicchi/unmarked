@@ -27,7 +27,7 @@ const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short',
     </div>
     <button
       class="pod-btn pod-play-btn"
-      data-spotify-id={data.spotifyEpisodeId}
+      data-audio-url={data.audioUrl}
       data-title={data.title}
       aria-label={`Ascolta ${data.title}`}
     >
@@ -59,9 +59,10 @@ const dateLabel = data.publishDate.toLocaleDateString('it-IT', { month: 'short',
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
-    const spotifyId = btn.dataset.spotifyId;
+    const audioUrl = btn.dataset.audioUrl;
     const title = btn.dataset.title;
-    document.dispatchEvent(new CustomEvent('play-podcast', { detail: { spotifyId, title } }));
+    if (!audioUrl) return;
+    document.dispatchEvent(new CustomEvent('play-podcast', { detail: { audioUrl, title } }));
   });
 </script>
 
