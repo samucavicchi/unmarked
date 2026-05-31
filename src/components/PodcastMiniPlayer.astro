@@ -1,0 +1,130 @@
+<!-- Mini player Spotify — appare in basso al click su play -->
+<div id="pod-mini-player" class="pod-mini" aria-hidden="true">
+  <div class="pod-mini-inner">
+    <div class="pod-mini-info">
+      <div class="pod-mini-label">In ascolto</div>
+      <div id="pod-mini-title" class="pod-mini-title"></div>
+    </div>
+    <div class="pod-mini-embed">
+      <iframe
+        id="pod-mini-iframe"
+        src=""
+        width="100%"
+        height="80"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+    </div>
+    <button id="pod-mini-close" class="pod-mini-close" aria-label="Chiudi player">✕</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const player = document.getElementById('pod-mini-player');
+    const iframe = document.getElementById('pod-mini-iframe');
+    const titleEl = document.getElementById('pod-mini-title');
+    const closeBtn = document.getElementById('pod-mini-close');
+
+    function openPlayer(spotifyId, title) {
+      // Prende solo l'ID base (senza parametri extra)
+      const cleanId = spotifyId.split('/')[0].split('?')[0];
+      const src = `https://open.spotify.com/embed/episode/${cleanId}?utm_source=generator`;
+      iframe.src = src;
+      titleEl.textContent = title;
+      player.classList.add('open');
+      player.setAttribute('aria-hidden', 'false');
+    }
+
+    function closePlayer() {
+      player.classList.remove('open');
+      player.setAttribute('aria-hidden', 'true');
+      // Ferma l'audio resettando src
+      setTimeout(() => { iframe.src = ''; }, 300);
+    }
+
+    closeBtn.addEventListener('click', closePlayer);
+
+    // Ascolta evento globale da PodcastCard
+    document.addEventListener('play-podcast', function (e) {
+      openPlayer(e.detail.spotifyId, e.detail.title);
+    });
+  })();
+</script>
+
+<style>
+  .pod-mini {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3000;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--dark);
+    border-top: 1px solid rgba(201,185,154,0.15);
+    box-shadow: 0 -8px 32px rgba(26,24,20,0.3);
+  }
+  .pod-mini.open {
+    transform: translateY(0);
+  }
+  .pod-mini-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pod-mini-info {
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 160px;
+  }
+  .pod-mini-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 4px;
+  }
+  .pod-mini-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: #FAFAF8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pod-mini-embed {
+    flex: 1;
+    min-width: 0;
+  }
+  .pod-mini-embed iframe {
+    display: block;
+    border-radius: 4px;
+  }
+  .pod-mini-close {
+    background: none;
+    border: none;
+    color: rgba(250,250,248,0.4);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .pod-mini-close:hover { color: #FAFAF8; }
+
+  @media (max-width: 600px) {
+    .pod-mini-inner { flex-wrap: wrap; gap: 10px; padding: 12px 16px; }
+    .pod-mini-info { max-width: 100%; width: 100%; display: flex; align-items: center; gap: 12px; }
+    .pod-mini-title { font-size: 13px; }
+    .pod-mini-embed { width: 100%; }
+    .pod-mini-close { position: absolute; top: 10px; right: 12px; }
+    .pod-mini { position: fixed; }
+  }
+</style>
