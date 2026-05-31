@@ -672,7 +672,7 @@ section { padding: 60px 40px 0; }
 .pod-ep {
   display: flex;
   gap: 14px;
-  align-items: flex-start;
+  align-items: center;
   padding: 20px 0;
   border-bottom: 1px solid var(--light-border);
 }
