@@ -50,14 +50,34 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
 </nav>
 
 <script is:inline>
-  document.getElementById('nav-hamburger').addEventListener('click', function () {
-    document.querySelector('nav').classList.toggle('nav-open');
+  function initHamburger() {
+    const btn = document.getElementById('nav-hamburger');
+    if (!btn) return;
+    // Rimuovi vecchi listener clonando il nodo
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function () {
+      document.querySelector('nav').classList.toggle('nav-open');
+    });
+  }
+
+  function initNavClose() {
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('nav')) {
+        const nav = document.querySelector('nav');
+        if (nav) nav.classList.remove('nav-open');
+      }
+    });
+  }
+
+  // Prima carica
+  document.addEventListener('DOMContentLoaded', function () {
+    initHamburger();
+    initNavClose();
   });
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest('nav')) {
-      document.querySelector('nav').classList.remove('nav-open');
-    }
-  });
+
+  // Dopo ogni navigazione con ViewTransitions
+  document.addEventListener('astro:page-load', initHamburger);
 </script>
 
 <style>
