@@ -112,6 +112,13 @@ const gallery = data.gallery || [];
     </div>
     <h1 class="it-title">{data.title}</h1>
     {data.subtitle && <p class="it-subtitle">{data.subtitle}</p>}
+    <div class="it-meta-row">
+      <div class="it-meta-item"><div class="it-meta-val">{data.duration}</div><div class="it-meta-label">Giorni</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.budget}</div><div class="it-meta-label">Budget</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.difficulty}</div><div class="it-meta-label">Difficoltà</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.bestSeason}</div><div class="it-meta-label">Periodo</div></div>
+      <div class="it-meta-item"><div class="it-meta-val">{data.transport}</div><div class="it-meta-label">Trasporto</div></div>
+    </div>
   </div>
 
   <div class="it-hero-img">
@@ -845,7 +852,7 @@ const gallery = data.gallery || [];
   @media (max-width: 900px) {
     .it-body { grid-template-columns: 1fr; gap: 32px; }
     .it-sidebar { position: static; order: -1; }
-    .it-meta-row { flex-wrap: wrap; }
+    .it-meta-row { display: none; }
     .it-meta-item { flex: 1 1 33%; border-right: none; border-bottom: 1px solid var(--light-border); }
     .it-title { font-size: 38px; }
     .it-hero-img { height: 360px; }
