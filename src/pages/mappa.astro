@@ -77,74 +77,88 @@ const allPins = [...destPins, ...itPins];
   </div>
 </BaseLayout>
 
-<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script is:inline define:vars={{ allPins }}>
-  const map = L.map('world-map', {
-    center: [20, 15],
-    zoom: 2,
-    zoomControl: true,
-    scrollWheelZoom: true,
-  });
+  async function initMappa() {
+    if (!document.getElementById('world-map')) return;
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 14,
-  }).addTo(map);
+    // Carica Leaflet CSS se non già presente
+    if (!document.querySelector('link[href*="leaflet"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+    }
 
-  const destIcon = L.divIcon({
-    className: '',
-    html: '<div class="map-pin map-pin-dest"></div>',
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-  });
+    // Carica Leaflet JS se non già presente
+    if (!window.L) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
 
-  const itIcon = L.divIcon({
-    className: '',
-    html: '<div class="map-pin map-pin-it"></div>',
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-  });
+    // Distruggi mappa precedente se esiste
+    const container = document.getElementById('world-map');
+    if (container && container._leaflet_id) {
+      container._leaflet_id = null;
+      container.innerHTML = '';
+    }
 
-  const markers = [];
+    const map = L.map('world-map', {
+      center: [20, 15],
+      zoom: 2,
+      zoomControl: true,
+      scrollWheelZoom: true,
+    });
 
-  allPins.forEach((pin) => {
-    const icon = pin.type === 'destinazione' ? destIcon : itIcon;
-    const extraInfo = pin.type === 'itinerario'
-      ? `<div class="pop-meta">${pin.duration} giorni · €${pin.price}</div>`
-      : '';
-    const marker = L.marker([pin.lat, pin.lng], { icon })
-      .addTo(map)
-      .bindPopup(`
-        <a href="${pin.slug}" class="pop-link">
-          <img src="${pin.img}" class="pop-img" alt="${pin.title}" />
-          <div class="pop-body">
-            <div class="pop-type">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div>
-            <div class="pop-title">${pin.title}</div>
-            ${extraInfo}
-            <div class="pop-cta">Scopri →</div>
-          </div>
-        </a>
-      `, { maxWidth: 220, className: 'unmarked-popup' });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CARTO',
+      subdomains: 'abcd',
+      maxZoom: 14,
+    }).addTo(map);
 
-    markers.push({ marker, type: pin.type });
-  });
+    const destIcon = L.divIcon({ className: '', html: '<div class="map-pin map-pin-dest"></div>', iconSize: [14,14], iconAnchor: [7,7] });
+    const itIcon  = L.divIcon({ className: '', html: '<div class="map-pin map-pin-it"></div>',   iconSize: [14,14], iconAnchor: [7,7] });
 
-  // Filtri
-  document.querySelectorAll('.mappa-filter').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.mappa-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const filter = btn.dataset.filter;
-      markers.forEach(({ marker, type }) => {
-        if (filter === 'tutti' || filter === type) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
+    const markers = [];
+
+    allPins.forEach((pin) => {
+      const icon = pin.type === 'destinazione' ? destIcon : itIcon;
+      const extraInfo = pin.type === 'itinerario'
+        ? `<div class="pop-meta">${pin.duration} giorni · €${pin.price}</div>` : '';
+      const marker = L.marker([pin.lat, pin.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <a href="${pin.slug}" class="pop-link">
+            <img src="${pin.img}" class="pop-img" alt="${pin.title}" />
+            <div class="pop-body">
+              <div class="pop-type">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div>
+              <div class="pop-title">${pin.title}</div>
+              ${extraInfo}
+              <div class="pop-cta">Scopri →</div>
+            </div>
+          </a>
+        `, { maxWidth: 220, className: 'unmarked-popup' });
+      markers.push({ marker, type: pin.type });
+    });
+
+    document.querySelectorAll('.mappa-filter').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mappa-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        markers.forEach(({ marker, type }) => {
+          if (filter === 'tutti' || filter === type) marker.addTo(map);
+          else marker.remove();
+        });
       });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initMappa);
 </script>
 
 <style>
