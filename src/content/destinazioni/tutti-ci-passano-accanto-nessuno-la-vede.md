@@ -39,7 +39,7 @@ essentialToKnow:
       perche il cancello della F26 sbarra il passaggio. Non è una semplice
       passaggiata, ma vale assolutamente la pena.
 mapCenter:
-  zoom: 8
+  zoom: 6
   lat: 65.366055
   lng: -17.338188
 mapMarkers:
