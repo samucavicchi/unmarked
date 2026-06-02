@@ -39,13 +39,13 @@ essentialToKnow:
       perche il cancello della F26 sbarra il passaggio. Non è una semplice
       passaggiata, ma vale assolutamente la pena.
 mapCenter:
-  zoom: 10
+  zoom: 8
   lat: 65.366055
-  lng: -17.338183
+  lng: -21.338183
 mapMarkers:
   - lat: 65.366055
-    lng: -23
-    label: Aldeyjarfoss
+    lng: -17.338188
+    label: Aldeyjarfoss 📍
 ---
 Ci sono luoghi, in Islanda, che non sono davvero nascosti. Sono solo ignorati. Aldeyjarfoss è uno di questi: una cascata che si trova non lontano da itinerari battuti, lungo una deviazione che molti vedono sulla mappa e quasi nessuno decide di seguire fino in fondo.
 
