@@ -3,7 +3,6 @@ export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { SignOutButton } from '@clerk/astro/components';
 
 // Auth
 let currentUser: Awaited<ReturnType<typeof Astro.locals.currentUser>> = null;
@@ -94,10 +93,19 @@ const avatarUrl = currentUser.imageUrl ?? null;
 
     <!-- LOGOUT -->
     <section class="acc-section acc-section-logout">
-      <SignOutButton redirectUrl="/">
-        <button class="acc-logout-btn">Esci dall'account</button>
-      </SignOutButton>
+      <button class="acc-logout-btn" id="logout-btn">Esci dall'account</button>
     </section>
+
+    <script is:inline>
+      document.getElementById('logout-btn').addEventListener('click', async function () {
+        try {
+          await window.Clerk.signOut();
+          window.location.href = '/';
+        } catch (e) {
+          window.location.href = '/sign-in';
+        }
+      });
+    </script>
 
   </div>
 </BaseLayout>
