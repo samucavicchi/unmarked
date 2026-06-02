@@ -45,6 +45,31 @@ collections:
       - { label: "Foto interludio (full-screen, mostrata dopo il body)", name: "interludeImage", widget: "image", required: false, hint: "Foto a tutto schermo. Lasciare vuoto per nessun interludio" }
       - { label: "Didascalia foto interludio", name: "interludeCaption", widget: "string", required: false }
       - { label: "Pull quote (citazione full-bleed)", name: "pullQuote", widget: "text", required: false, hint: "Una citazione potente estratta dal testo, mostrata grande e centrata su sfondo scuro" }
+      - {
+          label: "Corpo articolo 2",
+          name: "bodyText2",
+          widget: "markdown",
+          required: false,
+          buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
+          editor_components: ["image"],
+        }
+      - label: "Galleria foto 2"
+        name: "gallery2"
+        widget: "list"
+        required: false
+        summary: "{{fields.caption}}"
+        fields:
+          - { label: "Foto", name: "image", widget: "image" }
+          - { label: "Didascalia", name: "caption", widget: "string", required: false }
+      - label: "Essenziale da sapere"
+        name: "essentialToKnow"
+        widget: "list"
+        required: false
+        collapsed: true
+        summary: "{{fields.title}}"
+        fields:
+          - { label: "Titolo", name: "title", widget: "string" }
+          - { label: "Descrizione", name: "description", widget: "text" }
       - { label: "Itinerario correlato", name: "relatedItinerary", widget: "select", options: ["Namibia"], required: false, hint: "Seleziona l'itinerario da collegare a questa destinazione." }
       - label: "Centro mappa (opzionale)"
         name: "mapCenter"

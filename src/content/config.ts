@@ -22,6 +22,23 @@ const destinazioni = defineCollection({
       interludeImage: image().optional(),
       interludeCaption: z.string().optional(),
       pullQuote: z.string().optional(),
+      bodyText2: z.string().optional(),
+      gallery2: z
+        .array(
+          z.object({
+            image: image(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional(),
+      essentialToKnow: z
+        .array(
+          z.object({
+            title: z.string(),
+            description: z.string(),
+          })
+        )
+        .optional(),
       mapCenter: z
         .object({
           lat: z.number(),
