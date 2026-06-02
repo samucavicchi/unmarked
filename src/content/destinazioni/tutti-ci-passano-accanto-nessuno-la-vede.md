@@ -41,7 +41,7 @@ essentialToKnow:
 mapCenter:
   zoom: 8
   lat: 65.366055
-  lng: -21.338183
+  lng: -17.338188
 mapMarkers:
   - lat: 65.366055
     lng: -17.338188
