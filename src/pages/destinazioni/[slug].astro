@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DestinazioneCard from '../../components/DestinazioneCard.astro';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
   const destinazioni = await getCollection('destinazioni');
@@ -40,6 +41,9 @@ if (data.relatedItinerary) {
     (it) => it.data.title.toLowerCase() === data.relatedItinerary!.toLowerCase()
   );
 }
+
+// Renderizza bodyText2 da markdown
+const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
 ---
 
 <BaseLayout
@@ -91,6 +95,44 @@ if (data.relatedItinerary) {
         <blockquote>
           <p>{data.pullQuote}</p>
         </blockquote>
+      </section>
+    )}
+
+    <!-- CORPO ARTICOLO 2 -->
+    {data.bodyText2 && (
+      <div class="article-body article-body-2">
+        <Fragment set:html={bodyText2Html} />
+      </div>
+    )}
+
+    <!-- GALLERIA 2 -->
+    {data.gallery2 && data.gallery2.length > 0 && (
+      <section class="article-gallery-2">
+        <div class="gallery-grid">
+          {data.gallery2.map((item) => (
+            <figure class="gallery-item">
+              <img src={item.image.src} alt={item.caption || 'Foto'} />
+              {item.caption && <figcaption>{item.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ESSENZIALE DA SAPERE -->
+    {data.essentialToKnow && data.essentialToKnow.length > 0 && (
+      <section class="article-essential">
+        <div class="essential-inner">
+          <h2 class="essential-title">Essenziale da sapere</h2>
+          <div class="essential-grid">
+            {data.essentialToKnow.map((tip) => (
+              <div class="essential-item">
+                <h3 class="essential-item-title">{tip.title}</h3>
+                <p class="essential-item-desc">{tip.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     )}
 
@@ -339,6 +381,91 @@ if (data.relatedItinerary) {
     margin-top: 56px;
     margin-bottom: 12px;
     border-radius: 0;
+  }
+
+  /* CORPO ARTICOLO 2 */
+  .article-body-2 {
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+
+  /* GALLERIA 2 */
+  .article-gallery-2 {
+    max-width: 1280px;
+    margin: 80px auto;
+    padding: 0 40px;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .gallery-item {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+  .gallery-item img {
+    display: block;
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+  }
+  .gallery-item figcaption {
+    background: var(--light-bg);
+    padding: 12px 16px;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* ESSENZIALE DA SAPERE */
+  .article-essential {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: var(--beige);
+    padding: 80px 40px;
+    margin-top: 80px;
+    margin-bottom: 80px;
+  }
+  .essential-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .essential-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--dark);
+    margin: 0 0 40px;
+    letter-spacing: 0.005em;
+    text-align: center;
+  }
+  .essential-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+  }
+  .essential-item {
+    background: #fff;
+    padding: 28px 24px;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(26, 24, 20, 0.06);
+  }
+  .essential-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--dark);
+    margin: 0 0 12px;
+    letter-spacing: 0.01em;
+  }
+  .essential-item-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0;
   }
 
   /* INTERLUDIO foto full-screen */
@@ -598,6 +725,7 @@ if (data.relatedItinerary) {
     .article-title { font-size: 50px; }
     .article-subtitle { font-size: 17px; }
     .article-body { font-size: 18px; padding: 0 24px; margin: 56px auto; }
+    .article-body-2 { margin-top: 40px; margin-bottom: 40px; }
     .article-body :global(p:first-of-type::first-letter) { font-size: 64px; }
     .article-body :global(h2) { font-size: 28px; }
     .article-body :global(h3) { font-size: 22px; }
@@ -606,11 +734,18 @@ if (data.relatedItinerary) {
     .article-pullquote { padding: 60px 24px; }
     .article-pullquote blockquote p { font-size: 30px; }
     .article-pullquote blockquote p::before { font-size: 50px; top: -24px; left: -8px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item img { height: 260px; }
+    .article-essential { padding: 56px 24px; margin-top: 56px; margin-bottom: 56px; }
+    .essential-title { font-size: 28px; margin-bottom: 32px; }
+    .essential-grid { grid-template-columns: 1fr; gap: 24px; }
     .cta-inner { grid-template-columns: 1fr; gap: 32px; }
     .cta-headline { font-size: 36px; }
     .related-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item img { height: 200px; }
     .related-grid { grid-template-columns: 1fr; }
   }
 </style>
