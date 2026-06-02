@@ -51,15 +51,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   description={data.seoMetaDescription || data.excerpt}
   ogImage={data.coverImage.src}
 >
-  {data.mapCenter && (
-    <link
-      slot="head"
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
-  )}
 
   <article>
     <!-- HERO cinematica con parallax -->
@@ -212,32 +203,48 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     })();
   </script>
 
-  <!-- Leaflet -->
+  <!-- Leaflet: caricamento dinamico per non interrompere ViewTransitions -->
   {data.mapCenter && (
-    <>
-      <script
-        is:inline
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
-      ></script>
-      <script is:inline>
-        window.addEventListener('load', function () {
-          var mapEl = document.getElementById('leaflet-map');
-          if (!mapEl || typeof L === 'undefined') return;
-          var center = JSON.parse(mapEl.dataset.center);
-          var markers = JSON.parse(mapEl.dataset.markers || '[]');
-          var map = L.map('leaflet-map').setView([center.lat, center.lng], center.zoom || 8);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 18,
-          }).addTo(map);
-          markers.forEach(function (m) {
-            L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.label);
+    <script is:inline>
+      async function initLeafletMap() {
+        var mapEl = document.getElementById('leaflet-map');
+        if (!mapEl) return;
+
+        if (!document.querySelector('link[href*="leaflet"]')) {
+          await new Promise(function(resolve) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            link.onload = resolve;
+            document.head.appendChild(link);
           });
+        }
+
+        if (!window.L) {
+          await new Promise(function(resolve) {
+            var s = document.createElement('script');
+            s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            s.onload = resolve;
+            document.head.appendChild(s);
+          });
+        }
+
+        if (mapEl._leaflet_id) return;
+        var center = JSON.parse(mapEl.dataset.center);
+        var markers = JSON.parse(mapEl.dataset.markers || '[]');
+        var map = L.map('leaflet-map').setView([center.lat, center.lng], center.zoom || 8);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '© OpenStreetMap © CARTO',
+          subdomains: 'abcd',
+          maxZoom: 14,
+        }).addTo(map);
+        markers.forEach(function(m) {
+          L.marker([m.lat, m.lng]).addTo(map).bindPopup(m.label);
         });
-      </script>
-    </>
+      }
+
+      document.addEventListener('astro:page-load', initLeafletMap);
+    </script>
   )}
 </BaseLayout>
 
@@ -391,32 +398,42 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
 
   /* GALLERIA 2 */
   .article-gallery-2 {
-    max-width: 1280px;
-    margin: 80px auto;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: 80px;
+    margin-bottom: 80px;
     padding: 0 40px;
   }
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    max-width: 1400px;
+    margin: 0 auto;
   }
   .gallery-item {
     margin: 0;
     overflow: hidden;
-    border-radius: 3px;
+    position: relative;
   }
   .gallery-item img {
     display: block;
     width: 100%;
-    height: 320px;
+    height: 400px;
     object-fit: cover;
+    transition: transform 0.5s ease;
   }
+  .gallery-item:hover img { transform: scale(1.03); }
   .gallery-item figcaption {
-    background: var(--light-bg);
-    padding: 12px 16px;
-    font-size: 12px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    background: linear-gradient(to top, rgba(26,24,20,0.6), transparent);
+    font-size: 11px;
     font-style: italic;
-    color: var(--muted);
+    color: rgba(250,250,248,0.8);
     font-weight: 300;
   }
 
@@ -498,35 +515,28 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     width: 100vw;
     margin-left: calc(50% - 50vw);
     background: var(--dark);
-    padding: 100px 40px;
+    padding: 80px 40px;
     margin-top: 0;
     margin-bottom: 80px;
   }
   .article-pullquote blockquote {
     border: 0;
     margin: 0 auto;
-    max-width: 900px;
+    max-width: 720px;
     text-align: center;
+    border-top: 1px solid rgba(201,185,154,0.25);
+    border-bottom: 1px solid rgba(201,185,154,0.25);
+    padding: 48px 0;
   }
   .article-pullquote blockquote p {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 300;
     font-style: italic;
-    line-height: 1.25;
+    line-height: 1.4;
     color: #FAFAF8;
-    letter-spacing: 0.005em;
+    letter-spacing: 0.01em;
     margin: 0;
-    position: relative;
-  }
-  .article-pullquote blockquote p::before {
-    content: '"';
-    color: var(--terra);
-    font-size: 80px;
-    position: absolute;
-    top: -36px;
-    left: -16px;
-    font-family: 'Cormorant Garamond', serif;
   }
 
   /* MAPPA */
