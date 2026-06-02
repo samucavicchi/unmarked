@@ -41,6 +41,24 @@ const {
     <slot name="head" />
 </head>
 <body>
+  <div id="read-progress" style="position:fixed;top:0;left:0;height:2px;width:0%;background:var(--terra);z-index:9999;transition:width 0.1s linear;pointer-events:none;"></div>
+
+  <script is:inline>
+    function updateProgress() {
+      var el = document.getElementById('read-progress');
+      if (!el) return;
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      el.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + '%' : '0%';
+    }
+    document.addEventListener('astro:page-load', function() {
+      window.removeEventListener('scroll', updateProgress);
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    });
+    window.addEventListener('scroll', updateProgress, { passive: true });
+  </script>
+
   <Navbar />
   <slot />
   <Footer />
