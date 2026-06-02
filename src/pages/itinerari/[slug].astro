@@ -224,6 +224,7 @@ const gallery = data.gallery || [];
     </div>
 
     <div class="it-sidebar">
+      {!userIsPremium && (
       <div class="price-box">
         <div class="price-box-title">Sblocca l'itinerario</div>
         <div class="price-main">
@@ -246,6 +247,7 @@ const gallery = data.gallery || [];
         <button class="btn-sub-sidebar" data-checkout="subscription">Abbonati e accedi a tutto</button>
         <div class="price-already">Sei abbonato? <a href="/sign-in">Accedi</a></div>
       </div>
+      )}
 
       <div class="info-box">
         <div class="info-box-title">Dettagli</div>
