@@ -12,102 +12,73 @@
 
 <script is:inline>
   (function () {
-    // Audio vive in window — mai toccato dal DOM swap
-    if (!window.__podAudio) window.__podAudio = new Audio();
-    const audio = window.__podAudio;
-
-    function syncUI() {
-      const player  = document.getElementById('pod-mini-player');
-      const titleEl = document.getElementById('pod-mini-title');
-      const domAudio = document.getElementById('pod-mini-audio');
-      if (!player) return;
-      // Sincronizza UI con stato corrente
-      if (window.__podTitle) titleEl.textContent = window.__podTitle;
-      if (!audio.paused) {
-        player.classList.add('open');
-        player.setAttribute('aria-hidden', 'false');
-      }
-      // L'elemento <audio> nel DOM non viene usato per la riproduzione
-      // ma lo nascondiacmo per evitare duplicati
-      if (domAudio) domAudio.style.display = 'none';
-    }
-
-    function bindControls() {
-      const closeBtn = document.getElementById('pod-mini-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-          audio.pause();
-          const player = document.getElementById('pod-mini-player');
-          if (player) {
-            player.classList.remove('open');
-            player.setAttribute('aria-hidden', 'true');
-          }
-          window.__podTitle = '';
-        });
-      }
-
-      // Sostituisci l'elemento <audio> del DOM con una barra di controllo custom
-      const player = document.getElementById('pod-mini-player');
-      const embed  = player?.querySelector('.pod-mini-embed');
-      if (embed && !embed.querySelector('.pod-ctrl')) {
-        embed.innerHTML = `
-          <div class="pod-ctrl">
-            <button class="pod-ctrl-btn" id="pod-play-pause">⏸</button>
-            <input class="pod-ctrl-seek" id="pod-seek" type="range" min="0" max="100" value="0" step="0.1" />
-            <span class="pod-ctrl-time" id="pod-time">0:00</span>
-          </div>`;
-
-        const playPause = document.getElementById('pod-play-pause');
-        const seek      = document.getElementById('pod-seek');
-        const timeEl    = document.getElementById('pod-time');
-
-        playPause?.addEventListener('click', function () {
-          if (audio.paused) { audio.play().catch(() => {}); playPause.textContent = '⏸'; }
-          else { audio.pause(); playPause.textContent = '▶'; }
-        });
-
-        seek?.addEventListener('input', function () {
-          if (audio.duration) audio.currentTime = (seek.value / 100) * audio.duration;
-        });
-
-        audio.addEventListener('timeupdate', function () {
-          if (!audio.duration) return;
-          if (seek) seek.value = (audio.currentTime / audio.duration) * 100;
-          if (timeEl) {
-            const m = Math.floor(audio.currentTime / 60);
-            const s = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
-            timeEl.textContent = `${m}:${s}`;
-          }
-        });
-
-        audio.addEventListener('ended', function () {
-          if (playPause) playPause.textContent = '▶';
-        });
-      }
+    function getEls() {
+      return {
+        player:  document.getElementById('pod-mini-player'),
+        audio:   document.getElementById('pod-mini-audio'),
+        titleEl: document.getElementById('pod-mini-title'),
+        closeBtn:document.getElementById('pod-mini-close'),
+      };
     }
 
     function openPlayer(audioUrl, title) {
-      window.__podTitle = title;
+      const { player, audio, titleEl } = getEls();
+      if (!player) return;
+      titleEl.textContent = title;
       if (audio.src !== audioUrl) {
         audio.src = audioUrl;
         audio.load();
       }
+      player.classList.add('open');
+      player.setAttribute('aria-hidden', 'false');
       audio.play().catch(() => {});
-      const player  = document.getElementById('pod-mini-player');
-      const titleEl = document.getElementById('pod-mini-title');
-      if (player) { player.classList.add('open'); player.setAttribute('aria-hidden', 'false'); }
-      if (titleEl) titleEl.textContent = title;
     }
 
-    // Dopo ogni navigazione: risincronizza UI senza toccare l'audio
-    document.addEventListener('astro:page-load', function () {
-      syncUI();
-      bindControls();
+    function closePlayer() {
+      const { player, audio } = getEls();
+      if (!player) return;
+      audio.pause();
+      player.classList.remove('open');
+      player.setAttribute('aria-hidden', 'true');
+    }
+
+    function bindClose() {
+      const { closeBtn } = getEls();
+      if (closeBtn) closeBtn.addEventListener('click', closePlayer);
+    }
+
+    // Salva stato audio prima dello swap
+    document.addEventListener('astro:before-swap', function () {
+      const { audio, player, titleEl } = getEls();
+      if (!audio) return;
+      window.__podState = {
+        src:         audio.src,
+        currentTime: audio.currentTime,
+        paused:      audio.paused,
+        open:        player?.classList.contains('open'),
+        title:       titleEl?.textContent || '',
+      };
+    });
+
+    // Ripristina stato audio dopo lo swap
+    document.addEventListener('astro:after-swap', function () {
+      bindClose();
+      const state = window.__podState;
+      if (!state || !state.src || state.paused) return;
+      const { player, audio, titleEl } = getEls();
+      if (!player || !audio) return;
+      titleEl.textContent = state.title;
+      audio.src = state.src;
+      audio.currentTime = state.currentTime || 0;
+      if (state.open) {
+        player.classList.add('open');
+        player.setAttribute('aria-hidden', 'false');
+      }
+      audio.play().catch(() => {});
     });
 
     // Prima carica
-    syncUI();
-    bindControls();
+    bindClose();
 
     document.addEventListener('play-podcast', function (e) {
       openPlayer(e.detail.audioUrl, e.detail.title);
@@ -162,13 +133,12 @@
     text-overflow: ellipsis;
   }
 
-  .pod-mini-audio { display: none; }
-  .pod-mini-embed { flex: 1; min-width: 0; }
-  .pod-ctrl { display: flex; align-items: center; gap: 12px; }
-  .pod-ctrl-btn { background: none; border: 1px solid rgba(250,250,248,0.3); color: #FAFAF8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.2s; }
-  .pod-ctrl-btn:hover { border-color: var(--terra); }
-  .pod-ctrl-seek { flex: 1; height: 3px; accent-color: var(--terra); cursor: pointer; }
-  .pod-ctrl-time { font-size: 11px; color: rgba(250,250,248,0.5); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .pod-mini-audio {
+    flex: 1;
+    height: 36px;
+    accent-color: var(--terra);
+    filter: invert(1) brightness(0.7);
+  }
 
   .pod-mini-close {
     background: none;
