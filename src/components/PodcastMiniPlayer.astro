@@ -12,12 +12,18 @@
 
 <script is:inline>
   (function () {
-    const player = document.getElementById('pod-mini-player');
-    const audio  = document.getElementById('pod-mini-audio');
-    const titleEl = document.getElementById('pod-mini-title');
-    const closeBtn = document.getElementById('pod-mini-close');
+    function getEls() {
+      return {
+        player:  document.getElementById('pod-mini-player'),
+        audio:   document.getElementById('pod-mini-audio'),
+        titleEl: document.getElementById('pod-mini-title'),
+        closeBtn:document.getElementById('pod-mini-close'),
+      };
+    }
 
     function openPlayer(audioUrl, title) {
+      const { player, audio, titleEl } = getEls();
+      if (!player) return;
       titleEl.textContent = title;
       if (audio.src !== audioUrl) {
         audio.src = audioUrl;
@@ -29,12 +35,50 @@
     }
 
     function closePlayer() {
+      const { player, audio } = getEls();
+      if (!player) return;
       audio.pause();
       player.classList.remove('open');
       player.setAttribute('aria-hidden', 'true');
     }
 
-    closeBtn.addEventListener('click', closePlayer);
+    function bindClose() {
+      const { closeBtn } = getEls();
+      if (closeBtn) closeBtn.addEventListener('click', closePlayer);
+    }
+
+    // Salva stato audio prima dello swap
+    document.addEventListener('astro:before-swap', function () {
+      const { audio, player, titleEl } = getEls();
+      if (!audio) return;
+      window.__podState = {
+        src:         audio.src,
+        currentTime: audio.currentTime,
+        paused:      audio.paused,
+        open:        player?.classList.contains('open'),
+        title:       titleEl?.textContent || '',
+      };
+    });
+
+    // Ripristina stato audio dopo lo swap
+    document.addEventListener('astro:after-swap', function () {
+      bindClose();
+      const state = window.__podState;
+      if (!state || !state.src || state.paused) return;
+      const { player, audio, titleEl } = getEls();
+      if (!player || !audio) return;
+      titleEl.textContent = state.title;
+      audio.src = state.src;
+      audio.currentTime = state.currentTime || 0;
+      if (state.open) {
+        player.classList.add('open');
+        player.setAttribute('aria-hidden', 'false');
+      }
+      audio.play().catch(() => {});
+    });
+
+    // Prima carica
+    bindClose();
 
     document.addEventListener('play-podcast', function (e) {
       openPlayer(e.detail.audioUrl, e.detail.title);
