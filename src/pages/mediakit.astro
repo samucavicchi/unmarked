@@ -134,7 +134,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="mk-reels-intro">Contenuti pubblicati direttamente dai brand sui loro profili ufficiali Instagram. Perché il risultato finale è quello che conta.</p>
       <div class="mk-reels-grid">
 
-        <a href="https://www.instagram.com/reel/DWbEpc3AAMP/" target="_blank" rel="noopener" class="mk-reel-card">
+        <a href="https://www.instagram.com/reel/DWbEpc3AAMP/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DWbEpc3AAMP/">
           <div class="mk-reel-cover" style="background-image:url('/reel-covers/mazda-1.jpg')">
             <div class="mk-reel-overlay"></div>
             <div class="mk-reel-play">
@@ -150,7 +150,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </a>
 
-        <a href="https://www.instagram.com/reel/C66WnGVokcN/" target="_blank" rel="noopener" class="mk-reel-card">
+        <a href="https://www.instagram.com/reel/C66WnGVokcN/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/C66WnGVokcN/">
           <div class="mk-reel-cover" style="background-image:url('/reel-covers/mazda-2.jpg')">
             <div class="mk-reel-overlay"></div>
             <div class="mk-reel-play">
@@ -166,7 +166,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </a>
 
-        <a href="https://www.instagram.com/reel/DYe4siMEfjt/" target="_blank" rel="noopener" class="mk-reel-card">
+        <a href="https://www.instagram.com/reel/DYe4siMEfjt/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DYe4siMEfjt/">
           <div class="mk-reel-cover" style="background-image:url('/reel-covers/nikon.jpg')">
             <div class="mk-reel-overlay"></div>
             <div class="mk-reel-play">
@@ -182,7 +182,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </a>
 
-        <a href="https://www.instagram.com/reel/DL4odqiIgFd/" target="_blank" rel="noopener" class="mk-reel-card">
+        <a href="https://www.instagram.com/reel/DL4odqiIgFd/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DL4odqiIgFd/">
           <div class="mk-reel-cover" style="background-image:url('/reel-covers/asus.jpg')">
             <div class="mk-reel-overlay"></div>
             <div class="mk-reel-play">
@@ -198,7 +198,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </a>
 
-        <a href="https://www.instagram.com/reel/DMQWifqo-t2/" target="_blank" rel="noopener" class="mk-reel-card">
+        <a href="https://www.instagram.com/reel/DMQWifqo-t2/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DMQWifqo-t2/">
           <div class="mk-reel-cover" style="background-image:url('/reel-covers/lexar.jpg')">
             <div class="mk-reel-overlay"></div>
             <div class="mk-reel-play">
@@ -266,6 +266,62 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <a href="mailto:samu.cavicchi@gmail.com" class="mk-cta-btn">Scrivici</a>
     </div>
   </section>
+
+<!-- LIGHTBOX REEL -->
+<div id="reel-lightbox" class="reel-lb" aria-hidden="true">
+  <div class="reel-lb-backdrop"></div>
+  <div class="reel-lb-panel">
+    <button class="reel-lb-close" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="reel-lb-embed" id="reel-lb-embed"></div>
+    <a id="reel-lb-link" href="#" target="_blank" rel="noopener" class="reel-lb-openig">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
+      Apri su Instagram
+    </a>
+  </div>
+</div>
+
+<script>
+  const lightbox = document.getElementById('reel-lightbox');
+  const embedContainer = document.getElementById('reel-lb-embed');
+  const lbLink = document.getElementById('reel-lb-link');
+
+  function openLightbox(url) {
+    embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="${url}" data-instgrm-version="14" style="width:100%;max-width:400px;margin:0 auto;"></blockquote>`;
+    lbLink.href = url;
+    lightbox.setAttribute('aria-hidden', 'false');
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    if (window.instgrm) {
+      window.instgrm.Embeds.process();
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://www.instagram.com/embed.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { embedContainer.innerHTML = ''; }, 300);
+  }
+
+  document.querySelectorAll('.mk-reel-card[data-reel]').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      openLightbox(card.dataset.reel);
+    });
+  });
+
+  document.querySelector('.reel-lb-backdrop').addEventListener('click', closeLightbox);
+  document.querySelector('.reel-lb-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
 
 </BaseLayout>
 
@@ -654,6 +710,71 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     transition: opacity 0.2s;
   }
   .mk-cta-btn:hover { opacity: 0.85; }
+
+  /* LIGHTBOX */
+  .reel-lb {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .reel-lb.is-open {
+    pointer-events: all;
+    opacity: 1;
+  }
+  .reel-lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26,24,20,0.88);
+    backdrop-filter: blur(4px);
+  }
+  .reel-lb-panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    transform: translateY(16px);
+    transition: transform 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .reel-lb.is-open .reel-lb-panel { transform: translateY(0); }
+  .reel-lb-close {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(250,250,248,0.7);
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .reel-lb-close:hover { color: #FAFAF8; }
+  .reel-lb-close svg { width: 28px; height: 28px; display: block; }
+  .reel-lb-embed { width: 400px; max-width: 90vw; }
+  .reel-lb-openig {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+    padding-bottom: 8px;
+  }
+  .reel-lb-openig:hover { color: #FAFAF8; }
+  .reel-lb-openig svg { width: 14px; height: 14px; }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
