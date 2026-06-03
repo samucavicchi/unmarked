@@ -189,7 +189,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
           <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
           <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo mk-logo-wide" /></div>
           <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
           <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
         </div>
@@ -699,23 +699,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* COLLABORAZIONI */
   .mk-collabs { background: var(--cream); }
-  .mk-marquee-wrap {
-    overflow: hidden;
-  }
+  .mk-marquee-wrap { overflow: hidden; }
   .mk-marquee-track {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     align-items: center;
-    justify-content: center;
+    justify-items: center;
   }
   .mk-brand-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 40px;
-    flex-shrink: 0;
+    padding: 20px 16px;
     opacity: 0.6;
     transition: opacity 0.2s;
+    width: 100%;
   }
   .mk-brand-item:hover { opacity: 1; }
   .mk-logo {
@@ -725,6 +723,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     filter: grayscale(1) opacity(0.6);
     mix-blend-mode: multiply;
     transition: filter 0.2s;
+  }
+  .mk-logo-wide {
+    height: auto;
+    max-height: 18px;
+    max-width: 110px;
   }
   .mk-brand-item:hover .mk-logo { filter: grayscale(1) opacity(1); }
   .mk-brand-plus {
