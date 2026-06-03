@@ -85,19 +85,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="mk-section mk-collabs">
     <div class="mk-inner">
       <div class="mk-label">Hanno già scelto Unmarked</div>
-      <div class="mk-collabs-grid">
-        <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
-        <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
-        <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
+      <div class="mk-marquee-wrap">
+        <div class="mk-marquee-track">
+          <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
+          <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
+          <!-- Duplicati per loop infinito -->
+          <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
+          <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -310,20 +327,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* COLLABORAZIONI */
   .mk-collabs { background: var(--cream); }
-  .mk-collabs-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
+  .mk-marquee-wrap {
+    overflow: hidden;
+    position: relative;
+    /* fade sui lati */
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
   }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .mk-marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+  }
+  .mk-marquee-track:hover { animation-play-state: paused; }
   .mk-brand-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 20px;
-    min-width: 120px;
-    min-height: 60px;
-    opacity: 0.65;
+    padding: 16px 32px;
+    flex-shrink: 0;
+    opacity: 0.6;
     transition: opacity 0.2s;
   }
   .mk-brand-item:hover { opacity: 1; }
