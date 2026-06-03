@@ -241,7 +241,7 @@ Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.j
 
 - [ ] Eliminare contenuti test
 - [ ] Switchare Stripe da TEST a LIVE
-- [ ] Aggiungere foto di Alice e Samuele in `/chi-siamo` (CSS: `.cs-person-img-alice`, `.cs-person-img-samuele`)
+- [x] Aggiungere foto di Alice e Samuele in `/chi-siamo` (CSS: `.cs-person-img-alice`, `.cs-person-img-samuele`)
 - [ ] `seoMetaDescription` su tutte le destinazioni
 - [ ] `mapCenter` su tutte le destinazioni
 - [ ] Aggiornare opzioni `relatedItinerary` nel CMS per ogni nuovo itinerario
