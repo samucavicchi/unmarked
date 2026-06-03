@@ -1,0 +1,596 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { mediakitData as d } from '../../data/mediakit-data';
+---
+
+<BaseLayout
+  title="Media Kit — Unmarked"
+  description="Partner with Unmarked. Photography reportages, premium itineraries and authentic travel storytelling."
+  ogImage={d.heroImage}
+>
+
+  <!-- HERO -->
+  <section class="mk-hero">
+    <div class="mk-hero-bg" style={`background-image:url('${d.heroImage}')`}></div>
+    <div class="mk-hero-overlay"></div>
+    <div class="mk-hero-content">
+      <div class="mk-hero-tag">Media Kit · {d.year}</div>
+      <h1 class="mk-hero-title">Discover the world<br/>with us.</h1>
+      <p class="mk-hero-sub">We bring value to your world through our images — we create, we tell stories, we make people discover.</p>
+    </div>
+  </section>
+
+  <!-- WHO WE ARE -->
+  <section class="mk-section mk-about">
+    <div class="mk-inner">
+      <div class="mk-label">Who we are</div>
+      <div class="mk-about-grid">
+        <div class="mk-person">
+          <div class="mk-person-photo" style={`background-image:url('${d.samuele.photo}')`}></div>
+          <div class="mk-person-info">
+            <div class="mk-person-name">Samuele Cavicchi</div>
+            <div class="mk-person-role">Nature photographer & creative director</div>
+            <a href={d.samuele.igUrl} target="_blank" rel="noopener" class="mk-person-ig">
+              <svg class="mk-ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+              {d.samuele.igHandle}
+            </a>
+            <p class="mk-person-bio">Twenty years of nature and reportage photography. Every journey is an exercise in seeing what others miss — the right light, the hidden moment, the authentic story.</p>
+            <div class="mk-person-stats">
+              <div class="mk-stat"><div class="mk-stat-num">{d.samuele.followers}</div><div class="mk-stat-label">Instagram Followers</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.samuele.avgViews}</div><div class="mk-stat-label">Avg. Views</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="mk-person">
+          <div class="mk-person-photo" style={`background-image:url('${d.alice.photo}')`}></div>
+          <div class="mk-person-info">
+            <div class="mk-person-name">Alice</div>
+            <div class="mk-person-role">Storyteller & travel curator</div>
+            <a href={d.alice.igUrl} target="_blank" rel="noopener" class="mk-person-ig">
+              <svg class="mk-ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+              {d.alice.igHandle}
+            </a>
+            <p class="mk-person-bio">A lifelong traveller with a passion for authentic places and stories that don't end up in brochures. She turns every destination into a precise, honest narrative that inspires.</p>
+            <div class="mk-person-stats">
+              <div class="mk-stat"><div class="mk-stat-num">{d.alice.followers}</div><div class="mk-stat-label">Instagram Followers</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.alice.avgViews}</div><div class="mk-stat-label">Avg. Views</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="mk-section mk-numbers">
+    <div class="mk-inner">
+      <div class="mk-label mk-label-light">Our reach</div>
+      <div class="mk-numbers-grid">
+        <div class="mk-num-item">
+          <div class="mk-num-val">{d.reach.totalFollowers}</div>
+          <div class="mk-num-desc">Total Instagram Followers</div>
+        </div>
+        <div class="mk-num-item">
+          <div class="mk-num-val">{d.reach.monthlyViews}</div>
+          <div class="mk-num-desc">Avg. Monthly Views</div>
+        </div>
+        <div class="mk-num-item">
+          <div class="mk-num-val">{d.reach.newsletter}</div>
+          <div class="mk-num-desc">Newsletter Subscribers</div>
+        </div>
+        <div class="mk-num-item">
+          <div class="mk-num-val">{d.reach.italianAudience}</div>
+          <div class="mk-num-desc">Italian Audience</div>
+        </div>
+      </div>
+      <div class="mk-audience-note">
+        The remaining audience is distributed across major European countries — Germany, France, Spain, UK, Switzerland, the Netherlands.
+        An educated, curious community with high purchasing power and a strong inclination for premium travel.
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIENCE -->
+  <section class="mk-section mk-audience">
+    <div class="mk-inner">
+      <div class="mk-label">Who follows us</div>
+      <div class="mk-audience-grid">
+        <div class="mk-aud-block">
+          <div class="mk-aud-title">Primary age range</div>
+          <div class="mk-aud-bar-wrap">
+            {d.ageGroups.map(g => (
+              <div class={`mk-aud-bar-row${g.highlight ? ' mk-aud-highlight' : ''}`}>
+                <span class="mk-aud-age">{g.label}</span>
+                <div class="mk-aud-bar"><div class="mk-aud-fill" style={`width:${g.pct}%`}></div></div>
+                <span class="mk-aud-pct">{g.pct}%</span>
+              </div>
+            ))}
+          </div>
+          <p class="mk-aud-note">The core audience — 25–44 — represents 70% of the community. Adults with spending power, accustomed to choosing quality experiences.</p>
+        </div>
+        <div class="mk-aud-block">
+          <div class="mk-aud-title">Geographic distribution</div>
+          <div class="mk-geo-list">
+            {d.geoGroups.map(g => (
+              <div class={`mk-geo-row${g.main ? ' mk-geo-main' : ''}`}>
+                <span class="mk-geo-country">{g.country}</span>
+                <div class="mk-aud-bar"><div class={`mk-aud-fill${g.main ? '' : ' mk-aud-fill-light'}`} style={`width:${g.pct}%`}></div></div>
+                {g.main && <span class="mk-aud-pct">{g.pct}%+</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="mk-aud-block">
+          <div class="mk-aud-title">Interests</div>
+          <div class="mk-tags">
+            <span class="mk-tag">Travel</span>
+            <span class="mk-tag">Nature</span>
+            <span class="mk-tag">Photography</span>
+            <span class="mk-tag">Adventure</span>
+            <span class="mk-tag">Wildlife</span>
+            <span class="mk-tag">Outdoor</span>
+            <span class="mk-tag">Documentaries</span>
+            <span class="mk-tag">Sustainability</span>
+          </div>
+          <p class="mk-aud-note">An audience that doesn't scroll past content — it seeks it out. Above-average save, share and engagement rates compared to other travel profiles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section class="mk-section mk-collabs">
+    <div class="mk-inner">
+      <div class="mk-label">Brands that chose Unmarked</div>
+      <div class="mk-marquee-wrap">
+        <div class="mk-marquee-track">
+          <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
+          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo mk-logo-wide" /></div>
+          <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
+          <div class="mk-brand-item mk-brand-plus">100+<span>partner structures</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REELS -->
+  <section class="mk-section mk-reels">
+    <div class="mk-inner">
+      <div class="mk-label">Our work, on their channels</div>
+      <p class="mk-reels-intro">Content published directly by brands on their official Instagram profiles. Because the final result is what matters.</p>
+      <div class="mk-reels-grid">
+        {d.reels.map(reel => (
+          <a href={reel.url} class="mk-reel-card" data-reel={reel.url}>
+            <div class="mk-reel-cover" style={`background-image:url('${reel.cover}')`}>
+              <div class="mk-reel-overlay"></div>
+              <div class="mk-reel-play">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <div class="mk-reel-ig">
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
+              </div>
+            </div>
+            <div class="mk-reel-meta">
+              <div class="mk-reel-brand">{reel.brand}</div>
+              <div class="mk-reel-handle">{reel.handle}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE OFFER -->
+  <section class="mk-section mk-offer">
+    <div class="mk-inner">
+      <div class="mk-label">What we can do together</div>
+      <div class="mk-offer-grid">
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">01</div>
+          <div class="mk-offer-name">Photo & video content package</div>
+          <p class="mk-offer-desc">We deliver a library of high-resolution photos and videos — ready to use across your social channels, website and communications. Author-made, brand-consistent, shot on location. Not stock, not generic: images that genuinely tell what you do.</p>
+        </div>
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">02</div>
+          <div class="mk-offer-name">Social media visibility</div>
+          <p class="mk-offer-desc">Collaborative posts and reels on Unmarked profiles — 78K+ followers, an educated, curious audience with strong premium travel intent. Instagram's collab format puts your brand directly in both communities' feeds. No advertising — only authentic storytelling.</p>
+        </div>
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">03</div>
+          <div class="mk-offer-name">Dedicated short film</div>
+          <p class="mk-offer-desc">A short film with the visual and narrative care of our documentaries, built around your destination or experience. Not a spot — a story. The kind of content people watch to the end, save, share. And remember.</p>
+        </div>
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">04</div>
+          <div class="mk-offer-name">Editorial article & newsletter</div>
+          <p class="mk-offer-desc">A full editorial piece on the Unmarked platform and a dedicated newsletter to our subscribers. Carefully chosen words, no brochure rhetoric. Your project introduced to a community that actually reads — and trusts what we recommend.</p>
+        </div>
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">05</div>
+          <div class="mk-offer-name">Product placement in documentaries</div>
+          <p class="mk-offer-desc">If your project connects with one of our documentaries in production, we can build a natural, integrated presence in the film — product placement, partner mentions, credits. The most effective way to reach an audience that chose to sit down and listen.</p>
+        </div>
+        <div class="mk-offer-item">
+          <div class="mk-offer-num">06</div>
+          <div class="mk-offer-name">Custom packages</div>
+          <p class="mk-offer-desc">Every project is different. If you have a specific goal — a launch, awareness campaign, territory narrative, seasonal push — we'll build the most effective combination of formats together. From photo to film, from social to newsletter: a content ecosystem designed to last, not disappear in 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES -->
+  <section class="mk-section mk-cases">
+    <div class="mk-inner">
+      <div class="mk-label">Projects we've made</div>
+      <div class="mk-cases-grid">
+
+        <div class="mk-case" data-case="hidden-path">
+          <button class="mk-case-header" aria-expanded="false" aria-controls="case-hidden-path-en">
+            <div class="mk-case-header-left">
+              <div class="mk-case-num">01</div>
+              <div>
+                <div class="mk-case-client">Mazda Europe</div>
+                <div class="mk-case-title">The Hidden Path</div>
+              </div>
+            </div>
+            <div class="mk-case-header-right">
+              <div class="mk-case-tags">
+                <span>Short film</span>
+                <span>Social content</span>
+                <span>Photography reportage</span>
+                <span>Product placement</span>
+              </div>
+              <div class="mk-case-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+          </button>
+          <div class="mk-case-body" id="case-hidden-path-en">
+            <div class="mk-case-body-inner">
+              <p class="mk-case-desc">A journey from the Dolomites to the Carpathian Mountains in Romania, tracking the brown bear. The goal: to tell the story of the Mazda CX-60 not as a city car, but as a companion for extreme routes — capable of covering thousands of kilometres while tackling off-road tracks in wild, remote environments. The project involved local tourism boards and partner accommodations along the way.</p>
+              <div class="mk-case-gallery">
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+              </div>
+              <div class="mk-case-film-placeholder">
+                <div class="mk-film-ph-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
+                </div>
+                <div class="mk-film-ph-text">Film coming soon</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mk-case" data-case="eyes-of-africa">
+          <button class="mk-case-header" aria-expanded="false" aria-controls="case-eyes-of-africa-en">
+            <div class="mk-case-header-left">
+              <div class="mk-case-num">02</div>
+              <div>
+                <div class="mk-case-client">Lobelias Safaris</div>
+                <div class="mk-case-title">The Eyes of Africa</div>
+              </div>
+            </div>
+            <div class="mk-case-header-right">
+              <div class="mk-case-tags">
+                <span>Short film</span>
+                <span>Social content</span>
+                <span>Editorial storytelling</span>
+              </div>
+              <div class="mk-case-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+          </button>
+          <div class="mk-case-body" id="case-eyes-of-africa-en">
+            <div class="mk-case-body-inner">
+              <p class="mk-case-desc">Deep in the Bwindi forest in Uganda, tracking mountain gorillas. The brief was precise: tell not just the destination, but the experience of travelling alongside a local guide of exceptional expertise — the kind of territorial knowledge no app or guidebook can replicate. The result is a film that places the viewer inside the forest, in the silence just before the encounter.</p>
+              <div class="mk-case-gallery">
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+                <div class="mk-case-photo mk-case-photo-placeholder"></div>
+              </div>
+              <div class="mk-case-film" id="eyes-film-embed-en">
+                <!-- YouTube embed — replace YOUTUBE_ID with the film's ID -->
+                <!-- <iframe src="https://www.youtube.com/embed/YOUTUBE_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                <div class="mk-film-ph-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
+                </div>
+                <div class="mk-film-ph-text">Add YouTube ID</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="mk-section mk-pricing">
+    <div class="mk-inner">
+      <div class="mk-label">Investment</div>
+      <p class="mk-pricing-intro">Every project is different, every quote is tailored. Below are our starting figures to help you orient.</p>
+      <div class="mk-pricing-grid">
+        <div class="mk-price-card">
+          <div class="mk-price-name">Content package</div>
+          <div class="mk-price-desc">High-resolution photos and videos ready for your channels. On-location production, usage licence included.</div>
+          <div class="mk-price-val">starting from <strong>€ {d.pricing.contents}</strong></div>
+        </div>
+        <div class="mk-price-card">
+          <div class="mk-price-name">Social visibility</div>
+          <div class="mk-price-desc">Collaborative posts and reels on Unmarked channels. Combined reach 78K+ followers, premium audience.</div>
+          <div class="mk-price-val">starting from <strong>€ {d.pricing.social}</strong></div>
+        </div>
+        <div class="mk-price-card mk-price-featured">
+          <div class="mk-price-name">Short film</div>
+          <div class="mk-price-desc">A short film with the visual and narrative care of our documentaries. From pre-production to master delivery.</div>
+          <div class="mk-price-val">starting from <strong>€ {d.pricing.film}</strong></div>
+        </div>
+      </div>
+      <p class="mk-pricing-note">Integrated packages — combining multiple formats — are always the most effective solution and are built to measure based on each project's goals.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="mk-cta">
+    <div class="mk-cta-inner">
+      <div class="mk-label mk-label-light">Let's work together</div>
+      <h2 class="mk-cta-title">We'll tell your<br/>place in the world.</h2>
+      <p class="mk-cta-sub">If you're looking for authentic storytelling, author photography and an audience that genuinely loves to travel — we're the right fit.</p>
+      <a href={`mailto:${d.contactEmail}`} class="mk-cta-btn">Write to us</a>
+    </div>
+  </section>
+
+<!-- LIGHTBOX REEL -->
+<div id="reel-lightbox" class="reel-lb" aria-hidden="true">
+  <div class="reel-lb-backdrop"></div>
+  <div class="reel-lb-panel">
+    <button class="reel-lb-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="reel-lb-embed" id="reel-lb-embed"></div>
+    <a id="reel-lb-link" href="#" target="_blank" rel="noopener" class="reel-lb-openig">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
+      Open on Instagram
+    </a>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.mk-case-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      const body = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.setAttribute('aria-expanded', !isOpen);
+      body.classList.toggle('is-open', !isOpen);
+    });
+  });
+
+  const lightbox = document.getElementById('reel-lightbox');
+  const embedContainer = document.getElementById('reel-lb-embed');
+  const lbLink = document.getElementById('reel-lb-link');
+
+  function openLightbox(url) {
+    embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="${url}" data-instgrm-version="14" style="width:100%;max-width:400px;margin:0 auto;"></blockquote>`;
+    lbLink.href = url;
+    lightbox.setAttribute('aria-hidden', 'false');
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    if (window.instgrm) {
+      window.instgrm.Embeds.process();
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://www.instagram.com/embed.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { embedContainer.innerHTML = ''; }, 300);
+  }
+
+  document.querySelectorAll('.mk-reel-card[data-reel]').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      openLightbox(card.dataset.reel);
+    });
+  });
+
+  document.querySelector('.reel-lb-backdrop').addEventListener('click', closeLightbox);
+  document.querySelector('.reel-lb-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+</BaseLayout>
+
+<style>
+  /* ---- copia esatta degli stili da mediakit.astro ---- */
+  /* HERO */
+  .mk-hero { position: relative; height: 560px; display: flex; align-items: flex-end; overflow: hidden; }
+  .mk-hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center 30%; }
+  .mk-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.9) 0%, rgba(26,24,20,0.4) 60%, rgba(26,24,20,0.1) 100%); }
+  .mk-hero-content { position: relative; padding: 56px 56px; max-width: 860px; }
+  .mk-hero-tag { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); margin-bottom: 20px; }
+  .mk-hero-title { font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin: 0 0 20px; }
+  .mk-hero-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.7); line-height: 1.7; max-width: 560px; margin: 0; }
+  .mk-section { padding: 80px 0; }
+  .mk-inner { max-width: 1100px; margin: 0 auto; padding: 0 56px; }
+  .mk-label { font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
+  .mk-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--terra); }
+  .mk-label-light { color: var(--sand); }
+  .mk-label-light::before { background: var(--sand); }
+  .mk-about { background: var(--cream); }
+  .mk-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .mk-person { display: flex; flex-direction: column; gap: 24px; }
+  .mk-person-photo { height: 340px; border-radius: 3px; background-size: cover; background-position: center top; }
+  .mk-person-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); margin-bottom: 4px; }
+  .mk-person-role { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terra); margin-bottom: 14px; }
+  .mk-person-ig { display: inline-flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 400; letter-spacing: 0.14em; color: var(--terra); text-decoration: none; margin-bottom: 14px; transition: opacity 0.2s; }
+  .mk-person-ig:hover { opacity: 0.7; }
+  .mk-ig-icon { width: 14px; height: 14px; flex-shrink: 0; }
+  .mk-person-bio { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.8; margin: 0 0 20px; }
+  .mk-person-stats { display: flex; gap: 32px; }
+  .mk-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--dark); line-height: 1; margin-bottom: 4px; }
+  .mk-stat-label { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .mk-numbers { background: var(--dark); }
+  .mk-numbers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid rgba(201,185,154,0.15); border-bottom: 1px solid rgba(201,185,154,0.15); margin-bottom: 32px; }
+  .mk-num-item { padding: 40px 32px; border-right: 1px solid rgba(201,185,154,0.15); }
+  .mk-num-item:last-child { border-right: none; }
+  .mk-num-val { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #FAFAF8; line-height: 1; margin-bottom: 10px; }
+  .mk-num-desc { font-size: 10px; font-weight: 300; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(250,250,248,0.45); }
+  .mk-audience-note { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.75; max-width: 680px; }
+  .mk-collabs { background: var(--cream); }
+  .mk-marquee-wrap { overflow: hidden; }
+  .mk-marquee-track { display: grid; grid-template-columns: repeat(7, 1fr); align-items: center; justify-items: center; }
+  .mk-brand-item { display: flex; align-items: center; justify-content: center; padding: 20px 16px; opacity: 0.6; transition: opacity 0.2s; width: 100%; }
+  .mk-brand-item:hover { opacity: 1; }
+  .mk-logo { width: auto; height: 28px; max-width: 130px; filter: grayscale(1) opacity(0.6); mix-blend-mode: multiply; transition: filter 0.2s; }
+  .mk-logo-wide { height: auto; max-height: 18px; max-width: 110px; }
+  .mk-brand-item:hover .mk-logo { filter: grayscale(1) opacity(1); }
+  .mk-brand-plus { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 300; color: var(--muted); letter-spacing: 0.04em; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .mk-brand-plus span { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .mk-reels { background: var(--cream); }
+  .mk-reels-intro { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; max-width: 560px; margin: -20px 0 48px; }
+  .mk-reels-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .mk-reel-card { display: flex; flex-direction: column; gap: 12px; text-decoration: none; cursor: pointer; }
+  .mk-reel-cover { position: relative; aspect-ratio: 9/16; border-radius: 4px; background-color: var(--beige); background-size: cover; background-position: center; overflow: hidden; transition: transform 0.3s ease; }
+  .mk-reel-card:hover .mk-reel-cover { transform: scale(1.02); }
+  .mk-reel-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.7) 0%, rgba(26,24,20,0.1) 50%, transparent 100%); transition: opacity 0.3s; }
+  .mk-reel-card:hover .mk-reel-overlay { opacity: 0.85; }
+  .mk-reel-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+  .mk-reel-card:hover .mk-reel-play { opacity: 1; }
+  .mk-reel-play svg { width: 40px; height: 40px; color: #fff; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4)); }
+  .mk-reel-ig { position: absolute; top: 10px; right: 10px; opacity: 0.7; }
+  .mk-reel-ig svg { width: 16px; height: 16px; color: #fff; }
+  .mk-reel-brand { font-size: 12px; font-weight: 500; color: var(--dark); letter-spacing: 0.02em; }
+  .mk-reel-handle { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--terra); }
+  .mk-offer { background: var(--cream); }
+  .mk-offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .mk-offer-num { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; color: var(--beige); line-height: 1; margin-bottom: 12px; }
+  .mk-offer-name { font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 10px; letter-spacing: 0.02em; }
+  .mk-offer-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.75; margin: 0; }
+  .mk-audience { background: var(--dark); }
+  .mk-audience .mk-label { color: var(--sand); }
+  .mk-audience .mk-label::before { background: var(--sand); }
+  .mk-audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+  .mk-aud-title { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 24px; }
+  .mk-aud-bar-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .mk-aud-bar-row { display: flex; align-items: center; gap: 12px; }
+  .mk-aud-age { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.45); width: 44px; flex-shrink: 0; }
+  .mk-aud-bar { flex: 1; height: 2px; background: rgba(250,250,248,0.08); border-radius: 2px; overflow: hidden; }
+  .mk-aud-fill { height: 100%; background: var(--terra); border-radius: 2px; }
+  .mk-aud-fill-light { background: rgba(201,185,154,0.4); }
+  .mk-aud-highlight .mk-aud-age { color: rgba(250,250,248,0.8); }
+  .mk-aud-pct { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.45); width: 28px; text-align: right; flex-shrink: 0; }
+  .mk-aud-note { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.4); line-height: 1.75; margin: 0; }
+  .mk-geo-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .mk-geo-row { display: flex; align-items: center; gap: 12px; }
+  .mk-geo-country { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.45); width: 120px; flex-shrink: 0; }
+  .mk-geo-main .mk-geo-country { color: rgba(250,250,248,0.85); font-weight: 400; }
+  .mk-geo-main .mk-aud-fill { background: var(--terra); }
+  .mk-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .mk-tag { font-size: 9px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(250,250,248,0.6); border: 1px solid rgba(250,250,248,0.15); padding: 6px 12px; border-radius: 2px; }
+  .mk-cases { background: var(--cream); }
+  .mk-cases-grid { display: flex; flex-direction: column; }
+  .mk-case { border-bottom: 1px solid rgba(26,24,20,0.08); }
+  .mk-case:first-child { border-top: 1px solid rgba(26,24,20,0.08); }
+  .mk-case-header { width: 100%; background: none; border: none; cursor: pointer; padding: 40px 0; display: flex; align-items: center; justify-content: space-between; gap: 32px; text-align: left; }
+  .mk-case-header:hover .mk-case-title { color: var(--terra); }
+  .mk-case-header-left { display: flex; align-items: center; gap: 32px; }
+  .mk-case-header-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+  .mk-case-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: var(--beige); line-height: 1; flex-shrink: 0; }
+  .mk-case-client { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; }
+  .mk-case-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--dark); line-height: 1.1; transition: color 0.2s; }
+  .mk-case-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+  .mk-case-tags span { font-size: 9px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border: 1px solid rgba(26,24,20,0.15); padding: 5px 10px; border-radius: 2px; }
+  .mk-case-arrow svg { width: 20px; height: 20px; color: var(--muted); transition: transform 0.3s ease; display: block; }
+  .mk-case-header[aria-expanded="true"] .mk-case-arrow svg { transform: rotate(180deg); }
+  .mk-case-header[aria-expanded="true"] .mk-case-title { color: var(--terra); }
+  .mk-case-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease; overflow: hidden; }
+  .mk-case-body.is-open { grid-template-rows: 1fr; }
+  .mk-case-body > * { min-height: 0; }
+  .mk-case-body-inner { padding-bottom: 48px; }
+  .mk-case-desc { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.8; margin: 0 0 32px; max-width: 680px; }
+  .mk-case-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+  .mk-case-photo { aspect-ratio: 3/2; border-radius: 3px; background-size: cover; background-position: center; overflow: hidden; }
+  .mk-case-photo-placeholder { background-color: var(--beige); opacity: 0.4; }
+  .mk-case-film, .mk-case-film-placeholder { width: 100%; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: rgba(26,24,20,0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .mk-case-film iframe { width: 100%; height: 100%; border: none; display: block; }
+  .mk-film-ph-icon svg { width: 40px; height: 40px; color: rgba(26,24,20,0.2); }
+  .mk-film-ph-text { font-size: 9px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(26,24,20,0.25); }
+  .mk-pricing { background: var(--dark); }
+  .mk-pricing .mk-label { color: var(--sand); }
+  .mk-pricing .mk-label::before { background: var(--sand); }
+  .mk-pricing-intro { font-size: 14px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.75; max-width: 560px; margin: -20px 0 48px; }
+  .mk-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-bottom: 32px; }
+  .mk-price-card { padding: 40px 36px; background: rgba(250,250,248,0.04); display: flex; flex-direction: column; gap: 12px; }
+  .mk-price-featured { background: rgba(177,107,73,0.15); border-top: 2px solid var(--terra); }
+  .mk-price-name { font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(250,250,248,0.9); }
+  .mk-price-desc { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.7; flex: 1; }
+  .mk-price-val { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.5); padding-top: 12px; border-top: 1px solid rgba(250,250,248,0.08); }
+  .mk-price-val strong { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #FAFAF8; display: block; margin-top: 4px; }
+  .mk-pricing-note { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.35); line-height: 1.75; max-width: 600px; font-style: italic; }
+  .mk-cta { background: var(--dark); padding: 100px 56px; text-align: center; }
+  .mk-cta-inner { max-width: 640px; margin: 0 auto; }
+  .mk-cta .mk-label { justify-content: center; }
+  .mk-cta .mk-label::before { display: none; }
+  .mk-cta-title { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #FAFAF8; line-height: 1.1; margin: 0 0 16px; }
+  .mk-cta-sub { font-size: 14px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.75; margin-bottom: 40px; }
+  .mk-cta-btn { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; background: var(--terra); color: #fff; padding: 16px 36px; border-radius: 2px; text-decoration: none; transition: opacity 0.2s; }
+  .mk-cta-btn:hover { opacity: 0.85; }
+  .reel-lb { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
+  .reel-lb.is-open { pointer-events: all; opacity: 1; }
+  .reel-lb-backdrop { position: absolute; inset: 0; background: rgba(26,24,20,0.88); backdrop-filter: blur(4px); }
+  .reel-lb-panel { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; transform: translateY(16px); transition: transform 0.3s ease; max-height: 90vh; overflow-y: auto; }
+  .reel-lb.is-open .reel-lb-panel { transform: translateY(0); }
+  .reel-lb-close { position: fixed; top: 24px; right: 28px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.7); padding: 4px; transition: color 0.2s; }
+  .reel-lb-close:hover { color: #FAFAF8; }
+  .reel-lb-close svg { width: 28px; height: 28px; display: block; }
+  .reel-lb-embed { width: 400px; max-width: 90vw; }
+  .reel-lb-openig { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250,250,248,0.6); text-decoration: none; transition: color 0.2s; padding-bottom: 8px; }
+  .reel-lb-openig:hover { color: #FAFAF8; }
+  .reel-lb-openig svg { width: 14px; height: 14px; }
+
+  @media (max-width: 768px) {
+    .mk-hero-content { padding: 32px 20px; }
+    .mk-hero-title { font-size: 38px; }
+    .mk-inner { padding: 0 20px; }
+    .mk-about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .mk-numbers-grid { grid-template-columns: 1fr 1fr; }
+    .mk-num-item { padding: 28px 20px; }
+    .mk-num-val { font-size: 38px; }
+    .mk-offer-grid { grid-template-columns: 1fr; gap: 32px; }
+    .mk-cta { padding: 60px 20px; }
+    .mk-cta-title { font-size: 36px; }
+    .mk-person-stats { gap: 20px; }
+    .mk-audience-grid { grid-template-columns: 1fr; gap: 40px; }
+    .mk-case-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .mk-case-header-right { flex-direction: column; align-items: flex-start; }
+    .mk-case-tags { justify-content: flex-start; }
+    .mk-case-arrow { display: none; }
+    .mk-case-num { font-size: 36px; }
+    .mk-case-gallery { grid-template-columns: repeat(2, 1fr); }
+    .mk-pricing-grid { grid-template-columns: 1fr; gap: 2px; }
+    .mk-reels-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mk-reel-card:last-child { display: none; }
+    .mk-marquee-track { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

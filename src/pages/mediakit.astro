@@ -1,19 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { mediakitData as d } from '../data/mediakit-data';
 ---
 
 <BaseLayout
   title="Media Kit — Unmarked"
   description="Collabora con Unmarked. Reportage fotografici, itinerari premium e storytelling di viaggio."
-  ogImage="/about-hero.jpg"
+  ogImage={d.heroImage}
 >
 
   <!-- HERO -->
   <section class="mk-hero">
-    <div class="mk-hero-bg" style="background-image:url('/about-hero.jpg')"></div>
+    <div class="mk-hero-bg" style={`background-image:url('${d.heroImage}')`}></div>
     <div class="mk-hero-overlay"></div>
     <div class="mk-hero-content">
-      <div class="mk-hero-tag">Media Kit · 2026</div>
+      <div class="mk-hero-tag">Media Kit · {d.year}</div>
       <h1 class="mk-hero-title">Scopri il mondo<br/>con noi.</h1>
       <p class="mk-hero-sub">Diamo valore al tuo mondo con le nostre immagini, creiamo, raccontiamo, facciamo scoprire.</p>
     </div>
@@ -25,34 +26,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="mk-label">Chi siamo</div>
       <div class="mk-about-grid">
         <div class="mk-person">
-          <div class="mk-person-photo" style="background-image:url('/samuele.jpg')"></div>
+          <div class="mk-person-photo" style={`background-image:url('${d.samuele.photo}')`}></div>
           <div class="mk-person-info">
             <div class="mk-person-name">Samuele Cavicchi</div>
             <div class="mk-person-role">Fotografo naturalista & direttore creativo</div>
-            <a href="https://instagram.com/samuele_cavicchi" target="_blank" rel="noopener" class="mk-person-ig">
+            <a href={d.samuele.igUrl} target="_blank" rel="noopener" class="mk-person-ig">
               <svg class="mk-ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
-              @samuele_cavicchi
+              {d.samuele.igHandle}
             </a>
             <p class="mk-person-bio">Vent'anni di fotografia naturalistica e di reportage. Porta in ogni viaggio uno sguardo allenato a trovare quello che gli altri non vedono — la luce giusta, il momento nascosto, la storia autentica.</p>
             <div class="mk-person-stats">
-              <div class="mk-stat"><div class="mk-stat-num">63.2K</div><div class="mk-stat-label">Follower Instagram</div></div>
-              <div class="mk-stat"><div class="mk-stat-num">233K</div><div class="mk-stat-label">Visualizzazioni medie</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.samuele.followers}</div><div class="mk-stat-label">Follower Instagram</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.samuele.avgViews}</div><div class="mk-stat-label">Visualizzazioni medie</div></div>
             </div>
           </div>
         </div>
         <div class="mk-person">
-          <div class="mk-person-photo" style="background-image:url('/alice.jpg')"></div>
+          <div class="mk-person-photo" style={`background-image:url('${d.alice.photo}')`}></div>
           <div class="mk-person-info">
             <div class="mk-person-name">Alice</div>
             <div class="mk-person-role">Storyteller & travel curator</div>
-            <a href="https://instagram.com/poli_alice_" target="_blank" rel="noopener" class="mk-person-ig">
+            <a href={d.alice.igUrl} target="_blank" rel="noopener" class="mk-person-ig">
               <svg class="mk-ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
-              @poli_alice_
+              {d.alice.igHandle}
             </a>
             <p class="mk-person-bio">Viaggiatrice da sempre, con una passione per i luoghi autentici e le storie che non finiscono nelle brochure. Trasforma ogni destinazione in un racconto preciso, onesto e capace di ispirare.</p>
             <div class="mk-person-stats">
-              <div class="mk-stat"><div class="mk-stat-num">15.4K</div><div class="mk-stat-label">Follower Instagram</div></div>
-              <div class="mk-stat"><div class="mk-stat-num">150K</div><div class="mk-stat-label">Visualizzazioni medie</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.alice.followers}</div><div class="mk-stat-label">Follower Instagram</div></div>
+              <div class="mk-stat"><div class="mk-stat-num">{d.alice.avgViews}</div><div class="mk-stat-label">Visualizzazioni medie</div></div>
             </div>
           </div>
         </div>
@@ -66,19 +67,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="mk-label mk-label-light">La nostra reach</div>
       <div class="mk-numbers-grid">
         <div class="mk-num-item">
-          <div class="mk-num-val">78.6K</div>
+          <div class="mk-num-val">{d.reach.totalFollowers}</div>
           <div class="mk-num-desc">Follower totali Instagram</div>
         </div>
         <div class="mk-num-item">
-          <div class="mk-num-val">383K</div>
+          <div class="mk-num-val">{d.reach.monthlyViews}</div>
           <div class="mk-num-desc">Views medie mensili</div>
         </div>
         <div class="mk-num-item">
-          <div class="mk-num-val">1.000+</div>
+          <div class="mk-num-val">{d.reach.newsletter}</div>
           <div class="mk-num-desc">Iscritti newsletter</div>
         </div>
         <div class="mk-num-item">
-          <div class="mk-num-val">50%+</div>
+          <div class="mk-num-val">{d.reach.italianAudience}</div>
           <div class="mk-num-desc">Audience italiana</div>
         </div>
       </div>
@@ -97,62 +98,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="mk-aud-block">
           <div class="mk-aud-title">Fascia d'età principale</div>
           <div class="mk-aud-bar-wrap">
-            <div class="mk-aud-bar-row">
-              <span class="mk-aud-age">18–24</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:10%"></div></div>
-              <span class="mk-aud-pct">10%</span>
-            </div>
-            <div class="mk-aud-bar-row mk-aud-highlight">
-              <span class="mk-aud-age">25–34</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:32%"></div></div>
-              <span class="mk-aud-pct">32%</span>
-            </div>
-            <div class="mk-aud-bar-row mk-aud-highlight">
-              <span class="mk-aud-age">35–44</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:38%"></div></div>
-              <span class="mk-aud-pct">38%</span>
-            </div>
-            <div class="mk-aud-bar-row">
-              <span class="mk-aud-age">45–54</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:14%"></div></div>
-              <span class="mk-aud-pct">14%</span>
-            </div>
-            <div class="mk-aud-bar-row">
-              <span class="mk-aud-age">55+</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:6%"></div></div>
-              <span class="mk-aud-pct">6%</span>
-            </div>
+            {d.ageGroups.map(g => (
+              <div class={`mk-aud-bar-row${g.highlight ? ' mk-aud-highlight' : ''}`}>
+                <span class="mk-aud-age">{g.label}</span>
+                <div class="mk-aud-bar"><div class="mk-aud-fill" style={`width:${g.pct}%`}></div></div>
+                <span class="mk-aud-pct">{g.pct}%</span>
+              </div>
+            ))}
           </div>
           <p class="mk-aud-note">Il core audience — 25–44 anni — rappresenta il 70% della community. Adulti con capacità di spesa, abituati a scegliere esperienze di qualità.</p>
         </div>
         <div class="mk-aud-block">
           <div class="mk-aud-title">Distribuzione geografica</div>
           <div class="mk-geo-list">
-            <div class="mk-geo-row mk-geo-main">
-              <span class="mk-geo-country">Italia</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill" style="width:50%"></div></div>
-              <span class="mk-aud-pct">50%+</span>
-            </div>
-            <div class="mk-geo-row">
-              <span class="mk-geo-country">Germania</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill mk-aud-fill-light" style="width:12%"></div></div>
-            </div>
-            <div class="mk-geo-row">
-              <span class="mk-geo-country">Francia</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill mk-aud-fill-light" style="width:9%"></div></div>
-            </div>
-            <div class="mk-geo-row">
-              <span class="mk-geo-country">Spagna</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill mk-aud-fill-light" style="width:8%"></div></div>
-            </div>
-            <div class="mk-geo-row">
-              <span class="mk-geo-country">UK</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill mk-aud-fill-light" style="width:7%"></div></div>
-            </div>
-            <div class="mk-geo-row">
-              <span class="mk-geo-country">Svizzera + NL + altro</span>
-              <div class="mk-aud-bar"><div class="mk-aud-fill mk-aud-fill-light" style="width:14%"></div></div>
-            </div>
+            {d.geoGroups.map(g => (
+              <div class={`mk-geo-row${g.main ? ' mk-geo-main' : ''}`}>
+                <span class="mk-geo-country">{g.country}</span>
+                <div class="mk-aud-bar"><div class={`mk-aud-fill${g.main ? '' : ' mk-aud-fill-light'}`} style={`width:${g.pct}%`}></div></div>
+                {g.main && <span class="mk-aud-pct">{g.pct}%+</span>}
+              </div>
+            ))}
           </div>
         </div>
         <div class="mk-aud-block">
@@ -204,85 +169,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="mk-reels-intro">Contenuti pubblicati direttamente dai brand sui loro profili ufficiali Instagram. Perché il risultato finale è quello che conta.</p>
       <div class="mk-reels-grid">
 
-        <a href="https://www.instagram.com/reel/DWbEpc3AAMP/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DWbEpc3AAMP/">
-          <div class="mk-reel-cover" style="background-image:url('/reel-covers/mazda-1.jpg')">
-            <div class="mk-reel-overlay"></div>
-            <div class="mk-reel-play">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        {d.reels.map(reel => (
+          <a href={reel.url} class="mk-reel-card" data-reel={reel.url}>
+            <div class="mk-reel-cover" style={`background-image:url('${reel.cover}')`}>
+              <div class="mk-reel-overlay"></div>
+              <div class="mk-reel-play">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <div class="mk-reel-ig">
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
+              </div>
             </div>
-            <div class="mk-reel-ig">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
+            <div class="mk-reel-meta">
+              <div class="mk-reel-brand">{reel.brand}</div>
+              <div class="mk-reel-handle">{reel.handle}</div>
             </div>
-          </div>
-          <div class="mk-reel-meta">
-            <div class="mk-reel-brand">Mazda Europe</div>
-            <div class="mk-reel-handle">@mazdaeurope</div>
-          </div>
-        </a>
-
-        <a href="https://www.instagram.com/reel/C66WnGVokcN/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/C66WnGVokcN/">
-          <div class="mk-reel-cover" style="background-image:url('/reel-covers/mazda-2.jpg')">
-            <div class="mk-reel-overlay"></div>
-            <div class="mk-reel-play">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="mk-reel-ig">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
-            </div>
-          </div>
-          <div class="mk-reel-meta">
-            <div class="mk-reel-brand">Mazda Europe</div>
-            <div class="mk-reel-handle">@mazdaeurope</div>
-          </div>
-        </a>
-
-        <a href="https://www.instagram.com/reel/DYe4siMEfjt/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DYe4siMEfjt/">
-          <div class="mk-reel-cover" style="background-image:url('/reel-covers/nikon.jpg')">
-            <div class="mk-reel-overlay"></div>
-            <div class="mk-reel-play">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="mk-reel-ig">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
-            </div>
-          </div>
-          <div class="mk-reel-meta">
-            <div class="mk-reel-brand">Nikon Europe</div>
-            <div class="mk-reel-handle">@nikoneurope</div>
-          </div>
-        </a>
-
-        <a href="https://www.instagram.com/reel/DL4odqiIgFd/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DL4odqiIgFd/">
-          <div class="mk-reel-cover" style="background-image:url('/reel-covers/asus.jpg')">
-            <div class="mk-reel-overlay"></div>
-            <div class="mk-reel-play">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="mk-reel-ig">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
-            </div>
-          </div>
-          <div class="mk-reel-meta">
-            <div class="mk-reel-brand">ASUS Italia</div>
-            <div class="mk-reel-handle">@asusitalia</div>
-          </div>
-        </a>
-
-        <a href="https://www.instagram.com/reel/DMQWifqo-t2/" class="mk-reel-card" data-reel="https://www.instagram.com/reel/DMQWifqo-t2/">
-          <div class="mk-reel-cover" style="background-image:url('/reel-covers/lexar.jpg')">
-            <div class="mk-reel-overlay"></div>
-            <div class="mk-reel-play">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-            <div class="mk-reel-ig">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="0.8"/></svg>
-            </div>
-          </div>
-          <div class="mk-reel-meta">
-            <div class="mk-reel-brand">Lexar</div>
-            <div class="mk-reel-handle">@lexarmemory</div>
-          </div>
-        </a>
+          </a>
+        ))}
 
       </div>
     </div>
@@ -427,17 +330,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="mk-price-card">
           <div class="mk-price-name">Pacchetto contenuti</div>
           <div class="mk-price-desc">Foto e video ad alta risoluzione pronti per i tuoi canali. Produzione sul campo, licenza d'uso inclusa.</div>
-          <div class="mk-price-val">a partire da <strong>€ 2.500</strong></div>
+          <div class="mk-price-val">a partire da <strong>€ {d.pricing.contents}</strong></div>
         </div>
         <div class="mk-price-card">
           <div class="mk-price-name">Visibilità social</div>
           <div class="mk-price-desc">Post e reel in collaborazione sui canali Unmarked. Reach combinata 78K+ follower, audience premium.</div>
-          <div class="mk-price-val">a partire da <strong>€ 1.500</strong></div>
+          <div class="mk-price-val">a partire da <strong>€ {d.pricing.social}</strong></div>
         </div>
         <div class="mk-price-card mk-price-featured">
           <div class="mk-price-name">Short film</div>
           <div class="mk-price-desc">Un film breve con la cura visiva e narrativa dei nostri documentari. Dalla pre-produzione alla consegna del master.</div>
-          <div class="mk-price-val">a partire da <strong>€ 3.500</strong></div>
+          <div class="mk-price-val">a partire da <strong>€ {d.pricing.film}</strong></div>
         </div>
       </div>
       <p class="mk-pricing-note">I pacchetti integrati — che combinano più formati — sono sempre la soluzione più efficace e vengono costruiti su misura in base agli obiettivi del progetto.</p>
@@ -450,7 +353,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="mk-label mk-label-light">Lavoriamo insieme</div>
       <h2 class="mk-cta-title">Raccontiamo il tuo<br/>posto nel mondo.</h2>
       <p class="mk-cta-sub">Se stai cercando un racconto autentico, fotografia d'autore e un pubblico che ama davvero viaggiare — siamo quelli giusti.</p>
-      <a href="mailto:samu.cavicchi@gmail.com" class="mk-cta-btn">Scrivici</a>
+      <a href={`mailto:${d.contactEmail}`} class="mk-cta-btn">Scrivici</a>
     </div>
   </section>
 
