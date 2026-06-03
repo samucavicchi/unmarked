@@ -192,20 +192,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
           <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
           <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
-          <!-- Duplicati per loop infinito -->
-          <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/fourseasons.png" alt="Four Seasons" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/Logo_explore_namibia_header02.png" alt="Explore Namibia" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/rangerover logo.png" alt="Range Rover" class="mk-logo" /></div>
-          <div class="mk-brand-item"><img src="/loghi/ascocar.png" alt="Asco Car" class="mk-logo" /></div>
-          <div class="mk-brand-item mk-brand-plus">100+<span>strutture partner</span></div>
         </div>
       </div>
     </div>
@@ -715,22 +701,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .mk-collabs { background: var(--cream); }
   .mk-marquee-wrap {
     overflow: hidden;
-    position: relative;
-    /* fade sui lati */
-    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
   }
   .mk-marquee-track {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    width: max-content;
-    animation: marquee 45s linear infinite;
+    justify-content: center;
   }
-  .mk-marquee-track:hover { animation-play-state: paused; }
   .mk-brand-item {
     display: flex;
     align-items: center;
