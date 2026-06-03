@@ -1,5 +1,5 @@
 # UNMARKED — Architettura del progetto
-*Documento di lavoro v7 · 1 Giugno 2026*
+*Documento di lavoro v8 · 3 Giugno 2026*
 
 Questo documento è la **memoria esterna** del progetto. Se la chat viene compattata o ricominciata, leggere QUESTO doc + `unmarked-manuale-uso.md` + il codice su GitHub basta per riprendere il lavoro senza perdere niente.
 
@@ -70,6 +70,8 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
 - `/mappa` — Mappa interattiva mondiale Leaflet con tutti i pin
 - `/consulenze` — Pagina consulenze
 - `/chi-siamo` — About page (storia di Alice e Samuele, manifesto, team, cosa facciamo)
+- `/mediakit` — Media Kit in italiano
+- `/en/mediakit` — Media Kit in inglese
 
 ### Area utente (Clerk)
 - `/sign-in` — Login (Clerk `<SignIn />`, SSR)
@@ -203,7 +205,31 @@ Mobile:
 
 ---
 
-## 10. CONTENUTI TEST DA RIMUOVERE
+## 10. MEDIA KIT
+
+### Struttura
+- `src/pages/mediakit.astro` — versione italiana (`/mediakit`)
+- `src/pages/en/mediakit.astro` — versione inglese (`/en/mediakit`)
+- `src/data/mediakit-data.ts` — **file dati condiviso**: numeri, foto, reel, prezzi, email
+
+### Come aggiornare
+- **Numeri (follower, views, newsletter)** → modifica `mediakitData.reach`, `mediakitData.samuele`, `mediakitData.alice` in `src/data/mediakit-data.ts`. Si aggiorna su entrambe le lingue.
+- **Prezzi** → modifica `mediakitData.pricing` nello stesso file.
+- **Reel** → aggiungi/rimuovi oggetti nell'array `mediakitData.reels`. Cover in `public/reel-covers/`.
+- **Testi** → vanno modificati separatamente nei due file `.astro` (sono diversi per lingua).
+- **Foto profilo Samuele/Alice** → aggiorna i path in `mediakitData.samuele.photo` e `mediakitData.alice.photo`.
+
+### Case study — aggiungere foto e film
+In `mediakit.astro` e `en/mediakit.astro`, trovare il blocco `.mk-case-gallery`:
+- Sostituire `mk-case-photo-placeholder` con `style="background-image:url('/path/foto.jpg')"` per le foto
+- Per il film: togliere il commento dall'`<iframe>` e inserire l'YouTube ID del video
+
+### Cover reel
+Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.jpg`, `nikon.jpg`, `asus.jpg`, `lexar.jpg`
+
+---
+
+## 11. CONTENUTI TEST DA RIMUOVERE
 
 - `src/content/itinerari/isalnda-1.md`
 - `src/content/itinerari/isalnda-2.md`
@@ -211,7 +237,7 @@ Mobile:
 
 ---
 
-## 11. CHECKLIST PRIMA DEL LANCIO
+## 12. CHECKLIST PRIMA DEL LANCIO
 
 - [ ] Eliminare contenuti test
 - [ ] Switchare Stripe da TEST a LIVE
@@ -225,7 +251,7 @@ Mobile:
 
 ---
 
-## 12. NOTE OPERATIVE
+## 13. NOTE OPERATIVE
 
 ### Aggiungere un nuovo itinerario
 1. Crearlo dal CMS `/admin`
@@ -245,4 +271,4 @@ Mobile:
 
 ---
 
-*Fine documento v7 — 1 Giugno 2026.*
+*Fine documento v8 — 3 Giugno 2026.*
