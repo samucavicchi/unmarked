@@ -86,14 +86,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="mk-inner">
       <div class="mk-label">Hanno già scelto Unmarked</div>
       <div class="mk-collabs-grid">
-        <div class="mk-brand">Mazda</div>
-        <div class="mk-brand">Explore Namibia</div>
-        <div class="mk-brand">Nikon</div>
-        <div class="mk-brand">DJI</div>
-        <div class="mk-brand">Four Seasons</div>
-        <div class="mk-brand">Basecamp Explore</div>
-        <div class="mk-brand">Helly Hansen</div>
-        <div class="mk-brand">+ strutture partner</div>
+        <div class="mk-brand-item"><img src="/loghi/mazda.svg" alt="Mazda" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
+        <div class="mk-brand-item mk-brand-text">Four Seasons</div>
+        <div class="mk-brand-item mk-brand-text">Explore Namibia</div>
+        <div class="mk-brand-item mk-brand-text">Basecamp Explore</div>
+        <div class="mk-brand-item mk-brand-text mk-brand-muted">+ strutture partner</div>
       </div>
     </div>
   </section>
@@ -307,24 +307,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   /* COLLABORAZIONI */
   .mk-collabs { background: #fff; border-top: 1px solid var(--light-border); }
   .mk-collabs-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     border: 1px solid var(--light-border);
     border-radius: 3px;
     overflow: hidden;
   }
-  .mk-brand {
-    flex: 1 1 calc(25% - 1px);
-    padding: 28px 32px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 300;
-    color: var(--dark);
+  .mk-brand-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 28px;
     border-right: 1px solid var(--light-border);
     border-bottom: 1px solid var(--light-border);
-    letter-spacing: 0.02em;
+    min-height: 100px;
   }
+  .mk-brand-item:nth-child(4n) { border-right: none; }
+  .mk-brand-item:nth-last-child(-n+4) { border-bottom: none; }
+  .mk-logo {
+    max-width: 120px;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    filter: brightness(0) opacity(0.75);
+    transition: opacity 0.2s;
+  }
+  .mk-brand-item:hover .mk-logo { filter: brightness(0) opacity(1); }
+  .mk-brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.03em;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+  }
+  .mk-brand-item:hover .mk-brand-text { opacity: 1; }
+  .mk-brand-muted .mk-brand-text,
+  .mk-brand-muted { opacity: 0.4; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* COSA OFFRIAMO */
   .mk-offer { background: var(--cream); }
