@@ -90,9 +90,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="mk-brand-item"><img src="/loghi/nikon.svg" alt="Nikon" class="mk-logo" /></div>
         <div class="mk-brand-item"><img src="/loghi/dji.svg" alt="DJI" class="mk-logo" /></div>
         <div class="mk-brand-item"><img src="/loghi/hellyhansen.svg" alt="Helly Hansen" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/hamilton.svg" alt="Hamilton" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/NOMATIC.png" alt="Nomatic" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/Suunto-Logo.png" alt="Suunto" class="mk-logo" /></div>
+        <div class="mk-brand-item"><img src="/loghi/BASECAMP.png" alt="Basecamp Explore" class="mk-logo" /></div>
         <div class="mk-brand-item mk-brand-text">Four Seasons</div>
         <div class="mk-brand-item mk-brand-text">Explore Namibia</div>
-        <div class="mk-brand-item mk-brand-text">Basecamp Explore</div>
         <div class="mk-brand-item mk-brand-text mk-brand-muted">+ strutture partner</div>
       </div>
     </div>
@@ -317,22 +320,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 36px 28px;
+    padding: 32px 24px;
     border-right: 1px solid var(--light-border);
     border-bottom: 1px solid var(--light-border);
-    min-height: 100px;
+    min-height: 90px;
+    background: #fff;
   }
   .mk-brand-item:nth-child(4n) { border-right: none; }
-  .mk-brand-item:nth-last-child(-n+4) { border-bottom: none; }
+  .mk-brand-item:nth-last-child(-n+3) { border-bottom: none; }
   .mk-logo {
-    max-width: 120px;
-    max-height: 40px;
+    max-width: 130px;
+    max-height: 44px;
     width: auto;
     height: auto;
-    filter: brightness(0) opacity(0.75);
-    transition: opacity 0.2s;
+    filter: grayscale(1) opacity(0.65);
+    mix-blend-mode: multiply;
+    transition: filter 0.2s;
   }
-  .mk-brand-item:hover .mk-logo { filter: brightness(0) opacity(1); }
+  .mk-brand-item:hover .mk-logo { filter: grayscale(1) opacity(1); }
   .mk-brand-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 18px;
