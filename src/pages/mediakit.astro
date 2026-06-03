@@ -29,6 +29,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="mk-person-info">
             <div class="mk-person-name">Samuele Cavicchi</div>
             <div class="mk-person-role">Fotografo naturalista & direttore creativo</div>
+            <a href="https://instagram.com/samuele_cavicchi" target="_blank" rel="noopener" class="mk-person-ig">@samuele_cavicchi</a>
             <p class="mk-person-bio">Vent'anni di fotografia naturalistica e di reportage. Porta in ogni viaggio uno sguardo allenato a trovare quello che gli altri non vedono — la luce giusta, il momento nascosto, la storia autentica.</p>
             <div class="mk-person-stats">
               <div class="mk-stat"><div class="mk-stat-num">63.2K</div><div class="mk-stat-label">Follower Instagram</div></div>
@@ -41,6 +42,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="mk-person-info">
             <div class="mk-person-name">Alice</div>
             <div class="mk-person-role">Storyteller & travel curator</div>
+            <a href="https://instagram.com/poli_alice_" target="_blank" rel="noopener" class="mk-person-ig">@poli_alice_</a>
             <p class="mk-person-bio">Viaggiatrice da sempre, con una passione per i luoghi autentici e le storie che non finiscono nelle brochure. Trasforma ogni destinazione in un racconto preciso, onesto e capace di ispirare.</p>
             <div class="mk-person-stats">
               <div class="mk-stat"><div class="mk-stat-num">15.4K</div><div class="mk-stat-label">Follower Instagram</div></div>
@@ -263,6 +265,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--terra);
     margin-bottom: 14px;
   }
+  .mk-person-ig {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    color: var(--terra);
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: opacity 0.2s;
+  }
+  .mk-person-ig:hover { opacity: 0.7; }
+
   .mk-person-bio {
     font-size: 14px;
     font-weight: 300;
