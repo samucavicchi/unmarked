@@ -308,3 +308,43 @@ collections:
           widget: "markdown",
           buttons: ["bold", "italic", "link", "heading-three", "bulleted-list", "numbered-list"],
         }
+
+  - name: "blackbook"
+    label: "Black Book"
+    label_singular: "Location"
+    folder: "src/content/blackbook"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{country}}"
+    sortable_fields: ["publishDate", "title", "country"]
+    fields:
+      - { label: "Titolo location", name: "title", widget: "string", hint: "Es. Foresta di Bwindi, settore nord" }
+      - { label: "Paese", name: "country", widget: "string" }
+      - { label: "Regione", name: "region", widget: "string", required: false }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Tipo", name: "type", widget: "select", options: ["Wildlife", "Paesaggio", "Golden hour", "Blue hour", "Architettura", "Persone"] }
+      - { label: "Latitudine", name: "lat", widget: "number", value_type: "float", hint: "Es. -1.0333" }
+      - { label: "Longitudine", name: "lng", widget: "number", value_type: "float", hint: "Es. 29.6833" }
+      - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "Stato", name: "status", widget: "select", options: ["published", "coming_soon"], default: "published", hint: "coming_soon = pin sfumato sulla mappa" }
+      - { label: "Ora ottimale", name: "bestTime", widget: "string", required: false, hint: "Es. 06:15 – 07:45" }
+      - { label: "Stagione migliore", name: "bestSeason", widget: "string", required: false, hint: "Es. Giugno – Settembre" }
+      - { label: "Focale consigliata", name: "focalLength", widget: "string", required: false, hint: "Es. 200–400mm" }
+      - { label: "ISO range", name: "isoRange", widget: "string", required: false, hint: "Es. 3200–6400" }
+      - { label: "Accesso", name: "access", widget: "string", required: false, hint: "Es. 35 min a piedi, guida obbligatoria" }
+      - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Bassa", "Media", "Alta"], required: false }
+      - { label: "Testo descrittivo", name: "body", widget: "markdown", buttons: ["bold", "italic"] }
+      - label: "Annotazioni a mano"
+        name: "handnotes"
+        widget: "list"
+        required: false
+        hint: "Note brevi stile campo, appaiono come frecce scritte a mano"
+        field: { label: "Nota", name: "handnote", widget: "string" }
+      - label: "Checklist pratica"
+        name: "checklist"
+        widget: "list"
+        required: false
+        hint: "Consigli pratici con spunta"
+        field: { label: "Voce", name: "item", widget: "string" }
+      - { label: "Nota personale", name: "personalNote", widget: "string", required: false, hint: "Commento personale, appare con stellina" }
+      - { label: "Coordinate testuali", name: "coordinates", widget: "string", required: false, hint: "Es. -1.0333, 29.6833 · Bwindi NP" }

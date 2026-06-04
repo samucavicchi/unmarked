@@ -1,0 +1,346 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const user = await Astro.locals.currentUser();
+const isPremium = user?.publicMetadata?.isPremium === true;
+
+const allLocations = await getCollection('blackbook');
+const locations = allLocations.sort((a, b) =>
+  new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+);
+
+const publishedCount = locations.filter(l => l.data.status === 'published').length;
+const countries = [...new Set(locations.map(l => l.data.country))].length;
+
+// Tipi unici per i filtri
+const types = [...new Set(locations.map(l => l.data.type))];
+const continents = [...new Set(locations.map(l => l.data.continent))];
+---
+
+<BaseLayout
+  title="Black Book — Unmarked"
+  description="Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. Riservato agli abbonati Unmarked."
+>
+
+  <!-- HERO -->
+  <section class="bb-hero">
+    <div class="bb-hero-inner">
+      <div class="bb-label">Unmarked · Abbonati</div>
+      <h1 class="bb-title">Black Book</h1>
+      <p class="bb-sub">Coordinate precise, ora giusta, luce perfetta. Quello che abbiamo trovato sul campo — e che non mettiamo sulle guide.</p>
+      <div class="bb-stats">
+        <div class="bb-stat"><div class="bb-stat-num">{publishedCount}</div><div class="bb-stat-label">Location</div></div>
+        <div class="bb-stat"><div class="bb-stat-num">{countries}</div><div class="bb-stat-label">Paesi</div></div>
+        <div class="bb-stat"><div class="bb-stat-num">+3</div><div class="bb-stat-label">/ mese</div></div>
+      </div>
+    </div>
+  </section>
+
+  {!isPremium ? (
+    <!-- TEASER per non abbonati -->
+    <section class="bb-teaser">
+      <div class="bb-teaser-map" id="bb-teaser-map"></div>
+      <div class="bb-teaser-overlay">
+        <div class="bb-teaser-inner">
+          <div class="bb-label bb-label-light">Contenuto riservato</div>
+          <h2 class="bb-teaser-title">Sblocca il Black Book</h2>
+          <p class="bb-teaser-text">Accedi a tutte le location con coordinate GPS precise, note sul campo e consigli fotografici che non trovi da nessuna altra parte.</p>
+          <a href="/sign-up" class="bb-cta-btn">Abbonati ora</a>
+          <a href="/sign-in" class="bb-cta-link">Hai già un account? Accedi</a>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <!-- MAPPA + PANNELLO per abbonati -->
+    <section class="bb-app">
+      <div class="bb-toolbar">
+        <div class="bb-toolbar-left">
+          <span class="bb-toolbar-label">Filtra</span>
+          <button class="bb-chip active" data-filter="all">Tutte</button>
+          {types.map(t => <button class="bb-chip" data-filter={t}>{t}</button>)}
+          {continents.map(c => <button class="bb-chip" data-filter={c}>{c}</button>)}
+        </div>
+        <div class="bb-toolbar-right">
+          <span class="bb-count" id="bb-count">{publishedCount} location</span>
+        </div>
+      </div>
+
+      <div class="bb-layout">
+        <div class="bb-map-wrap" id="bb-map"></div>
+
+        <div class="bb-panel" id="bb-panel">
+          <div class="bb-panel-empty" id="bb-panel-empty">
+            <div class="bb-panel-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </div>
+            <p class="bb-panel-empty-text">Seleziona un pin sulla mappa</p>
+          </div>
+          <div class="bb-panel-content" id="bb-panel-content" style="display:none">
+            <div class="bb-panel-top" id="bb-panel-top"></div>
+            <div class="bb-panel-divider"></div>
+            <div class="bb-panel-body" id="bb-panel-body"></div>
+            <div class="bb-panel-nav">
+              <button class="bb-nav-btn" id="bb-prev">← Precedente</button>
+              <span class="bb-nav-pos" id="bb-nav-pos"></span>
+              <button class="bb-nav-btn" id="bb-next">Successiva →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>
+
+{isPremium && (
+  <script
+    define:vars={{
+      locations: locations.map(l => ({
+        slug: l.slug,
+        title: l.data.title,
+        country: l.data.country,
+        region: l.data.region || '',
+        continent: l.data.continent,
+        type: l.data.type,
+        lat: l.data.lat,
+        lng: l.data.lng,
+        status: l.data.status,
+        bestTime: l.data.bestTime || '',
+        bestSeason: l.data.bestSeason || '',
+        focalLength: l.data.focalLength || '',
+        isoRange: l.data.isoRange || '',
+        access: l.data.access || '',
+        difficulty: l.data.difficulty || '',
+        handnotes: l.data.handnotes || [],
+        checklist: l.data.checklist || [],
+        personalNote: l.data.personalNote || '',
+        coordinates: l.data.coordinates || '',
+      }))
+    }}
+  >
+    // Carica Leaflet
+    const leafletCSS = document.createElement('link');
+    leafletCSS.rel = 'stylesheet';
+    leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(leafletCSS);
+
+    const leafletJS = document.createElement('script');
+    leafletJS.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    leafletJS.onload = () => initMap();
+    document.head.appendChild(leafletJS);
+
+    let map, markers = [], currentIndex = 0, filteredLocations = [...locations];
+
+    function initMap() {
+      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true }).setView([20, 20], 2);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO',
+        subdomains: 'abcd', maxZoom: 19
+      }).addTo(map);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      renderMarkers(locations);
+    }
+
+    function renderMarkers(locs) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+      locs.forEach((loc, i) => {
+        const isPublished = loc.status === 'published';
+        const icon = L.divIcon({
+          className: '',
+          html: `<div class="bb-pin${isPublished ? '' : ' bb-pin-locked'}"><div class="bb-pin-dot"></div></div>`,
+          iconSize: [16, 22], iconAnchor: [8, 22]
+        });
+        const marker = L.marker([loc.lat, loc.lng], { icon });
+        if (isPublished) {
+          marker.on('click', () => openPanel(i, locs));
+        }
+        marker.addTo(map);
+        markers.push(marker);
+      });
+    }
+
+    function openPanel(index, locs) {
+      currentIndex = index;
+      const loc = locs[index];
+      const top = document.getElementById('bb-panel-top');
+      const body = document.getElementById('bb-panel-body');
+
+      top.innerHTML = `
+        <div class="bb-panel-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
+        <div class="bb-panel-name">${loc.title}</div>
+        ${loc.bestTime ? `<div class="bb-panel-time">luce ottimale · ${loc.bestTime}${loc.bestSeason ? ' · ' + loc.bestSeason : ''}</div>` : ''}
+      `;
+
+      let bodyHTML = '';
+
+      // Testo + handnotes alternati (vengono dal body del markdown — placeholder)
+      if (loc.handnotes.length) {
+        loc.handnotes.forEach(note => {
+          bodyHTML += `<div class="bb-handnote"><span>↳</span><span>${note}</span></div>`;
+        });
+      }
+
+      // Griglia dati tecnici
+      const fields = [
+        { label: 'Focale', val: loc.focalLength + (loc.isoRange ? '<br>ISO ' + loc.isoRange : '') },
+        { label: 'Accesso', val: loc.access },
+        { label: 'Stagione', val: loc.bestSeason },
+        { label: 'Difficoltà', val: loc.difficulty },
+      ].filter(f => f.val);
+
+      if (fields.length) {
+        bodyHTML += `<div class="bb-fields">`;
+        fields.forEach(f => {
+          bodyHTML += `<div class="bb-field"><div class="bb-field-label">${f.label}</div><div class="bb-field-val">${f.val}</div></div>`;
+        });
+        bodyHTML += `</div>`;
+      }
+
+      // Checklist
+      loc.checklist.forEach(item => {
+        bodyHTML += `<div class="bb-check"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5 6.5-6.5" stroke="#B1714A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${item}</div>`;
+      });
+
+      // Nota personale
+      if (loc.personalNote) {
+        bodyHTML += `<div class="bb-personal"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1l1.3 3.5h3.7l-3 2.2 1.1 3.5-3.1-2.2-3.1 2.2 1.1-3.5-3-2.2h3.7z" stroke="rgba(26,24,20,0.2)" stroke-width="0.8" stroke-linejoin="round"/></svg>${loc.personalNote}</div>`;
+      }
+
+      // Coordinate
+      if (loc.coordinates) {
+        bodyHTML += `<div class="bb-coords">${loc.coordinates}</div>`;
+      }
+
+      body.innerHTML = bodyHTML;
+
+      document.getElementById('bb-panel-empty').style.display = 'none';
+      document.getElementById('bb-panel-content').style.display = 'flex';
+
+      // Navigazione
+      const publishedLocs = locs.filter(l => l.status === 'published');
+      const pos = publishedLocs.indexOf(loc) + 1;
+      document.getElementById('bb-nav-pos').textContent = `${pos} / ${publishedLocs.length}`;
+
+      map.setView([loc.lat, loc.lng], 8, { animate: true });
+    }
+
+    // Filtri
+    document.querySelectorAll('.bb-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.bb-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const filter = chip.dataset.filter;
+        filteredLocations = filter === 'all' ? [...locations] : locations.filter(l => l.type === filter || l.continent === filter);
+        renderMarkers(filteredLocations);
+        document.getElementById('bb-count').textContent = filteredLocations.filter(l => l.status === 'published').length + ' location';
+        document.getElementById('bb-panel-empty').style.display = 'flex';
+        document.getElementById('bb-panel-content').style.display = 'none';
+      });
+    });
+
+    // Navigazione pannello
+    document.getElementById('bb-prev').addEventListener('click', () => {
+      const published = filteredLocations.filter(l => l.status === 'published');
+      const idx = published.indexOf(filteredLocations.find((l, i) => i === currentIndex));
+      if (idx > 0) openPanel(filteredLocations.indexOf(published[idx - 1]), filteredLocations);
+    });
+    document.getElementById('bb-next').addEventListener('click', () => {
+      const published = filteredLocations.filter(l => l.status === 'published');
+      const idx = published.indexOf(filteredLocations.find((l, i) => i === currentIndex));
+      if (idx < published.length - 1) openPanel(filteredLocations.indexOf(published[idx + 1]), filteredLocations);
+    });
+  </script>
+)}
+
+<style>
+  /* HERO */
+  .bb-hero { background: #1A1814; padding: 80px 56px 64px; }
+  .bb-hero-inner { max-width: 1100px; margin: 0 auto; }
+  .bb-label { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .bb-label::before { content: ''; width: 24px; height: 1px; background: var(--terra); display: block; }
+  .bb-label-light { color: var(--sand); }
+  .bb-label-light::before { background: var(--sand); }
+  .bb-title { font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 300; color: #FAFAF8; line-height: 0.95; margin: 0 0 20px; }
+  .bb-sub { font-size: 14px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.75; max-width: 560px; margin: 0 0 48px; }
+  .bb-stats { display: grid; grid-template-columns: repeat(3, auto) 1fr; gap: 0; border-top: 1px solid rgba(201,185,154,0.15); border-bottom: 1px solid rgba(201,185,154,0.15); width: fit-content; }
+  .bb-stat { padding: 24px 48px 24px 0; margin-right: 48px; border-right: 1px solid rgba(201,185,154,0.15); }
+  .bb-stat:last-child { border-right: none; }
+  .bb-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: #FAFAF8; line-height: 1; margin-bottom: 4px; }
+  .bb-stat-label { font-size: 9px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250,250,248,0.3); }
+
+  /* TEASER */
+  .bb-teaser { position: relative; height: 560px; overflow: hidden; }
+  .bb-teaser-map { position: absolute; inset: 0; background: #141210; filter: blur(3px); opacity: 0.6; }
+  .bb-teaser-overlay { position: absolute; inset: 0; background: rgba(26,24,20,0.75); display: flex; align-items: center; justify-content: center; }
+  .bb-teaser-inner { text-align: center; max-width: 480px; padding: 0 24px; }
+  .bb-teaser-inner .bb-label { justify-content: center; }
+  .bb-teaser-inner .bb-label::before { display: none; }
+  .bb-teaser-title { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: #FAFAF8; margin: 0 0 16px; line-height: 1.05; }
+  .bb-teaser-text { font-size: 14px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.75; margin: 0 0 32px; }
+  .bb-cta-btn { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; background: var(--terra); color: #fff; padding: 16px 36px; text-decoration: none; transition: opacity 0.2s; margin-bottom: 16px; }
+  .bb-cta-btn:hover { opacity: 0.85; }
+  .bb-cta-link { display: block; font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.35); text-decoration: none; transition: color 0.2s; }
+  .bb-cta-link:hover { color: rgba(250,250,248,0.6); }
+
+  /* TOOLBAR */
+  .bb-toolbar { background: var(--cream); padding: 0 56px; border-bottom: 1px solid rgba(26,24,20,0.08); display: flex; align-items: center; justify-content: space-between; }
+  .bb-toolbar-left { display: flex; align-items: center; gap: 8px; }
+  .bb-toolbar-label { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(26,24,20,0.3); margin-right: 4px; }
+  .bb-chip { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; padding: 16px 14px; border: none; border-bottom: 2px solid transparent; background: none; color: rgba(26,24,20,0.3); cursor: pointer; }
+  .bb-chip.active { color: var(--terra); border-bottom-color: var(--terra); }
+  .bb-count { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26,24,20,0.3); }
+
+  /* LAYOUT MAPPA */
+  .bb-layout { display: grid; grid-template-columns: 1fr 360px; height: 560px; }
+  .bb-map-wrap { background: #141210; }
+
+  /* PIN LEAFLET */
+  :global(.bb-pin) { cursor: pointer; }
+  :global(.bb-pin-dot) { width: 10px; height: 10px; border-radius: 50%; background: #B1714A; position: relative; transition: transform 0.2s; }
+  :global(.bb-pin-dot::after) { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 1px; height: 6px; background: #B1714A; }
+  :global(.bb-pin:hover .bb-pin-dot) { transform: scale(1.3); }
+  :global(.bb-pin-locked .bb-pin-dot) { background: rgba(250,250,248,0.15); cursor: default; }
+  :global(.bb-pin-locked .bb-pin-dot::after) { background: rgba(250,250,248,0.1); }
+
+  /* PANNELLO */
+  .bb-panel { background: var(--cream); border-left: 1px solid rgba(26,24,20,0.08); display: flex; flex-direction: column; overflow: hidden; }
+  .bb-panel-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .bb-panel-empty-icon svg { width: 32px; height: 32px; color: rgba(26,24,20,0.15); }
+  .bb-panel-empty-text { font-size: 11px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(26,24,20,0.25); }
+  .bb-panel-content { flex-direction: column; flex: 1; overflow: hidden; }
+  .bb-panel-top { padding: 24px 28px 0; flex-shrink: 0; }
+  .bb-panel-region { font-size: 8px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+  .bb-panel-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: #1A1814; line-height: 1.05; margin-bottom: 6px; }
+  .bb-panel-time { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-style: italic; color: rgba(26,24,20,0.4); margin-bottom: 20px; }
+  .bb-panel-divider { height: 1px; background: rgba(26,24,20,0.08); margin: 0 28px; flex-shrink: 0; }
+  .bb-panel-body { padding: 16px 28px; flex: 1; overflow-y: auto; }
+
+  /* ELEMENTI PANNELLO */
+  :global(.bb-handnote) { font-family: 'Caveat', cursive; font-size: 14px; color: var(--terra); display: flex; gap: 6px; margin: 8px 0; }
+  :global(.bb-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(26,24,20,0.07); margin: 14px 0; }
+  :global(.bb-field) { background: var(--cream); padding: 10px 12px; }
+  :global(.bb-field-label) { font-size: 7px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(26,24,20,0.3); margin-bottom: 3px; }
+  :global(.bb-field-val) { font-size: 11px; font-weight: 300; color: #3A3028; line-height: 1.4; }
+  :global(.bb-check) { font-family: 'Caveat', cursive; font-size: 13px; color: rgba(177,113,74,0.8); display: flex; align-items: center; gap: 7px; margin: 4px 0; }
+  :global(.bb-personal) { font-family: 'Caveat', cursive; font-size: 13px; color: rgba(26,24,20,0.3); display: flex; align-items: center; gap: 7px; margin: 8px 0; font-style: italic; }
+  :global(.bb-coords) { font-size: 10px; font-family: monospace; color: rgba(26,24,20,0.2); letter-spacing: 0.06em; margin-top: 12px; }
+
+  /* NAV */
+  .bb-panel-nav { padding: 14px 28px; border-top: 1px solid rgba(26,24,20,0.07); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: #F0EBE3; }
+  .bb-nav-btn { font-size: 8px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(26,24,20,0.3); background: none; border: none; cursor: pointer; padding: 0; }
+  .bb-nav-btn:hover { color: var(--terra); }
+  .bb-nav-pos { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: rgba(26,24,20,0.3); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .bb-hero { padding: 48px 20px 40px; }
+    .bb-title { font-size: 48px; }
+    .bb-layout { grid-template-columns: 1fr; grid-template-rows: 360px 1fr; height: auto; }
+    .bb-toolbar { padding: 0 20px; overflow-x: auto; }
+    .bb-stats { width: 100%; grid-template-columns: repeat(3, 1fr); }
+    .bb-stat { padding: 20px 0; margin: 0; text-align: center; }
+  }
+</style>

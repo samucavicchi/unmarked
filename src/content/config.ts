@@ -223,9 +223,41 @@ const podcast = defineCollection({
     }),
 });
 
+const blackbook = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    country: z.string(),
+    region: z.string().optional(),
+    continent: z.enum(['Europa', 'Asia', 'Africa', 'Americhe', 'Oceania']),
+    type: z.enum(['Wildlife', 'Paesaggio', 'Golden hour', 'Blue hour', 'Architettura', 'Persone']),
+    lat: z.number(),
+    lng: z.number(),
+    publishDate: z.date(),
+    status: z.enum(['published', 'coming_soon']).default('published'),
+    // Ora e stagione
+    bestTime: z.string().optional(),         // es. "06:15 – 07:45"
+    bestSeason: z.string().optional(),       // es. "Giugno – Settembre"
+    // Dati tecnici
+    focalLength: z.string().optional(),      // es. "200–400mm"
+    isoRange: z.string().optional(),         // es. "3200–6400"
+    access: z.string().optional(),           // es. "35 min a piedi, guida obbligatoria"
+    difficulty: z.enum(['Bassa', 'Media', 'Alta']).optional(),
+    // Annotazioni a mano (frecce, note brevi)
+    handnotes: z.array(z.string()).default([]),
+    // Checklist pratica
+    checklist: z.array(z.string()).default([]),
+    // Nota personale (stellina)
+    personalNote: z.string().optional(),
+    // Coordinate testuali
+    coordinates: z.string().optional(),      // es. "-1.0333, 29.6833 · Bwindi NP"
+  }),
+});
+
 export const collections = {
   destinazioni,
   itinerari,
   film,
   podcast,
+  blackbook,
 };

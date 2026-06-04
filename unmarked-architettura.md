@@ -1,5 +1,5 @@
 # UNMARKED — Architettura del progetto
-*Documento di lavoro v8 · 3 Giugno 2026*
+*Documento di lavoro v9 · 4 Giugno 2026*
 
 Questo documento è la **memoria esterna** del progetto. Se la chat viene compattata o ricominciata, leggere QUESTO doc + `unmarked-manuale-uso.md` + il codice su GitHub basta per riprendere il lavoro senza perdere niente.
 
@@ -72,6 +72,7 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
 - `/chi-siamo` — About page (storia di Alice e Samuele, manifesto, team, cosa facciamo)
 - `/mediakit` — Media Kit in italiano
 - `/en/mediakit` — Media Kit in inglese
+- `/black-book` — Black Book (teaser pubblico + mappa con location per abbonati)
 
 ### Area utente (Clerk)
 - `/sign-in` — Login (Clerk `<SignIn />`, SSR)
@@ -234,6 +235,32 @@ Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.j
 - `src/content/itinerari/isalnda-1.md`
 - `src/content/itinerari/isalnda-2.md`
 - `src/content/destinazioni/test-islanda.md`
+
+---
+
+## 11. BLACK BOOK
+
+### Struttura
+- `src/pages/black-book.astro` — pagina SSR (`/black-book`)
+- `src/content/blackbook/` — una cartella con un file `.md` per location
+- Schema in `src/content/config.ts` → collection `blackbook`
+- CMS: sezione "Black Book" in `/admin`
+
+### Logica accesso
+- Non abbonati: vedono hero + teaser con mappa sfumata + CTA abbonamento
+- Abbonati (`isPremium: true` in Clerk `publicMetadata`): vedono la mappa Leaflet completa con pannello note laterale
+
+### Aggiungere una location
+1. Vai su `/admin` → Black Book → New
+2. Compila: titolo, paese, coordinate GPS (lat/lng), tipo, testo, annotazioni a mano, checklist
+3. Imposta **Stato**: `published` (pin visibile e cliccabile) o `coming_soon` (pin sfumato, non cliccabile)
+4. Pubblica → Netlify rebuilda
+
+### Campi principali
+`title, country, region?, continent, type, lat, lng, publishDate, status(published/coming_soon), bestTime?, bestSeason?, focalLength?, isoRange?, access?, difficulty?, handnotes[], checklist[], personalNote?, coordinates?`
+
+### Body del markdown
+Il corpo del file `.md` è il testo descrittivo principale della location (supporta grassetto e corsivo).
 
 ---
 
