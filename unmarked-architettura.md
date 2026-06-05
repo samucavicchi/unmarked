@@ -72,7 +72,7 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
 - `/chi-siamo` — About page (storia di Alice e Samuele, manifesto, team, cosa facciamo)
 - `/mediakit` — Media Kit in italiano
 - `/en/mediakit` — Media Kit in inglese
-- `/black-book` — Black Book (teaser pubblico + mappa con location per abbonati)
+- `/spotsbook` — Spotsbook (teaser pubblico + mappa con location per abbonati)
 
 ### Area utente (Clerk)
 - `/sign-in` — Login (Clerk `<SignIn />`, SSR)
@@ -241,7 +241,7 @@ Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.j
 ## 11. BLACK BOOK
 
 ### Struttura
-- `src/pages/black-book.astro` — pagina SSR (`/black-book`)
+- `src/pages/spotsbook.astro` — pagina SSR (`/spotsbook`)
 - `src/content/blackbook/` — una cartella con un file `.md` per location
 - Schema in `src/content/config.ts` → collection `blackbook`
 - CMS: sezione "Black Book" in `/admin`
