@@ -99,6 +99,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   ) : (
     <!-- MAPPA + PANNELLO per abbonati -->
     <section class="bb-app">
+      <div class="bb-book">
       <div class="bb-toolbar">
         <div class="bb-toolbar-left">
           <span class="bb-toolbar-label">Filtra</span>
@@ -132,6 +133,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   )}
@@ -357,8 +359,32 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-chip.active { color: var(--terra); border-bottom-color: var(--terra); }
   .bb-count { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.2); }
 
+  /* APP — libro posato */
+  .bb-app {
+    max-width: 1200px;
+    margin: 48px auto 64px;
+    padding: 0 40px;
+    position: relative;
+  }
+  .bb-book {
+    border: 1px solid rgba(201,185,154,0.2);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .bb-book::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--terra);
+    z-index: 10;
+  }
+
   /* LAYOUT MAPPA */
-  .bb-layout { display: grid; grid-template-columns: 1fr 360px; height: 560px; }
+  .bb-layout { display: grid; grid-template-columns: 1fr 360px; height: 600px; }
   .bb-map-wrap { background: #141210; }
 
   /* PIN */
