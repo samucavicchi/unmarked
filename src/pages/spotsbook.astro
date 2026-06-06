@@ -560,7 +560,8 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.bb-save-btn svg) { width: 16px; height: 16px; display: block; }
   :global(.bb-save-btn:hover) { border-color: var(--terra); color: var(--terra); }
   :global(.bb-save-btn.is-saved) { color: var(--terra); border-color: var(--terra); }
-  :global(.bb-pin-saved .bb-pin-dot) { background: rgba(196,133,90,0.6); box-shadow: 0 0 0 2px rgba(196,133,90,0.3); }
+  :global(.bb-pin-saved .bb-pin-dot) { background: #E8C840; box-shadow: 0 0 0 3px rgba(232,200,64,0.25); }
+  :global(.bb-pin-saved .bb-pin-dot::after) { background: #E8C840; }
   .bb-chip-saved { border-left: 1px solid rgba(250,250,248,0.08); margin-left: 4px; padding-left: 16px; }
 
   /* OVERLAY */
