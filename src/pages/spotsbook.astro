@@ -411,9 +411,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-panel-empty-text { font-size: 11px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,250,248,0.4); }
   .bb-panel-content { flex-direction: column; flex: 1; overflow: hidden; }
   .bb-panel-top { padding: 24px 28px 0; flex-shrink: 0; }
-  .bb-panel-region { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; }
-  .bb-panel-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
-  .bb-panel-time { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.6); margin-bottom: 20px; }
+  :global(.bb-panel-region) { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #C4855A; margin-bottom: 10px; }
+  :global(.bb-panel-name) { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
+  :global(.bb-panel-time) { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.65); margin-bottom: 20px; }
   .bb-panel-divider { height: 1px; background: rgba(250,250,248,0.06); margin: 0 28px; flex-shrink: 0; }
   .bb-panel-body { padding: 16px 28px; flex: 1; overflow-y: auto; }
 
