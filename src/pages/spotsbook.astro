@@ -413,7 +413,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-panel-top { padding: 24px 28px 0; flex-shrink: 0; }
   .bb-panel-region { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; }
   .bb-panel-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
-  .bb-panel-time { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.3); margin-bottom: 20px; }
+  .bb-panel-time { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.6); margin-bottom: 20px; }
   .bb-panel-divider { height: 1px; background: rgba(250,250,248,0.06); margin: 0 28px; flex-shrink: 0; }
   .bb-panel-body { padding: 16px 28px; flex: 1; overflow-y: auto; }
 
@@ -422,16 +422,16 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.bb-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(250,250,248,0.05); margin: 16px 0; }
   :global(.bb-field) { background: #111009; padding: 12px 14px; }
   :global(.bb-field-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.5); margin-bottom: 4px; }
-  :global(.bb-field-val) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.7); line-height: 1.4; }
+  :global(.bb-field-val) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.9); line-height: 1.4; }
   :global(.bb-check) { font-family: 'Caveat', cursive; font-size: 16px; color: rgba(177,113,74,0.8); display: flex; align-items: center; gap: 7px; margin: 5px 0; }
-  :global(.bb-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.45); display: flex; align-items: center; gap: 7px; margin: 8px 0; font-style: italic; }
-  :global(.bb-coords) { font-size: 11px; font-family: monospace; color: rgba(250,250,248,0.35); letter-spacing: 0.06em; margin-top: 14px; }
+  :global(.bb-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.6); display: flex; align-items: center; gap: 7px; margin: 8px 0; font-style: italic; }
+  :global(.bb-coords) { font-size: 11px; font-family: monospace; color: rgba(250,250,248,0.5); letter-spacing: 0.06em; margin-top: 14px; }
 
   /* NAV */
   .bb-panel-nav { padding: 14px 28px; border-top: 1px solid rgba(250,250,248,0.05); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: #0E0C09; }
   .bb-nav-btn { font-size: 8px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250,250,248,0.5); background: none; border: none; cursor: pointer; padding: 0; }
   .bb-nav-btn:hover { color: var(--terra); }
-  .bb-nav-pos { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.45); }
+  .bb-nav-pos { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.6); }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
