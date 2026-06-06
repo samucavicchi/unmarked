@@ -138,6 +138,17 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     </section>
   )}
 
+<!-- OVERLAY DETTAGLIO -->
+<div id="sb-overlay" class="sbo-wrap" aria-hidden="true">
+  <div class="sbo-backdrop" id="sb-overlay-backdrop"></div>
+  <div class="sbo-panel">
+    <button class="sbo-close" id="sb-overlay-close" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="sbo-scroll" id="sb-overlay-content"></div>
+  </div>
+</div>
+
 </BaseLayout>
 
 {isPremium && (
@@ -163,6 +174,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         checklist: l.data.checklist || [],
         personalNote: l.data.personalNote || '',
         coordinates: l.data.coordinates || '',
+        images: l.data.images || [],
       }))
     }}
   >
@@ -219,6 +231,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const top = document.getElementById('bb-panel-top');
       const body = document.getElementById('bb-panel-body');
 
+      // PANNELLO RIDOTTO
       top.innerHTML = `
         <div class="bb-panel-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
         <div class="bb-panel-name">${loc.title}</div>
@@ -226,57 +239,102 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       `;
 
       let bodyHTML = '';
-
-      // Testo + handnotes alternati (vengono dal body del markdown — placeholder)
-      if (loc.handnotes.length) {
-        loc.handnotes.forEach(note => {
-          bodyHTML += `<div class="bb-handnote"><span>↳</span><span>${note}</span></div>`;
-        });
-      }
-
-      // Griglia dati tecnici
-      const fields = [
-        { label: 'Focale', val: loc.focalLength + (loc.isoRange ? '<br>ISO ' + loc.isoRange : '') },
-        { label: 'Accesso', val: loc.access },
-        { label: 'Stagione', val: loc.bestSeason },
-        { label: 'Difficoltà', val: loc.difficulty },
-      ].filter(f => f.val);
-
-      if (fields.length) {
-        bodyHTML += `<div class="bb-fields">`;
-        fields.forEach(f => {
-          bodyHTML += `<div class="bb-field"><div class="bb-field-label">${f.label}</div><div class="bb-field-val">${f.val}</div></div>`;
-        });
-        bodyHTML += `</div>`;
-      }
-
-      // Checklist
-      loc.checklist.forEach(item => {
-        bodyHTML += `<div class="bb-check"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5 6.5-6.5" stroke="#B1714A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${item}</div>`;
-      });
-
-      // Nota personale
-      if (loc.personalNote) {
-        bodyHTML += `<div class="bb-personal"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1l1.3 3.5h3.7l-3 2.2 1.1 3.5-3.1-2.2-3.1 2.2 1.1-3.5-3-2.2h3.7z" stroke="rgba(26,24,20,0.2)" stroke-width="0.8" stroke-linejoin="round"/></svg>${loc.personalNote}</div>`;
-      }
-
-      // Coordinate
-      if (loc.coordinates) {
-        bodyHTML += `<div class="bb-coords">${loc.coordinates}</div>`;
-      }
+      if (loc.difficulty) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Difficoltà</span><span class="bb-panel-info-val">${loc.difficulty}</span></div>`;
+      if (loc.access) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Accesso</span><span class="bb-panel-info-val">${loc.access}</span></div>`;
+      if (loc.coordinates) bodyHTML += `<div class="bb-coords">${loc.coordinates}</div>`;
+      bodyHTML += `<button class="bb-detail-btn" onclick="openOverlay(${index})">Scopri tutto</button>`;
 
       body.innerHTML = bodyHTML;
 
       document.getElementById('bb-panel-empty').style.display = 'none';
       document.getElementById('bb-panel-content').style.display = 'flex';
 
-      // Navigazione
       const publishedLocs = locs.filter(l => l.status === 'published');
       const pos = publishedLocs.indexOf(loc) + 1;
       document.getElementById('bb-nav-pos').textContent = `${pos} / ${publishedLocs.length}`;
 
       map.setView([loc.lat, loc.lng], 6, { animate: true });
     }
+
+    window.openOverlay = function(index) {
+      const loc = filteredLocations[index];
+      const overlay = document.getElementById('sb-overlay');
+      const content = document.getElementById('sb-overlay-content');
+
+      let html = `
+        <div class="sbo-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
+        <div class="sbo-title">${loc.title}</div>
+        ${loc.bestTime ? `<div class="sbo-time">luce ottimale · ${loc.bestTime}${loc.bestSeason ? ' · ' + loc.bestSeason : ''}</div>` : ''}
+      `;
+
+      // Galleria immagini
+      if (loc.images && loc.images.length) {
+        html += `<div class="sbo-gallery">`;
+        loc.images.forEach(img => {
+          html += `<div class="sbo-img" style="background-image:url('${img.src}')" role="img" aria-label="${img.alt || ''}"></div>`;
+        });
+        html += `</div>`;
+      }
+
+      // Dati tecnici
+      const fields = [
+        { label: 'Focale', val: loc.focalLength + (loc.isoRange ? ' · ISO ' + loc.isoRange : '') },
+        { label: 'Difficoltà', val: loc.difficulty },
+        { label: 'Accesso', val: loc.access },
+        { label: 'Stagione', val: loc.bestSeason },
+      ].filter(f => f.val);
+
+      if (fields.length) {
+        html += `<div class="sbo-fields">`;
+        fields.forEach(f => {
+          html += `<div class="sbo-field"><div class="sbo-field-label">${f.label}</div><div class="sbo-field-val">${f.val}</div></div>`;
+        });
+        html += `</div>`;
+      }
+
+      // Annotazioni a mano
+      loc.handnotes.forEach(note => {
+        html += `<div class="sbo-handnote"><span>↳</span><span>${note}</span></div>`;
+      });
+
+      // Checklist
+      if (loc.checklist.length) {
+        html += `<div class="sbo-checklist">`;
+        loc.checklist.forEach(item => {
+          html += `<div class="sbo-check"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5 6.5-6.5" stroke="#C4855A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${item}</div>`;
+        });
+        html += `</div>`;
+      }
+
+      // Nota personale
+      if (loc.personalNote) {
+        html += `<div class="sbo-personal">★ ${loc.personalNote}</div>`;
+      }
+
+      // Coordinate
+      if (loc.coordinates) {
+        html += `<div class="sbo-coords">${loc.coordinates}</div>`;
+      }
+
+      content.innerHTML = html;
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    };
+
+    document.getElementById('sb-overlay-backdrop').addEventListener('click', () => {
+      document.getElementById('sb-overlay').classList.remove('is-open');
+      document.body.style.overflow = '';
+    });
+    document.getElementById('sb-overlay-close').addEventListener('click', () => {
+      document.getElementById('sb-overlay').classList.remove('is-open');
+      document.body.style.overflow = '';
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.getElementById('sb-overlay').classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+    });
 
     // Filtri
     document.querySelectorAll('.bb-chip').forEach(chip => {
@@ -432,6 +490,40 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-nav-btn { font-size: 8px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250,250,248,0.5); background: none; border: none; cursor: pointer; padding: 0; }
   .bb-nav-btn:hover { color: var(--terra); }
   .bb-nav-pos { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.6); }
+
+  /* PANNELLO RIDOTTO */
+  :global(.bb-panel-info-row) { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(250,250,248,0.05); }
+  :global(.bb-panel-info-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,250,248,0.4); }
+  :global(.bb-panel-info-val) { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.85); text-align: right; max-width: 60%; }
+  :global(.bb-detail-btn) { width: 100%; margin-top: 20px; padding: 12px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.7); font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  :global(.bb-detail-btn:hover) { border-color: var(--terra); color: var(--terra); }
+
+  /* OVERLAY */
+  .sbo-wrap { position: fixed; inset: 0; z-index: 3000; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+  .sbo-wrap.is-open { pointer-events: all; opacity: 1; }
+  .sbo-backdrop { position: absolute; inset: 0; background: rgba(10,8,5,0.85); backdrop-filter: blur(4px); }
+  .sbo-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 560px; max-width: 100vw; background: #111009; border-left: 1px solid rgba(201,185,154,0.15); transform: translateX(40px); transition: transform 0.35s ease; display: flex; flex-direction: column; }
+  .sbo-wrap.is-open .sbo-panel { transform: translateX(0); }
+  .sbo-close { position: absolute; top: 20px; right: 24px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.4); padding: 4px; transition: color 0.2s; }
+  .sbo-close:hover { color: #FAFAF8; }
+  .sbo-close svg { width: 22px; height: 22px; display: block; }
+  .sbo-scroll { flex: 1; overflow-y: auto; padding: 48px 40px 40px; }
+
+  /* CONTENUTO OVERLAY */
+  :global(.sbo-region) { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #C4855A; margin-bottom: 10px; }
+  :global(.sbo-title) { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
+  :global(.sbo-time) { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(250,250,248,0.55); margin-bottom: 28px; }
+  :global(.sbo-gallery) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 28px; }
+  :global(.sbo-img) { aspect-ratio: 3/2; background-size: cover; background-position: center; background-color: rgba(250,250,248,0.05); border-radius: 2px; }
+  :global(.sbo-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(250,250,248,0.05); margin-bottom: 24px; }
+  :global(.sbo-field) { background: #111009; padding: 14px 16px; }
+  :global(.sbo-field-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 5px; }
+  :global(.sbo-field-val) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.9); line-height: 1.4; }
+  :global(.sbo-handnote) { font-family: 'Caveat', cursive; font-size: 17px; color: #C4855A; display: flex; gap: 8px; margin: 8px 0; }
+  :global(.sbo-checklist) { margin: 16px 0; }
+  :global(.sbo-check) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.75); display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  :global(.sbo-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.45); font-style: italic; margin: 16px 0 8px; }
+  :global(.sbo-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.3); letter-spacing: 0.06em; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(250,250,248,0.06); }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {

@@ -348,3 +348,12 @@ collections:
         field: { label: "Voce", name: "item", widget: "string" }
       - { label: "Nota personale", name: "personalNote", widget: "string", required: false, hint: "Commento personale, appare con stellina" }
       - { label: "Coordinate testuali", name: "coordinates", widget: "string", required: false, hint: "Es. -1.0333, 29.6833 · Bwindi NP" }
+      - label: "Immagini overlay"
+        name: "images"
+        widget: "list"
+        required: false
+        hint: "Foto che appaiono nell'overlay dettaglio"
+        summary: "{{fields.src}}"
+        fields:
+          - { label: "Immagine (path es. /spotsbook/foto.jpg)", name: "src", widget: "string" }
+          - { label: "Alt", name: "alt", widget: "string", required: false }

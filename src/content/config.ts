@@ -251,6 +251,11 @@ const blackbook = defineCollection({
     personalNote: z.string().optional(),
     // Coordinate testuali
     coordinates: z.string().optional(),      // es. "-1.0333, 29.6833 · Bwindi NP"
+    // Galleria immagini overlay
+    images: z.array(z.object({
+      src: z.string(),
+      alt: z.string().optional(),
+    })).default([]),
   }),
 });
 
