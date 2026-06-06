@@ -106,6 +106,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           <button class="bb-chip active" data-filter="all">Tutte</button>
           {types.map(t => <button class="bb-chip" data-filter={t}>{t}</button>)}
           {continents.map(c => <button class="bb-chip" data-filter={c}>{c}</button>)}
+          <button class="bb-chip bb-chip-saved" data-filter="saved">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px"><path d="M5 3h14a1 1 0 0 1 1 1v17l-7-3-7 3V4a1 1 0 0 1 1-1z"/></svg>
+            Salvati
+          </button>
         </div>
         <div class="bb-toolbar-right">
           <span class="bb-count" id="bb-count">{publishedCount} location</span>
@@ -190,6 +194,34 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
     let map, currentIndex = 0, filteredLocations = [...locations], activeMarker = null;
 
+    // ─────────────────────────────────────────────
+    // STORAGE LAYER — swap queste 3 funzioni con
+    // chiamate Clerk quando sarà il momento:
+    //   getSaved()     → clerk.user.publicMetadata.savedSpots
+    //   toggleSave()   → clerk.user.update({ publicMetadata: {...} })
+    //   isSaved()      → derivata da getSaved()
+    // ─────────────────────────────────────────────
+    const STORAGE_KEY = 'spotsbook_saved';
+
+    function getSaved() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch { return []; }
+    }
+
+    function toggleSave(slug) {
+      const saved = getSaved();
+      const idx = saved.indexOf(slug);
+      if (idx === -1) saved.push(slug);
+      else saved.splice(idx, 1);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      return getSaved();
+    }
+
+    function isSaved(slug) {
+      return getSaved().includes(slug);
+    }
+    // ─────────────────────────────────────────────
+
     function initMap() {
       map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true }).setView([20, 20], 2);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -199,10 +231,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       renderMarkers(locations);
     }
 
-    function makeIcon(published, active = false) {
+    function makeIcon(published, active = false, saved = false) {
+      let cls = 'bb-pin';
+      if (!published) cls += ' bb-pin-locked';
+      else if (active) cls += ' bb-pin-active';
+      else if (saved) cls += ' bb-pin-saved';
       return L.divIcon({
         className: '',
-        html: `<div class="bb-pin${published ? (active ? ' bb-pin-active' : '') : ' bb-pin-locked'}"><div class="bb-pin-dot"></div></div>`,
+        html: `<div class="${cls}"><div class="bb-pin-dot"></div></div>`,
         iconSize: [16, 22], iconAnchor: [8, 22]
       });
     }
@@ -212,11 +248,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       filteredLocations = locs;
       locs.forEach((loc, i) => {
         const published = loc.status === 'published';
-        const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(published) });
+        const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(published, false, published && isSaved(loc.slug)) });
         if (published) {
           marker.on('click', () => {
-            if (activeMarker) activeMarker.setIcon(makeIcon(true, false));
-            marker.setIcon(makeIcon(true, true));
+            if (activeMarker) {
+              const prev = locs[filteredLocations.indexOf(filteredLocations.find(l => l === filteredLocations[currentIndex]))];
+              activeMarker.setIcon(makeIcon(true, false, isSaved(loc.slug)));
+            }
+            marker.setIcon(makeIcon(true, true, false));
             activeMarker = marker;
             openPanel(i, locs);
           });
@@ -242,7 +281,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       if (loc.difficulty) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Difficoltà</span><span class="bb-panel-info-val">${loc.difficulty}</span></div>`;
       if (loc.access) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Accesso</span><span class="bb-panel-info-val">${loc.access}</span></div>`;
       if (loc.coordinates) bodyHTML += `<div class="bb-coords">${loc.coordinates}</div>`;
-      bodyHTML += `<button class="bb-detail-btn" onclick="openOverlay(${index})">Scopri tutto</button>`;
+      const saved = isSaved(loc.slug);
+      bodyHTML += `
+        <div class="bb-panel-actions">
+          <button class="bb-detail-btn" onclick="openOverlay(${index})">Scopri tutto</button>
+          <button class="bb-save-btn ${saved ? 'is-saved' : ''}" onclick="handleSave('${loc.slug}', this)" title="${saved ? 'Rimuovi dai salvati' : 'Salva location'}">
+            <svg viewBox="0 0 24 24" fill="${saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5"><path d="M5 3h14a1 1 0 0 1 1 1v17l-7-3-7 3V4a1 1 0 0 1 1-1z"/></svg>
+          </button>
+        </div>`;
 
       body.innerHTML = bodyHTML;
 
@@ -255,6 +301,16 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
       map.setView([loc.lat, loc.lng], 6, { animate: true });
     }
+
+    window.handleSave = function(slug, btn) {
+      const nowSaved = toggleSave(slug);
+      const saved = nowSaved.includes(slug);
+      btn.classList.toggle('is-saved', saved);
+      btn.querySelector('svg').setAttribute('fill', saved ? 'currentColor' : 'none');
+      btn.title = saved ? 'Rimuovi dai salvati' : 'Salva location';
+      // aggiorna icona pin sulla mappa
+      renderMarkers(filteredLocations);
+    };
 
     window.openOverlay = function(index) {
       const loc = filteredLocations[index];
@@ -342,7 +398,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         document.querySelectorAll('.bb-chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
         const filter = chip.dataset.filter;
-        filteredLocations = filter === 'all' ? [...locations] : locations.filter(l => l.type === filter || l.continent === filter);
+        filteredLocations = filter === 'all' ? [...locations]
+          : filter === 'saved' ? locations.filter(l => isSaved(l.slug))
+          : locations.filter(l => l.type === filter || l.continent === filter);
         renderMarkers(filteredLocations);
         document.getElementById('bb-count').textContent = filteredLocations.filter(l => l.status === 'published').length + ' location';
         document.getElementById('bb-panel-empty').style.display = 'flex';
@@ -495,8 +553,15 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.bb-panel-info-row) { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(250,250,248,0.05); }
   :global(.bb-panel-info-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,250,248,0.4); }
   :global(.bb-panel-info-val) { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.85); text-align: right; max-width: 60%; }
-  :global(.bb-detail-btn) { width: 100%; margin-top: 20px; padding: 12px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.7); font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  :global(.bb-panel-actions) { display: flex; gap: 8px; margin-top: 20px; }
+  :global(.bb-detail-btn) { flex: 1; padding: 12px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.7); font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
   :global(.bb-detail-btn:hover) { border-color: var(--terra); color: var(--terra); }
+  :global(.bb-save-btn) { padding: 12px 14px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.4); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; }
+  :global(.bb-save-btn svg) { width: 16px; height: 16px; display: block; }
+  :global(.bb-save-btn:hover) { border-color: var(--terra); color: var(--terra); }
+  :global(.bb-save-btn.is-saved) { color: var(--terra); border-color: var(--terra); }
+  :global(.bb-pin-saved .bb-pin-dot) { background: rgba(196,133,90,0.6); box-shadow: 0 0 0 2px rgba(196,133,90,0.3); }
+  .bb-chip-saved { border-left: 1px solid rgba(250,250,248,0.08); margin-left: 4px; padding-left: 16px; }
 
   /* OVERLAY */
   .sbo-wrap { position: fixed; inset: 0; z-index: 3000; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
