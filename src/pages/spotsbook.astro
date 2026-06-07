@@ -285,21 +285,27 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const top = document.getElementById('bb-panel-top');
       const body = document.getElementById('bb-panel-body');
 
-      // PANNELLO RIDOTTO
       const previewImg = loc.images && loc.images.length ? loc.images[0].src : '';
+      const saved = isSaved(loc.slug);
+
       top.innerHTML = `
         ${previewImg ? `<div class="bb-panel-preview" style="background-image:url('${previewImg}')"></div>` : ''}
-        <div class="bb-panel-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
-        <div class="bb-panel-name">${loc.title}</div>
-        ${loc.bestTime ? `<div class="bb-panel-time">luce ottimale · ${loc.bestTime}${loc.bestSeason ? ' · ' + loc.bestSeason : ''}</div>` : ''}
+        <div class="bb-panel-header">
+          <div class="bb-panel-region">${loc.country} · ${loc.continent}</div>
+          <div class="bb-panel-name">${loc.title}</div>
+          <div class="bb-panel-meta">
+            ${loc.bestSeason ? `<div class="bb-panel-meta-row"><span class="bb-panel-meta-label">Periodo</span><span class="bb-panel-meta-val">${loc.bestSeason}</span></div>` : ''}
+            ${loc.bestTime ? `<div class="bb-panel-meta-row"><span class="bb-panel-meta-label">Luce ottimale</span><span class="bb-panel-meta-val">${loc.bestTime}</span></div>` : ''}
+          </div>
+          ${loc.difficulty ? `<div class="bb-panel-block"><div class="bb-panel-block-label">Difficoltà fotografica</div><div class="bb-panel-block-text">${loc.difficulty}</div></div>` : ''}
+        </div>
       `;
 
-      let bodyHTML = '';
-      if (loc.difficulty) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Difficoltà</span><span class="bb-panel-info-val">${loc.difficulty}</span></div>`;
-      if (loc.access) bodyHTML += `<div class="bb-panel-info-row"><span class="bb-panel-info-label">Accesso</span><span class="bb-panel-info-val">${loc.access}</span></div>`;
-      if (loc.coordinates) bodyHTML += `<div class="bb-coords">${loc.coordinates}</div>`;
-      const saved = isSaved(loc.slug);
-      bodyHTML += `
+      const bodyHTML = `
+        <a class="bb-panel-gmaps" href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          Apri in Google Maps
+        </a>
         <div class="bb-panel-actions">
           <button class="bb-detail-btn" onclick="openOverlay(${index})">Scopri tutto</button>
           <button class="bb-save-btn ${saved ? 'is-saved' : ''}" onclick="handleSave('${loc.slug}', this)" title="${saved ? 'Rimuovi dai salvati' : 'Salva location'}">
@@ -611,11 +617,18 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-nav-btn:hover { color: var(--terra); }
   .bb-nav-pos { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.6); }
 
-  /* PANNELLO RIDOTTO */
-  :global(.bb-panel-info-row) { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid rgba(250,250,248,0.05); }
-  :global(.bb-panel-info-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,250,248,0.4); }
-  :global(.bb-panel-info-val) { font-family: 'Caveat', cursive; font-size: 16px; font-weight: 400; color: rgba(250,250,248,0.85); text-align: right; max-width: 60%; }
-  :global(.bb-panel-actions) { display: flex; gap: 8px; margin-top: 20px; }
+  /* PANNELLO — header */
+  :global(.bb-panel-header) { padding: 20px 28px 0; }
+  :global(.bb-panel-meta) { display: flex; flex-direction: column; gap: 5px; margin: 10px 0 16px; }
+  :global(.bb-panel-meta-row) { display: flex; align-items: baseline; gap: 10px; }
+  :global(.bb-panel-meta-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.35); flex-shrink: 0; }
+  :global(.bb-panel-meta-val) { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.75); }
+  :global(.bb-panel-block) { margin: 4px 0 4px; padding: 12px 14px; border-left: 2px solid var(--terra); background: rgba(177,113,74,0.06); }
+  :global(.bb-panel-block-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 4px; }
+  :global(.bb-panel-block-text) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.8); }
+  :global(.bb-panel-gmaps) { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.4); text-decoration: none; transition: color 0.2s; }
+  :global(.bb-panel-gmaps:hover) { color: var(--terra); }
+  :global(.bb-panel-actions) { display: flex; gap: 8px; }
   :global(.bb-detail-btn) { flex: 1; padding: 12px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.7); font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
   :global(.bb-detail-btn:hover) { border-color: var(--terra); color: var(--terra); }
   :global(.bb-save-btn) { padding: 12px 14px; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.4); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; }
