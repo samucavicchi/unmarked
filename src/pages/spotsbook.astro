@@ -348,11 +348,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         html += `</div>`;
       }
 
-      // Dati tecnici
+      // Focale, Difficoltà, Composizione consigliata, Anti-mainstream — stile blocco
+      if (loc.focalLength) html += `<div class="sbo-block"><div class="sbo-block-label">Focale</div><div class="sbo-block-text">${loc.focalLength}</div></div>`;
+      if (loc.difficulty) html += `<div class="sbo-block"><div class="sbo-block-label">Difficoltà</div><div class="sbo-block-text">${loc.difficulty}</div></div>`;
+      if (loc.isoRange) html += `<div class="sbo-block"><div class="sbo-block-label">Composizione consigliata</div><div class="sbo-block-text">${loc.isoRange}</div></div>`;
+      if (loc.antiMainstream) html += `<div class="sbo-block"><div class="sbo-block-label">↯ Anti-mainstream</div><div class="sbo-block-text">${loc.antiMainstream}</div></div>`;
+
+      // Accesso e Stagione — griglia compatta
       const fields = [
-        { label: 'Focale', val: loc.focalLength },
-        { label: 'Composizione consigliata', val: loc.isoRange },
-        { label: 'Difficoltà', val: loc.difficulty },
         { label: 'Accesso', val: loc.access },
         { label: 'Stagione', val: loc.bestSeason },
       ].filter(f => f.val);
@@ -363,11 +366,6 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           html += `<div class="sbo-field"><div class="sbo-field-label">${f.label}</div><div class="sbo-field-val">${f.val}</div></div>`;
         });
         html += `</div>`;
-      }
-
-      // Anti-mainstream
-      if (loc.antiMainstream) {
-        html += `<div class="sbo-anti"><div class="sbo-anti-label">↯ Anti-mainstream</div><div class="sbo-anti-text">${loc.antiMainstream}</div></div>`;
       }
 
       // Annotazioni a mano
@@ -653,10 +651,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-gmaps) { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.4); text-decoration: none; transition: color 0.2s; }
   :global(.sbo-gmaps:hover) { color: var(--terra); }
 
-  /* ANTI-MAINSTREAM */
-  :global(.sbo-anti) { margin: 20px 0; padding: 16px; border-left: 2px solid var(--terra); background: rgba(177,113,74,0.06); }
-  :global(.sbo-anti-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
-  :global(.sbo-anti-text) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.8); line-height: 1.7; }
+  /* BLOCCHI EDITORIALI (focale, difficoltà, composizione, anti-mainstream) */
+  :global(.sbo-block) { margin: 8px 0; padding: 14px 16px; border-left: 2px solid var(--terra); background: rgba(177,113,74,0.06); }
+  :global(.sbo-block-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; }
+  :global(.sbo-block-text) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.8); line-height: 1.7; }
 
   /* LIGHTBOX */
   .sbl-wrap { position: fixed; inset: 0; z-index: 4000; pointer-events: none; opacity: 0; transition: opacity 0.25s; display: flex; align-items: center; justify-content: center; }
