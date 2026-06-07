@@ -332,6 +332,7 @@ collections:
       - { label: "Focale consigliata", name: "focalLength", widget: "string", required: false, hint: "Es. 200–400mm" }
       - { label: "Composizione consigliata", name: "isoRange", widget: "string", required: false, hint: "Es. grandangolo a f/8, golden hour, ricerca simmetrie" }
       - { label: "Accesso", name: "access", widget: "string", required: false, hint: "Es. 35 min a piedi, guida obbligatoria" }
+      - { label: "Anti-mainstream", name: "antiMainstream", widget: "text", required: false, hint: "Consiglio alternativo — cosa fare diversamente dalla massa" }
       - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Bassa", "Media", "Alta"], required: false }
       - { label: "Testo descrittivo", name: "body", widget: "markdown", buttons: ["bold", "italic"] }
       - label: "Annotazioni a mano"

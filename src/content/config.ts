@@ -249,6 +249,8 @@ const blackbook = defineCollection({
     checklist: z.array(z.string()).default([]),
     // Attrezzatura consigliata (selezione fissa)
     equipment: z.array(z.enum(['Treppiede', 'Filtri', 'Grandangolo', 'Tele', 'Lente luminosa', 'Cover impermeabile'])).default([]),
+    // Anti-mainstream
+    antiMainstream: z.string().optional(),
     // Nota personale (stellina)
     personalNote: z.string().optional(),
     // Coordinate testuali
