@@ -9,6 +9,7 @@ publishDate: 2026-06-07
 status: published
 bestTime: Alba e tramonto
 bestSeason: Tutte
+focalLength: "Lunga esposizione "
 isoRange: Seguire la line formata da fiume e sassi per dare profondità verso la cascata
 access: Parcheggio a fianco del bar, 100m alla cascata
 difficulty: Bassa
