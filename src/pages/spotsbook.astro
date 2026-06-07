@@ -271,7 +271,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const body = document.getElementById('bb-panel-body');
 
       // PANNELLO RIDOTTO
+      const previewImg = loc.images && loc.images.length ? loc.images[0].src : '';
       top.innerHTML = `
+        ${previewImg ? `<div class="bb-panel-preview" style="background-image:url('${previewImg}')"></div>` : ''}
         <div class="bb-panel-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
         <div class="bb-panel-name">${loc.title}</div>
         ${loc.bestTime ? `<div class="bb-panel-time">luce ottimale · ${loc.bestTime}${loc.bestSeason ? ' · ' + loc.bestSeason : ''}</div>` : ''}
@@ -526,11 +528,15 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-panel-empty-icon svg { width: 32px; height: 32px; color: rgba(250,250,248,0.3); }
   .bb-panel-empty-text { font-size: 11px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,250,248,0.4); }
   .bb-panel-content { flex-direction: column; flex: 1; overflow: hidden; }
-  .bb-panel-top { padding: 24px 28px 0; flex-shrink: 0; }
+  .bb-panel-top { padding: 0 0 0; flex-shrink: 0; }
+  :global(.bb-panel-preview) { width: 100%; height: 160px; background-size: cover; background-position: center; flex-shrink: 0; }
+  :global(.bb-panel-region) { margin-top: 20px; padding: 0 28px; }
+  :global(.bb-panel-name) { padding: 0 28px; }
+  :global(.bb-panel-time) { padding: 0 28px; }
   :global(.bb-panel-region) { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #C4855A; margin-bottom: 10px; }
   :global(.bb-panel-name) { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
   :global(.bb-panel-time) { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(250,250,248,0.65); margin-bottom: 20px; }
-  .bb-panel-divider { height: 1px; background: rgba(250,250,248,0.06); margin: 0 28px; flex-shrink: 0; }
+  .bb-panel-divider { height: 1px; background: rgba(250,250,248,0.06); margin: 20px 28px 0; flex-shrink: 0; }
   .bb-panel-body { padding: 16px 28px; flex: 1; overflow-y: auto; }
 
   /* ELEMENTI PANNELLO */
