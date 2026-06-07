@@ -337,7 +337,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       let html = `
         <div class="sbo-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
         <div class="sbo-title">${loc.title}</div>
-        ${loc.bestTime ? `<div class="sbo-time">luce ottimale · ${loc.bestTime}${loc.bestSeason ? ' · ' + loc.bestSeason : ''}</div>` : ''}
+        <div class="sbo-meta">
+          ${loc.bestSeason ? `<div class="sbo-meta-row"><span class="sbo-meta-label">Periodo</span><span class="sbo-meta-val">${loc.bestSeason}</span></div>` : ''}
+          ${loc.bestTime ? `<div class="sbo-meta-row"><span class="sbo-meta-label">Luce ottimale</span><span class="sbo-meta-val">${loc.bestTime}</span></div>` : ''}
+        </div>
       `;
 
       // Galleria immagini (cliccabili per lightbox)
@@ -359,7 +362,6 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const fields = [
         { label: 'Accesso', val: loc.access },
         { label: 'Difficoltà di avvicinamento', val: loc.avvicinamento },
-        { label: 'Stagione', val: loc.bestSeason },
       ].filter(f => f.val);
 
       if (fields.length) {
@@ -639,6 +641,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-region) { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #C4855A; margin-bottom: 10px; }
   :global(.sbo-title) { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
   :global(.sbo-time) { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-style: italic; color: rgba(250,250,248,0.55); margin-bottom: 28px; }
+  :global(.sbo-meta) { display: flex; flex-direction: column; gap: 6px; margin: 12px 0 28px; }
+  :global(.sbo-meta-row) { display: flex; align-items: baseline; gap: 10px; }
+  :global(.sbo-meta-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.35); flex-shrink: 0; }
+  :global(.sbo-meta-val) { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: rgba(250,250,248,0.75); }
   :global(.sbo-gallery) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 28px; }
   :global(.sbo-img) { aspect-ratio: 3/2; background-size: cover; background-position: center; background-color: rgba(250,250,248,0.05); border-radius: 2px; }
   :global(.sbo-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(250,250,248,0.05); margin-bottom: 24px; }
