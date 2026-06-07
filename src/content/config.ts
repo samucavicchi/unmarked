@@ -242,7 +242,8 @@ const blackbook = defineCollection({
     focalLength: z.string().optional(),      // es. "200–400mm"
     isoRange: z.string().optional(),         // es. "3200–6400"
     access: z.string().optional(),           // es. "35 min a piedi, guida obbligatoria"
-    difficulty: z.enum(['Bassa', 'Media', 'Alta']).optional(),
+    difficulty: z.enum(['Bassa', 'Media', 'Alta']).optional(),       // difficoltà fotografica
+    avvicinamento: z.enum(['Bassa', 'Media', 'Alta']).optional(),   // difficoltà di avvicinamento
     // Annotazioni a mano (frecce, note brevi)
     handnotes: z.array(z.string()).default([]),
     // Checklist pratica (consigli logistici)
