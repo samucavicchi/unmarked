@@ -352,8 +352,8 @@ collections:
         name: "images"
         widget: "list"
         required: false
-        hint: "Foto che appaiono nell'overlay dettaglio"
-        summary: "{{fields.src}}"
+        hint: "Foto che appaiono nell'overlay dettaglio (prima foto = preview nel pannello)"
+        summary: "{{fields.alt}}"
         fields:
-          - { label: "Immagine (path es. /spotsbook/foto.jpg)", name: "src", widget: "string" }
+          - { label: "Immagine", name: "src", widget: "image", media_folder: "/public/spotsbook", public_folder: "/spotsbook" }
           - { label: "Alt", name: "alt", widget: "string", required: false }
