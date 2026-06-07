@@ -390,7 +390,6 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       document.body.style.overflow = 'hidden';
 
       // Ripristina stato checklist attrezzatura
-      const equipKey = `spotsbook_equip_${loc.slug}`;
       const equipState = JSON.parse(localStorage.getItem(equipKey) || '[]');
       document.querySelectorAll('.sbo-equip-cb').forEach(cb => {
         const idx = parseInt(cb.dataset.idx);
