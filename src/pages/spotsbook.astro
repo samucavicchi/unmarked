@@ -381,10 +381,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         html += `<div class="sbo-personal">★ ${loc.personalNote}</div>`;
       }
 
-      // Coordinate
+      // Coordinate + link Google Maps
       if (loc.coordinates) {
         html += `<div class="sbo-coords">${loc.coordinates}</div>`;
       }
+      html += `<a class="sbo-gmaps" href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Apri in Google Maps
+      </a>`;
 
       content.innerHTML = html;
       overlay.classList.add('is-open');
@@ -609,6 +613,8 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-check) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.75); display: flex; align-items: center; gap: 8px; margin: 6px 0; }
   :global(.sbo-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.45); font-style: italic; margin: 16px 0 8px; }
   :global(.sbo-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.3); letter-spacing: 0.06em; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(250,250,248,0.06); }
+  :global(.sbo-gmaps) { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.4); text-decoration: none; transition: color 0.2s; }
+  :global(.sbo-gmaps:hover) { color: var(--terra); }
 
   /* ATTREZZATURA CONSIGLIATA */
   :global(.sbo-equip-title) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin: 24px 0 10px; }
