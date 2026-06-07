@@ -351,7 +351,6 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
       // Focale, Difficoltà, Composizione consigliata, Anti-mainstream — stile blocco
       if (loc.difficulty) html += `<div class="sbo-block"><div class="sbo-block-label">Difficoltà fotografica</div><div class="sbo-block-text">${loc.difficulty}</div></div>`;
-      if (loc.avvicinamento) html += `<div class="sbo-block"><div class="sbo-block-label">Avvicinamento</div><div class="sbo-block-text">${loc.avvicinamento}</div></div>`;
       if (loc.focalLength) html += `<div class="sbo-block"><div class="sbo-block-label">Tecnica consigliata</div><div class="sbo-block-text">${loc.focalLength}</div></div>`;
       if (loc.isoRange) html += `<div class="sbo-block"><div class="sbo-block-label">Composizione consigliata</div><div class="sbo-block-text">${loc.isoRange}</div></div>`;
       if (loc.antiMainstream) html += `<div class="sbo-block"><div class="sbo-block-label">↯ Anti-mainstream</div><div class="sbo-block-text">${loc.antiMainstream}</div></div>`;
@@ -359,6 +358,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       // Accesso e Stagione — griglia compatta
       const fields = [
         { label: 'Accesso', val: loc.access },
+        { label: 'Difficoltà di avvicinamento', val: loc.avvicinamento },
         { label: 'Stagione', val: loc.bestSeason },
       ].filter(f => f.val);
 
