@@ -1,26 +1,28 @@
 ---
-title: "Valle dei Carpazi, versante est"
-country: "Romania"
-region: "Carpazi orientali"
-continent: "Europa"
-type: "Paesaggio"
+title: Valle dei Carpazi, versante est
+country: Romania
+region: Carpazi orientali
+continent: Europa
+type: Paesaggio
 lat: 45.6833
-lng: 25.2000
+lng: 25.2
 publishDate: 2026-06-03
-status: "published"
-bestTime: "17:40 – 19:00"
-bestSeason: "Aprile – Ottobre"
-focalLength: "16–24mm"
-access: "Parcheggio a fine strada forestale, 20 min a piedi"
-difficulty: "Media"
+status: published
+bestTime: 17:40 – 19:00
+bestSeason: Aprile – Ottobre
+focalLength: 16–24mm
+access: Parcheggio a fine strada forestale, 20 min a piedi
+difficulty: Media
 handnotes:
-  - "arriva con 30 min di anticipo, la luce cambia veloce"
-  - "in ottobre i colori valgono il viaggio da soli"
+  - arriva con 30 min di anticipo, la luce cambia veloce
+  - in ottobre i colori valgono il viaggio da soli
 checklist:
-  - "fuoristrada consigliato per l'ultimo tratto"
-  - "porta stivali impermeabili in primavera"
-personalNote: "ci sono tornato tre volte — ogni volta diversa"
-coordinates: "45.6833, 25.2000 · Carpathian Mountains, Romania"
+  - fuoristrada consigliato per l'ultimo tratto
+  - porta stivali impermeabili in primavera
+personalNote: ci sono tornato tre volte — ogni volta diversa
+coordinates: 45.6833, 25.2000 · Carpathian Mountains, Romania
+images:
+  - src: /spotsbook/islanda-estrema-cover-3-12.jpg
 ---
 
 Parcheggia alla fine della strada forestale. Da lì, 20 minuti a piedi verso il crinale.
