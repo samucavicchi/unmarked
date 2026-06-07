@@ -176,6 +176,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         difficulty: l.data.difficulty || '',
         handnotes: l.data.handnotes || [],
         checklist: l.data.checklist || [],
+        equipment: l.data.equipment || [],
         personalNote: l.data.personalNote || '',
         coordinates: l.data.coordinates || '',
         images: l.data.images || [],
@@ -356,15 +357,15 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         html += `<div class="sbo-handnote"><span>↳</span><span>${note}</span></div>`;
       });
 
-      // Checklist attrezzatura interattiva
-      const equipList = ['Treppiede', 'Filtri', 'Grandangolo', 'Tele', 'Lente luminosa', 'Cover impermeabile'];
-      const equipKey = `spotsbook_equip_${loc.slug}`;
-      html += `<div class="sbo-equip-title">Attrezzatura</div>`;
-      html += `<div class="sbo-equip-list" id="sbo-equip-${loc.slug}">`;
-      equipList.forEach((item, i) => {
-        html += `<label class="sbo-equip-item"><input type="checkbox" class="sbo-equip-cb" data-key="${equipKey}" data-idx="${i}" /><span class="sbo-equip-box"></span><span class="sbo-equip-label">${item}</span></label>`;
-      });
-      html += `</div>`;
+      // Attrezzatura consigliata (statica, gestita dal CMS)
+      if (loc.equipment && loc.equipment.length) {
+        html += `<div class="sbo-equip-title">Attrezzatura</div>`;
+        html += `<div class="sbo-equip-list">`;
+        loc.equipment.forEach(item => {
+          html += `<div class="sbo-equip-item"><span class="sbo-equip-box"></span><span class="sbo-equip-label">${item}</span></div>`;
+        });
+        html += `</div>`;
+      }
 
       // Checklist CMS
       if (loc.checklist.length) {
@@ -389,19 +390,6 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
 
-      // Ripristina stato checklist attrezzatura
-      const equipState = JSON.parse(localStorage.getItem(equipKey) || '[]');
-      document.querySelectorAll('.sbo-equip-cb').forEach(cb => {
-        const idx = parseInt(cb.dataset.idx);
-        cb.checked = equipState.includes(idx);
-        cb.addEventListener('change', () => {
-          const state = JSON.parse(localStorage.getItem(equipKey) || '[]');
-          const i = parseInt(cb.dataset.idx);
-          if (cb.checked && !state.includes(i)) state.push(i);
-          else if (!cb.checked) { const pos = state.indexOf(i); if (pos > -1) state.splice(pos, 1); }
-          localStorage.setItem(equipKey, JSON.stringify(state));
-        });
-      });
     };
 
     document.getElementById('sb-overlay-backdrop').addEventListener('click', () => {
@@ -622,25 +610,20 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.45); font-style: italic; margin: 16px 0 8px; }
   :global(.sbo-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.3); letter-spacing: 0.06em; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(250,250,248,0.06); }
 
-  /* CHECKLIST ATTREZZATURA */
+  /* ATTREZZATURA CONSIGLIATA */
   :global(.sbo-equip-title) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin: 24px 0 10px; }
   :global(.sbo-equip-list) { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; }
-  :global(.sbo-equip-item) { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 0; }
-  :global(.sbo-equip-cb) { display: none; }
+  :global(.sbo-equip-item) { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
   :global(.sbo-equip-box) {
-    width: 14px; height: 14px; border: 1px solid rgba(201,185,154,0.35); flex-shrink: 0;
-    position: relative; transition: border-color 0.15s, background 0.15s;
+    width: 14px; height: 14px; border: 1px solid var(--terra); flex-shrink: 0;
+    background: var(--terra); position: relative;
   }
-  :global(.sbo-equip-cb:checked + .sbo-equip-box) {
-    background: var(--terra); border-color: var(--terra);
-  }
-  :global(.sbo-equip-cb:checked + .sbo-equip-box::after) {
+  :global(.sbo-equip-box::after) {
     content: ''; position: absolute; left: 3px; top: 0px;
     width: 4px; height: 8px; border: 1.5px solid #fff; border-top: none; border-left: none;
     transform: rotate(45deg);
   }
-  :global(.sbo-equip-label) { font-family: 'Caveat', cursive; font-size: 17px; color: rgba(250,250,248,0.7); transition: color 0.15s; }
-  :global(.sbo-equip-item:has(.sbo-equip-cb:checked) .sbo-equip-label) { color: rgba(250,250,248,0.35); text-decoration: line-through; }
+  :global(.sbo-equip-label) { font-family: 'Caveat', cursive; font-size: 17px; color: rgba(250,250,248,0.8); }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {

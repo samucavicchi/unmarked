@@ -245,8 +245,10 @@ const blackbook = defineCollection({
     difficulty: z.enum(['Bassa', 'Media', 'Alta']).optional(),
     // Annotazioni a mano (frecce, note brevi)
     handnotes: z.array(z.string()).default([]),
-    // Checklist pratica
+    // Checklist pratica (consigli logistici)
     checklist: z.array(z.string()).default([]),
+    // Attrezzatura consigliata (selezione fissa)
+    equipment: z.array(z.enum(['Treppiede', 'Filtri', 'Grandangolo', 'Tele', 'Lente luminosa', 'Cover impermeabile'])).default([]),
     // Nota personale (stellina)
     personalNote: z.string().optional(),
     // Coordinate testuali

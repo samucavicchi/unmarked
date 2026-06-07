@@ -330,7 +330,7 @@ collections:
       - { label: "Ora ottimale", name: "bestTime", widget: "string", required: false, hint: "Es. 06:15 – 07:45" }
       - { label: "Stagione migliore", name: "bestSeason", widget: "string", required: false, hint: "Es. Giugno – Settembre" }
       - { label: "Focale consigliata", name: "focalLength", widget: "string", required: false, hint: "Es. 200–400mm" }
-      - { label: "ISO range", name: "isoRange", widget: "string", required: false, hint: "Es. 3200–6400" }
+      - { label: "Composizione consigliata", name: "isoRange", widget: "string", required: false, hint: "Es. grandangolo a f/8, golden hour, ricerca simmetrie" }
       - { label: "Accesso", name: "access", widget: "string", required: false, hint: "Es. 35 min a piedi, guida obbligatoria" }
       - { label: "Difficoltà", name: "difficulty", widget: "select", options: ["Bassa", "Media", "Alta"], required: false }
       - { label: "Testo descrittivo", name: "body", widget: "markdown", buttons: ["bold", "italic"] }
@@ -344,8 +344,21 @@ collections:
         name: "checklist"
         widget: "list"
         required: false
-        hint: "Consigli pratici con spunta"
+        hint: "Consigli logistici (es. porta stivali, prenota permessi...)"
         field: { label: "Voce", name: "item", widget: "string" }
+      - label: "Attrezzatura consigliata"
+        name: "equipment"
+        widget: "select"
+        multiple: true
+        required: false
+        hint: "Spunta l'attrezzatura necessaria per questa location"
+        options:
+          - { label: "Treppiede", value: "Treppiede" }
+          - { label: "Filtri", value: "Filtri" }
+          - { label: "Grandangolo", value: "Grandangolo" }
+          - { label: "Tele", value: "Tele" }
+          - { label: "Lente luminosa", value: "Lente luminosa" }
+          - { label: "Cover impermeabile", value: "Cover impermeabile" }
       - { label: "Nota personale", name: "personalNote", widget: "string", required: false, hint: "Commento personale, appare con stellina" }
       - { label: "Coordinate testuali", name: "coordinates", widget: "string", required: false, hint: "Es. -1.0333, 29.6833 · Bwindi NP" }
       - label: "Immagini overlay"
