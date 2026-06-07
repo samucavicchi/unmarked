@@ -12,6 +12,8 @@ bestSeason: Tutte
 focalLength: "Lunga esposizione "
 isoRange: Seguire la line formata da fiume e sassi per dare profondità verso la cascata
 access: Parcheggio a fianco del bar, 100m alla cascata
+antiMainstream: Pe run immagine diversa, andare sulla strada principale, circa a
+  6/700 metri dalla cascata e scattare utilizzando una focale lunga come 200 mm
 difficulty: Bassa
 handnotes:
   - L'alba garantisce meno gente possibile.
