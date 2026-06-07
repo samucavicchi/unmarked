@@ -15,6 +15,7 @@ access: Parcheggio a fianco del bar, 100m alla cascata
 antiMainstream: Pe run immagine diversa, andare sulla strada principale, circa a
   6/700 metri dalla cascata e scattare utilizzando una focale lunga come 200 mm
 difficulty: Bassa
+avvicinamento: Bassa
 handnotes:
   - L'alba garantisce meno gente possibile.
   - "A giugno si puo sfruttare l'assenza di buio notturno per scattare senza
