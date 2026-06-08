@@ -126,12 +126,8 @@ const formatDateShort = (date) =>
       </div>
       <a href="/mappa" class="sec-link">Esplora la mappa →</a>
     </div>
-    <div class="home-map-wrap">
+    <div class="home-map-book">
       <div id="home-map" class="home-map-canvas"></div>
-      <div class="map-fade-left"></div>
-      <div class="map-fade-right"></div>
-      <div class="map-fade-top"></div>
-      <div class="map-fade-bottom"></div>
     </div>
   </section>
 
@@ -152,7 +148,7 @@ const formatDateShort = (date) =>
         attributionControl: false,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 14,
       }).addTo(map);
@@ -297,7 +293,9 @@ const formatDateShort = (date) =>
 <style>
   /* MAPPA HOME */
   .home-map-section {
-    padding: 0 0 80px;
+    padding: 0 40px 80px;
+    max-width: 1260px;
+    margin: 0 auto;
   }
   .home-map-head {
     display: flex;
@@ -306,17 +304,29 @@ const formatDateShort = (date) =>
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 0 var(--gutter, 40px);
   }
   .home-map-sub {
     font-size: 13px;
     color: var(--muted);
     margin: 4px 0 0;
   }
-  .home-map-wrap {
+  .home-map-book {
     position: relative;
+    border: 1px solid rgba(201,185,154,0.2);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
-    isolation: isolate;
+    background: #141210;
+  }
+  .home-map-book::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--terra);
+    z-index: 10;
+    pointer-events: none;
   }
   .home-map-canvas {
     width: 100%;
@@ -324,39 +334,9 @@ const formatDateShort = (date) =>
     cursor: pointer;
     display: block;
   }
-  .map-fade-left,
-  .map-fade-right {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 160px;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  .map-fade-left {
-    left: 0;
-    background: linear-gradient(to right, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-right {
-    right: 0;
-    background: linear-gradient(to left, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-top,
-  .map-fade-bottom {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 100px;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  .map-fade-top {
-    top: 0;
-    background: linear-gradient(to bottom, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-bottom {
-    bottom: 0;
-    background: linear-gradient(to top, #FAFAF8 0%, transparent 100%);
+  @media (max-width: 768px) {
+    .home-map-section { padding: 0 20px 60px; }
+    .home-map-canvas { height: 320px; }
   }
 
   .card-link { text-decoration: none; color: inherit; display: block; }
