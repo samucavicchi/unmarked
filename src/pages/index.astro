@@ -152,7 +152,7 @@ const formatDateShort = (date) =>
         attributionControl: false,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 14,
       }).addTo(map);
@@ -323,6 +323,7 @@ const formatDateShort = (date) =>
     height: 460px;
     cursor: pointer;
     display: block;
+    filter: sepia(0.4) saturate(1.15) brightness(0.97) contrast(0.92);
   }
   .map-fade-left,
   .map-fade-right {
