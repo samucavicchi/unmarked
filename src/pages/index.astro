@@ -128,10 +128,6 @@ const formatDateShort = (date) =>
     </div>
     <div class="home-map-wrap">
       <div id="home-map" class="home-map-canvas"></div>
-      <div class="map-fade-left"></div>
-      <div class="map-fade-right"></div>
-      <div class="map-fade-top"></div>
-      <div class="map-fade-bottom"></div>
     </div>
   </section>
 
@@ -141,7 +137,8 @@ const formatDateShort = (date) =>
       if (!document.getElementById('home-map')) return;
       const map = L.map('home-map', {
         center: [20, 15],
-        zoom: 2,
+        zoom: 1.5,
+        zoomSnap: 0.5,
         zoomControl: false,
         scrollWheelZoom: false,
         dragging: false,
@@ -321,51 +318,17 @@ const formatDateShort = (date) =>
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    max-width: 1300px;
+    max-width: 1350px;
     margin: 0 auto;
     border: 1px solid rgba(201,185,154,0.35);
     box-shadow: 0 8px 40px rgba(26,24,20,0.12), 0 2px 12px rgba(26,24,20,0.07);
   }
   .home-map-canvas {
     width: 100%;
-    height: 500px;
+    height: 600px;
     cursor: pointer;
     display: block;
     filter: saturate(0.35) brightness(0.97);
-  }
-  .map-fade-left,
-  .map-fade-right {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 160px;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  .map-fade-left {
-    left: 0;
-    background: linear-gradient(to right, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-right {
-    right: 0;
-    background: linear-gradient(to left, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-top,
-  .map-fade-bottom {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 100px;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  .map-fade-top {
-    top: 0;
-    background: linear-gradient(to bottom, #FAFAF8 0%, transparent 100%);
-  }
-  .map-fade-bottom {
-    bottom: 0;
-    background: linear-gradient(to top, #FAFAF8 0%, transparent 100%);
   }
 
   .card-link { text-decoration: none; color: inherit; display: block; }
