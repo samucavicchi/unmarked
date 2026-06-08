@@ -23,7 +23,7 @@ const tuttiItinerariPerMappa = await getCollection('itinerari');
 const homePins = [
   ...tutteLeDestinazioni.filter(e => e.data.coverImage).map(e => {
     const c = e.data.mapCenter;
-    const coords = c ? [c.lat, c.lng] : (e.data.country ? countryCoords[e.data.country] ?? null : null);
+    const coords = (c?.lat && c?.lng) ? [c.lat, c.lng] : (e.data.country ? countryCoords[e.data.country] ?? null : null);
     if (!coords) return null;
     return { type: 'destinazione', lat: coords[0], lng: coords[1], title: e.data.title, country: e.data.country || '', slug: `/libreria/${e.slug}` };
   }).filter(Boolean),

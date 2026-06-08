@@ -157,7 +157,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     )}
 
     <!-- MAPPA Leaflet -->
-    {data.mapCenter && (
+    {data.mapCenter?.lat && data.mapCenter?.lng && (
       <section class="article-map-section">
         <div class="article-map-head">
           <div class="article-map-title">Dove siamo stati</div>
@@ -257,7 +257,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   </script>
 
   <!-- Leaflet: caricamento dinamico per non interrompere ViewTransitions -->
-  {data.mapCenter && (
+  {data.mapCenter?.lat && data.mapCenter?.lng && (
     <script is:inline>
       async function initLeafletMap() {
         var mapEl = document.getElementById('leaflet-map');

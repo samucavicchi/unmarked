@@ -16,10 +16,10 @@ const countryCoords: Record<string, [number, number]> = {
 };
 
 const destPins = destinazioni
-  .filter((e) => e.data.coverImage && (e.data.mapCenter || e.data.country))
+  .filter((e) => e.data.coverImage && (e.data.mapCenter?.lat || e.data.country))
   .map((e) => {
     const center = e.data.mapCenter;
-    const coords = center
+    const coords = center?.lat && center?.lng
       ? [center.lat, center.lng]
       : (e.data.country ? countryCoords[e.data.country] ?? null : null);
     if (!coords) return null;
