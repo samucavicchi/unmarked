@@ -52,6 +52,9 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   ogImage={data.coverImage.src}
 >
 
+  <!-- BARRA DI LETTURA -->
+  <div class="reading-bar" id="reading-bar"></div>
+
   <article>
     <!-- HERO cinematica con parallax -->
     <header class="article-hero">
@@ -114,7 +117,9 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
         <div class="gallery-grid">
           {data.gallery2.map((item) => (
             <figure class="gallery-item">
-              <img src={item.image.src} alt={item.caption || 'Foto'} />
+              <div class="gallery-img-wrap">
+                <img src={item.image.src} alt={item.caption || 'Foto'} />
+              </div>
               {item.caption && <figcaption>{item.caption}</figcaption>}
             </figure>
           ))}
@@ -180,6 +185,13 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </section>
     )}
 
+    <!-- FINE ARTICOLO -->
+    <div class="article-end">
+      <div class="article-end-line"></div>
+      <div class="article-end-mark">Unmarked</div>
+      <div class="article-end-line"></div>
+    </div>
+
     <!-- ARTICOLI CORRELATI -->
     {correlati.length > 0 && (
       <section class="article-related">
@@ -197,6 +209,23 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       <a href="/libreria" class="back-link">← Tutta la libreria</a>
     </nav>
   </article>
+
+  <!-- Barra di lettura -->
+  <script is:inline>
+    (function() {
+      var bar = document.getElementById('reading-bar');
+      var article = document.querySelector('article');
+      if (!bar || !article) return;
+      function update() {
+        var rect = article.getBoundingClientRect();
+        var total = article.offsetHeight - window.innerHeight;
+        var progress = Math.min(Math.max(-rect.top / total, 0), 1);
+        bar.style.width = (progress * 100) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
 
   <!-- Parallax sottile sulla hero -->
   <script is:inline>
@@ -472,8 +501,11 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   }
   .gallery-item {
     margin: 0;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
+  }
+  .gallery-item .gallery-img-wrap {
+    overflow: hidden;
   }
   .gallery-item img {
     display: block;
@@ -483,18 +515,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     transition: transform 0.5s ease;
   }
   .gallery-item:hover img { transform: scale(1.03); }
-  .gallery-item figcaption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px 14px;
-    background: linear-gradient(to top, rgba(26,24,20,0.6), transparent);
-    font-size: 11px;
-    font-style: italic;
-    color: rgba(250,250,248,0.8);
-    font-weight: 300;
-  }
 
   /* ESSENZIALE DA SAPERE */
   .article-essential {
@@ -804,6 +824,112 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     text-decoration: none;
   }
   .back-link:hover { text-decoration: underline; }
+
+  /* BARRA DI LETTURA */
+  .reading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--terra);
+    z-index: 9999;
+    transition: width 0.1s linear;
+    pointer-events: none;
+  }
+
+  /* DIDASCALIE FOTO */
+  .article-interlude-caption {
+    max-width: 680px;
+    margin: 14px auto 0;
+    padding: 0 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(26,24,20,0.4);
+  }
+  .article-interlude-caption::before {
+    content: '—';
+    color: var(--terra);
+    flex-shrink: 0;
+  }
+  .gallery-item figcaption {
+    position: static;
+    background: none;
+    padding: 10px 0 0;
+    font-size: 10px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(26,24,20,0.4);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .gallery-item figcaption::before {
+    content: '—';
+    color: var(--terra);
+    flex-shrink: 0;
+  }
+  /* riadatta gallery item per caption esterna */
+  .gallery-item { background: transparent; }
+  .gallery-item img { display: block; }
+
+  /* CHIUSURA ARTICOLO */
+  .article-end {
+    max-width: 680px;
+    margin: 80px auto 72px;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .article-end-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(26,24,20,0.12);
+  }
+  .article-end-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(26,24,20,0.25);
+    flex-shrink: 0;
+  }
+
+  /* CALLOUT BOX (usabile nel CMS con <div class="callout">...</div>) */
+  .article-body :global(.callout) {
+    margin: 48px 0;
+    padding: 24px 28px;
+    background: rgba(177,113,74,0.05);
+    border-left: 3px solid var(--terra);
+  }
+  .article-body :global(.callout p) {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--dark);
+  }
+  .article-body :global(.callout strong) {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: block;
+    margin-bottom: 10px;
+  }
 
   @media (max-width: 900px) {
     .article-hero { padding: 40px 28px 50px; height: auto; min-height: 68vh; }
