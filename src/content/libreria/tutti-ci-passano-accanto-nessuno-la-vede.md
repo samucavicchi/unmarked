@@ -1,11 +1,11 @@
 ---
-category: Destinazione
 title: Tutti ci passano accanto, nessuno la vede!
 subtitle: Cosa ti nasconde l'Islanda
+category: Destinazione
 country: isalnda
 continent: Europa
 coverImage: ../../assets/articoli/wild-3.jpg
-coverImageAlt: Hidden Waterfall
+coverImageAlt: ciao ciao ciao
 excerpt: Hidden Waterfall
 publishDate: 2026-06-02
 featured: false
