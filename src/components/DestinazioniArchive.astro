@@ -60,7 +60,7 @@ const grouped_sections = grouped
         </div>
         <div class="dst-hero-card-bottom">
           <div class="dst-hero-card-text">
-            <div class="dst-hero-card-geo">{heroEntry.data.country} · {heroEntry.data.continent}</div>
+            <div class="dst-hero-card-geo">{heroEntry.data.category || 'Libreria'}{heroEntry.data.country ? ` · ${heroEntry.data.country}` : ''}{heroEntry.data.continent ? ` · ${heroEntry.data.continent}` : ''}</div>
             <h1 class="dst-hero-card-title">{heroEntry.data.title}</h1>
             {heroEntry.data.subtitle && <p class="dst-hero-card-sub">{heroEntry.data.subtitle}</p>}
           </div>
