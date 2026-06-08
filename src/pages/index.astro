@@ -152,22 +152,23 @@ const formatDateShort = (date) =>
         attributionControl: false,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 14,
       }).addTo(map);
 
-      const destIcon = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#C4855A;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
-      const itIcon  = L.divIcon({ className: '', html: '<div style="width:10px;height:10px;border-radius:50%;background:#2c2c2c;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.22);"></div>', iconSize: [10,10], iconAnchor: [5,5] });
-
-      homePins.forEach((pin) => {
-        const marker = L.marker([pin.lat, pin.lng], { icon: pin.type === 'destinazione' ? destIcon : itIcon })
-          .addTo(map)
-          .bindPopup(`<a href="${pin.slug}" style="display:block;text-decoration:none;color:inherit;padding:8px 12px;font-family:sans-serif;"><div style="font-size:8px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;margin-bottom:3px;">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:#1a1814;">${pin.title}</div></a>`, { maxWidth: 200, className: 'unmarked-popup' });
-        marker.on('click', function (e) { L.DomEvent.stopPropagation(e); });
+      const pinIcon = L.divIcon({
+        className: '',
+        html: '<div style="width:8px;height:8px;border-radius:50%;background:#9B6B3A;opacity:0.75;"></div>',
+        iconSize: [8,8],
+        iconAnchor: [4,4]
       });
 
-      // Cliccando sulla mappa (non su un pin) va a /mappa
+      homePins.forEach((pin) => {
+        L.marker([pin.lat, pin.lng], { icon: pinIcon, interactive: false }).addTo(map);
+      });
+
+      // Click sulla mappa → pagina mappa completa
       map.on('click', function () {
         window.location.href = '/mappa';
       });
@@ -323,7 +324,7 @@ const formatDateShort = (date) =>
     height: 460px;
     cursor: pointer;
     display: block;
-    filter: sepia(0.4) saturate(1.15) brightness(0.97) contrast(0.92);
+    filter: sepia(0.55) saturate(0.85) brightness(0.96) contrast(0.9) hue-rotate(-8deg);
   }
   .map-fade-left,
   .map-fade-right {
