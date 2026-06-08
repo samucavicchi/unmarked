@@ -152,9 +152,9 @@ const formatDateShort = (date) =>
         attributionControl: false,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-        subdomains: 'abcd',
-        maxZoom: 14,
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 12,
+        attribution: '© Esri, NGS',
       }).addTo(map);
 
       const pinIcon = L.divIcon({
@@ -324,7 +324,7 @@ const formatDateShort = (date) =>
     height: 460px;
     cursor: pointer;
     display: block;
-    filter: sepia(0.75) saturate(0.45) brightness(0.86) contrast(1.45) hue-rotate(3deg);
+    filter: saturate(0.85) brightness(0.97);
   }
   .map-fade-left,
   .map-fade-right {
