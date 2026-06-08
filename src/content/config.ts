@@ -42,8 +42,8 @@ const libreria = defineCollection({
         .optional(),
       mapCenter: z
         .object({
-          lat: z.number().optional(),
-          lng: z.number().optional(),
+          lat: z.preprocess(v => (v === '' || v === null) ? undefined : v, z.number().optional()),
+          lng: z.preprocess(v => (v === '' || v === null) ? undefined : v, z.number().optional()),
           zoom: z.number().default(8),
         })
         .optional(),
@@ -161,8 +161,8 @@ const itinerari = defineCollection({
         .default([]),
       mapCenter: z
         .object({
-          lat: z.number().optional(),
-          lng: z.number().optional(),
+          lat: z.preprocess(v => (v === '' || v === null) ? undefined : v, z.number().optional()),
+          lng: z.preprocess(v => (v === '' || v === null) ? undefined : v, z.number().optional()),
           zoom: z.number().default(8),
         })
         .optional(),
