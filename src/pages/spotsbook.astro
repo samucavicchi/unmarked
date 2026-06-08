@@ -426,10 +426,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         html += `<div class="sbo-personal">★ ${loc.personalNote}</div>`;
       }
 
-      // Coordinate + link Google Maps
-      if (loc.coordinates) {
-        html += `<div class="sbo-coords">${loc.coordinates}</div>`;
-      }
+      // Coordinate copiabili + link Google Maps
+      const coordText = loc.coordinates || `${loc.lat}, ${loc.lng}`;
+      html += `<div class="sbo-coords-wrap">
+        <span class="sbo-coords" id="sbo-coords-text">${coordText}</span>
+        <button class="sbo-copy-btn" onclick="copyCoords('${coordText.replace(/'/g, "\\'")}', this)" title="Copia coordinate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="1"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+        </button>
+      </div>`;
       html += `<a class="sbo-gmaps" href="https://www.google.com/maps?q=${loc.lat},${loc.lng}" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
         Apri in Google Maps
@@ -439,6 +443,13 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
 
+    };
+
+    window.copyCoords = function(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 1800);
+      });
     };
 
     window.openLightbox = function(src, alt) {
@@ -585,11 +596,12 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-chip { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; padding: 16px 14px; border: none; border-bottom: 2px solid transparent; background: none; color: rgba(250,250,248,0.5); cursor: pointer; }
   .bb-chip.active { color: var(--terra); border-bottom-color: var(--terra); }
   .bb-count { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.45); }
-  .bb-search-wrap { position: relative; display: flex; align-items: center; margin-right: 16px; }
-  .bb-search-icon { width: 13px; height: 13px; color: rgba(250,250,248,0.3); position: absolute; left: 10px; pointer-events: none; }
-  .bb-search { background: rgba(250,250,248,0.04); border: 1px solid rgba(201,185,154,0.15); color: rgba(250,250,248,0.8); font-size: 11px; font-weight: 300; letter-spacing: 0.06em; padding: 7px 12px 7px 30px; width: 180px; outline: none; transition: border-color 0.2s, width 0.2s; }
-  .bb-search::placeholder { color: rgba(250,250,248,0.25); }
-  .bb-search:focus { border-color: rgba(177,113,74,0.5); width: 220px; }
+  .bb-toolbar-right { display: flex; align-items: center; gap: 16px; }
+  .bb-search-wrap { position: relative; display: flex; align-items: center; border-left: 1px solid rgba(250,250,248,0.08); padding-left: 16px; }
+  .bb-search-icon { width: 12px; height: 12px; color: rgba(250,250,248,0.3); position: absolute; left: 26px; pointer-events: none; }
+  .bb-search { background: none; border: none; border-bottom: 1px solid rgba(201,185,154,0.2); color: rgba(250,250,248,0.7); font-size: 9px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; padding: 16px 8px 16px 22px; width: 140px; outline: none; transition: border-color 0.2s, width 0.2s; }
+  .bb-search::placeholder { color: rgba(250,250,248,0.2); letter-spacing: 0.14em; text-transform: uppercase; font-size: 9px; }
+  .bb-search:focus { border-bottom-color: var(--terra); width: 180px; color: rgba(250,250,248,0.9); }
 
   /* APP — libro posato */
   .bb-app {
@@ -719,11 +731,15 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-field) { background: #111009; padding: 14px 16px; }
   :global(.sbo-field-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 5px; }
   :global(.sbo-field-val) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.9); line-height: 1.4; }
-  :global(.sbo-handnote) { font-family: 'Caveat', cursive; font-size: 17px; color: #C4855A; display: flex; gap: 8px; margin: 8px 0; }
+  :global(.sbo-handnote) { font-family: 'Caveat', cursive; font-size: 18px; color: #C4855A; display: flex; gap: 8px; margin: 8px 0; }
   :global(.sbo-checklist) { margin: 16px 0; }
-  :global(.sbo-check) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.75); display: flex; align-items: center; gap: 8px; margin: 6px 0; }
-  :global(.sbo-personal) { font-family: 'Caveat', cursive; font-size: 15px; color: rgba(250,250,248,0.45); font-style: italic; margin: 16px 0 8px; }
-  :global(.sbo-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.3); letter-spacing: 0.06em; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(250,250,248,0.06); }
+  :global(.sbo-check) { font-family: 'Caveat', cursive; font-size: 16px; color: rgba(250,250,248,0.75); display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  :global(.sbo-personal) { font-family: 'Caveat', cursive; font-size: 16px; color: rgba(250,250,248,0.45); font-style: italic; margin: 16px 0 8px; }
+  :global(.sbo-coords-wrap) { display: flex; align-items: center; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(250,250,248,0.06); }
+  :global(.sbo-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.3); letter-spacing: 0.06em; }
+  :global(.sbo-copy-btn) { background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.25); padding: 2px; transition: color 0.2s; flex-shrink: 0; }
+  :global(.sbo-copy-btn:hover) { color: rgba(250,250,248,0.6); }
+  :global(.sbo-copy-btn.copied) { color: #6BBFA3; }
   :global(.sbo-gmaps) { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.4); text-decoration: none; transition: color 0.2s; }
   :global(.sbo-gmaps:hover) { color: var(--terra); }
 
@@ -753,15 +769,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.sbo-equip-list) { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; }
   :global(.sbo-equip-item) { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
   :global(.sbo-equip-box) {
-    width: 14px; height: 14px; border: 1px solid var(--terra); flex-shrink: 0;
-    background: var(--terra); position: relative;
+    width: 14px; height: 14px; flex-shrink: 0; position: relative; background: none; border: none;
   }
   :global(.sbo-equip-box::after) {
-    content: ''; position: absolute; left: 3px; top: 0px;
-    width: 4px; height: 8px; border: 1.5px solid #fff; border-top: none; border-left: none;
+    content: ''; position: absolute; left: 2px; top: -1px;
+    width: 5px; height: 10px; border: 2px solid var(--terra); border-top: none; border-left: none;
     transform: rotate(45deg);
   }
-  :global(.sbo-equip-label) { font-family: 'Caveat', cursive; font-size: 17px; color: rgba(250,250,248,0.8); }
+  :global(.sbo-equip-label) { font-family: 'Caveat', cursive; font-size: 18px; color: rgba(250,250,248,0.8); }
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
