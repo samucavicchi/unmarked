@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const destinazioni = await getCollection('destinazioni');
+const destinazioni = await getCollection('libreria');
 const itinerari = await getCollection('itinerari');
 
 // Coordinate di default per paese (fallback se non c'è mapCenter)
@@ -29,7 +29,7 @@ const destPins = destinazioni
       lng: coords[1],
       title: e.data.title,
       country: e.data.country,
-      slug: `/destinazioni/${e.slug}`,
+      slug: `/libreria/${e.slug}`,
       img: e.data.coverImage.src,
     };
   })

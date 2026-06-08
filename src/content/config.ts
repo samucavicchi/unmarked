@@ -2,14 +2,15 @@
 
 import { defineCollection, z } from 'astro:content';
 
-const destinazioni = defineCollection({
+const libreria = defineCollection({
   type: 'content',
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       subtitle: z.string().optional(),
-      country: z.string(),
-      continent: z.enum(['Europa', 'Asia', 'Africa', 'Americhe', 'Oceania']),
+      category: z.enum(['Destinazione', 'Attrezzatura', 'Consigli di viaggio', 'Cosa portare', 'Ispirazione']).default('Destinazione'),
+      country: z.string().optional(),
+      continent: z.enum(['Europa', 'Asia', 'Africa', 'Americhe', 'Oceania']).optional(),
       region: z.string().optional(),
       coverImage: image(),
       coverImageAlt: z.string(),
@@ -265,7 +266,7 @@ const blackbook = defineCollection({
 });
 
 export const collections = {
-  destinazioni,
+  libreria,
   itinerari,
   film,
   podcast,

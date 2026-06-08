@@ -2,7 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  items: CollectionEntry<'destinazioni'>[];
+  items: CollectionEntry<'libreria'>[];
   continenti: string[];
   eyebrow: string;
   title: string;
@@ -37,10 +37,10 @@ const gridItems = heroEntry
   <div class="dst-hero-wrap">
     {backLink && (
       <div class="dst-hero-topbar">
-        <a href="/destinazioni" class="dst-hero-back">← Tutte le destinazioni</a>
+        <a href="/libreria" class="dst-hero-back">← Tutta la libreria</a>
       </div>
     )}
-    <a href={`/destinazioni/${heroEntry.slug}`} class="dst-hero-card">
+    <a href={`/libreria/${heroEntry.slug}`} class="dst-hero-card">
       <div class="dst-hero-card-photo">
         <img src={heroEntry.data.coverImage.src} alt={heroEntry.data.coverImageAlt} class="dst-hero-card-bg" />
         <div class="dst-hero-card-overlay"></div>
@@ -71,19 +71,19 @@ const gridItems = heroEntry
       <div class="dst-hero-tag">{eyebrow}</div>
       <h1 class="dst-hero-title">{title}</h1>
       <p class="dst-hero-sub">{description}</p>
-      {backLink && <a href="/destinazioni" class="dst-hero-back-plain">← Tutte le destinazioni</a>}
+      {backLink && <a href="/libreria" class="dst-hero-back-plain">← Tutta la libreria</a>}
     </div>
   </div>
 )}
 
 {/* FILTRI — sfondo scuro */}
 <div class="dst-filters-bar">
-  <a href="/destinazioni" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
+  <a href="/libreria" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
   {continenti.map((c) => {
     const cSlug = slugify(c);
     const active = currentContinent === cSlug;
     return (
-      <a href={`/destinazioni/continente/${cSlug}`} class={`dst-filter-btn ${active ? 'active' : ''}`}>{c}</a>
+      <a href={`/libreria/continente/${cSlug}`} class={`dst-filter-btn ${active ? 'active' : ''}`}>{c}</a>
     );
   })}
 </div>
@@ -96,7 +96,7 @@ const gridItems = heroEntry
 ) : (
   <div class="dst-grid">
     {gridItems.map((entry) => (
-      <a href={`/destinazioni/${entry.slug}`} class="dst-card">
+      <a href={`/libreria/${entry.slug}`} class="dst-card">
         <div class="dst-card-img">
           <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} />
           <div class="dst-card-img-ov"></div>

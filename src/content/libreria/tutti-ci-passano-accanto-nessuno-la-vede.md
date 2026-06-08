@@ -1,4 +1,5 @@
 ---
+category: Destinazione
 title: Tutti ci passano accanto, nessuno la vede!
 subtitle: Cosa ti nasconde l'Islanda
 country: isalnda

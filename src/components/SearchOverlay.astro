@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
-const destinazioni = await getCollection('destinazioni');
+const destinazioni = await getCollection('libreria');
 const itinerari = await getCollection('itinerari');
 
 const searchData = [
@@ -11,7 +11,7 @@ const searchData = [
     subtitle: e.data.subtitle || '',
     country: e.data.country,
     continent: e.data.continent,
-    slug: `/destinazioni/${e.slug}`,
+    slug: `/libreria/${e.slug}`,
     img: e.data.coverImage.src,
   })),
   ...itinerari.map((e) => ({

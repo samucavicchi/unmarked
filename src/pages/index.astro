@@ -17,7 +17,7 @@ const countryCoords: Record<string, [number, number]> = {
   'Kirghizistan': [41.20, 74.76],
 };
 
-const tutteLeDestinazioni = await getCollection('destinazioni');
+const tutteLeDestinazioni = await getCollection('libreria');
 const tuttiItinerariPerMappa = await getCollection('itinerari');
 
 const homePins = [
@@ -25,7 +25,7 @@ const homePins = [
     const c = e.data.mapCenter;
     const coords = c ? [c.lat, c.lng] : countryCoords[e.data.country] ?? null;
     if (!coords) return null;
-    return { type: 'destinazione', lat: coords[0], lng: coords[1], title: e.data.title, country: e.data.country, slug: `/destinazioni/${e.slug}` };
+    return { type: 'destinazione', lat: coords[0], lng: coords[1], title: e.data.title, country: e.data.country, slug: `/libreria/${e.slug}` };
   }).filter(Boolean),
   ...tuttiItinerariPerMappa.filter(e => e.data.coverImage).map(e => {
     const c = e.data.mapCenter;
@@ -74,7 +74,7 @@ const formatDateShort = (date) =>
   <section>
     <div class="sec-head">
       <h2 class="sec-title">Ultime destinazioni</h2>
-      <a href="/destinazioni" class="sec-link">Vedi tutte →</a>
+      <a href="/libreria" class="sec-link">Vedi tutte →</a>
     </div>
 
     {tutteLeDestinazioni_sorted.length === 0 && (
@@ -85,7 +85,7 @@ const formatDateShort = (date) =>
 
     {featured && (
       <div class="dest-featured">
-        <a href={`/destinazioni/${featured.slug}`} class="feat-img card-link">
+        <a href={`/libreria/${featured.slug}`} class="feat-img card-link">
           <img src={featured.data.coverImage.src} alt={featured.data.coverImageAlt} class="feat-img-bg" style="object-fit: cover;" />
           <div class="feat-ov"></div>
           <div class="feat-content">
@@ -98,7 +98,7 @@ const formatDateShort = (date) =>
 
         <div class="side-list">
           {sideList.map((entry) => (
-            <a href={`/destinazioni/${entry.slug}`} class="side-item card-link">
+            <a href={`/libreria/${entry.slug}`} class="side-item card-link">
               <div class="side-thumb">
                 <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} class="side-thumb-bg" style="object-fit: cover;" />
               </div>

@@ -1,4 +1,5 @@
 ---
+category: Destinazione
 title: Islanda d'inverno
 country: Islanda
 continent: Europa

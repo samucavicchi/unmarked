@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DestinazioniArchive from '../../components/DestinazioniArchive.astro';
+import { getCollection } from 'astro:content';
+
+const tutte = (await getCollection('libreria')).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const continenti = [...new Set(tutte.map((e) => e.data.continent))].sort();
+---
+
+<BaseLayout
+  title="Destinazioni — Unmarked"
+  description="Reportage fotografici dai posti che non trovi sulle guide. Storie, paesaggi, culture."
+>
+  <DestinazioniArchive
+    items={tutte}
+    continenti={continenti}
+    eyebrow="Reportage · Fotografia"
+    title="Destinazioni"
+    description="Posti raccontati con calma, fotografati con cura. Niente liste numerate, niente classifiche. Solo viaggi."
+  />
+</BaseLayout>

@@ -14,19 +14,20 @@ logo_url: https://unmarked-staging.netlify.app/favicon.svg
 locale: 'it'
 
 collections:
-  - name: "destinazioni"
-    label: "Destinazioni"
-    label_singular: "Destinazione"
-    folder: "src/content/destinazioni"
+  - name: "libreria"
+    label: "Libreria"
+    label_singular: "Articolo"
+    folder: "src/content/libreria"
     create: true
     slug: "{{slug}}"
-    summary: "{{title}} — {{country}}"
-    sortable_fields: ["publishDate", "title", "country"]
+    summary: "{{title}} — {{category}}"
+    sortable_fields: ["publishDate", "title", "category"]
     fields:
       - { label: "Titolo", name: "title", widget: "string" }
       - { label: "Sottotitolo", name: "subtitle", widget: "string", required: false }
-      - { label: "Paese", name: "country", widget: "string" }
-      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"] }
+      - { label: "Categoria", name: "category", widget: "select", options: ["Destinazione", "Attrezzatura", "Consigli di viaggio", "Cosa portare", "Ispirazione"], default: "Destinazione" }
+      - { label: "Paese", name: "country", widget: "string", required: false }
+      - { label: "Continente", name: "continent", widget: "select", options: ["Europa", "Asia", "Africa", "Americhe", "Oceania"], required: false }
       - { label: "Regione", name: "region", widget: "string", required: false }
       - { label: "Foto copertina", name: "coverImage", widget: "image" }
       - { label: "Alt copertina", name: "coverImageAlt", widget: "string" }

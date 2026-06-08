@@ -5,7 +5,7 @@
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
-  entry: CollectionEntry<'destinazioni'>;
+  entry: CollectionEntry<'libreria'>;
 }
 
 const { entry } = Astro.props;
@@ -17,7 +17,7 @@ const dateLabel = data.publishDate.toLocaleDateString('it-IT', {
 });
 ---
 
-<a href={`/destinazioni/${entry.slug}`} class="card card-link">
+<a href={`/libreria/${entry.slug}`} class="card card-link">
   <div class="card-img">
     <img
       src={data.coverImage.src}

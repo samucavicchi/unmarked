@@ -1,4 +1,5 @@
 ---
+category: Destinazione
 title: Islanda inverno
 subtitle: Ghiaccio e fuoco
 country: Islanda
