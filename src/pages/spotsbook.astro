@@ -112,12 +112,23 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           </button>
         </div>
         <div class="bb-toolbar-right">
+          <div class="bb-search-wrap">
+            <svg class="bb-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+            <input class="bb-search" id="bb-search" type="text" placeholder="Cerca location…" autocomplete="off" />
+          </div>
           <span class="bb-count" id="bb-count">{publishedCount} location</span>
         </div>
       </div>
 
       <div class="bb-layout">
-        <div class="bb-map-wrap" id="bb-map"></div>
+        <div class="bb-map-wrap" id="bb-map">
+          <div class="bb-legend">
+            <div class="bb-legend-item"><span class="bb-legend-dot bb-legend-dot--available"></span>Disponibile</div>
+            <div class="bb-legend-item"><span class="bb-legend-dot bb-legend-dot--saved"></span>Salvata</div>
+            <div class="bb-legend-item"><span class="bb-legend-dot bb-legend-dot--new"></span>Nuova</div>
+            <div class="bb-legend-item"><span class="bb-legend-dot bb-legend-dot--soon"></span>Coming soon</div>
+          </div>
+        </div>
 
         <div class="bb-panel" id="bb-panel">
           <div class="bb-panel-empty" id="bb-panel-empty">
@@ -194,6 +205,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         personalNote: l.data.personalNote || '',
         coordinates: l.data.coordinates || '',
         images: l.data.images || [],
+        publishDate: l.data.publishDate ? l.data.publishDate.toISOString() : '',
       }))
     }}
   >
@@ -246,14 +258,21 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       renderMarkers(locations);
     }
 
-    function makeIcon(published, active = false, saved = false) {
+    function isNew(loc) {
+      if (!loc.publishDate) return false;
+      const days = (Date.now() - new Date(loc.publishDate).getTime()) / (1000 * 60 * 60 * 24);
+      return days <= 30;
+    }
+
+    function makeIcon(published, active = false, saved = false, newBadge = false) {
       let cls = 'bb-pin';
       if (!published) cls += ' bb-pin-locked';
       else if (active) cls += ' bb-pin-active';
       else if (saved) cls += ' bb-pin-saved';
+      const badge = (published && newBadge) ? `<div class="bb-pin-new"></div>` : '';
       return L.divIcon({
         className: '',
-        html: `<div class="${cls}"><div class="bb-pin-dot"></div></div>`,
+        html: `<div class="${cls}"><div class="bb-pin-dot"></div>${badge}</div>`,
         iconSize: [16, 22], iconAnchor: [8, 22]
       });
     }
@@ -263,14 +282,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       filteredLocations = locs;
       locs.forEach((loc, i) => {
         const published = loc.status === 'published';
-        const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(published, false, published && isSaved(loc.slug)) });
+        const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(published, false, published && isSaved(loc.slug), isNew(loc)) });
         if (published) {
           marker.on('click', () => {
             if (activeMarker) {
               const prev = locs[filteredLocations.indexOf(filteredLocations.find(l => l === filteredLocations[currentIndex]))];
-              activeMarker.setIcon(makeIcon(true, false, isSaved(loc.slug)));
+              activeMarker.setIcon(makeIcon(true, false, isSaved(loc.slug), isNew(loc)));
             }
-            marker.setIcon(makeIcon(true, true, false));
+            marker.setIcon(makeIcon(true, true, false, false));
             activeMarker = marker;
             openPanel(i, locs);
           });
@@ -291,7 +310,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       top.innerHTML = `
         ${previewImg ? `<div class="bb-panel-preview" style="background-image:url('${previewImg}')"></div>` : ''}
         <div class="bb-panel-header">
-          <div class="bb-panel-region">${loc.country} · ${loc.continent}</div>
+          <div class="bb-panel-region">${loc.country} · ${loc.continent}${isNew(loc) ? ' <span class="bb-new-badge">Nuovo</span>' : ''}</div>
           <div class="bb-panel-name">${loc.title}</div>
           <div class="bb-panel-meta">
             ${loc.bestSeason ? `<div class="bb-panel-meta-row"><span class="bb-panel-meta-label">Periodo</span><span class="bb-panel-meta-val">${loc.bestSeason}</span></div>` : ''}
@@ -457,20 +476,41 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       }
     });
 
-    // Filtri
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    function applyFilters() {
+      let result = [...locations];
+      if (activeFilter === 'saved') result = result.filter(l => isSaved(l.slug));
+      else if (activeFilter !== 'all') result = result.filter(l => l.type === activeFilter || l.continent === activeFilter);
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        result = result.filter(l =>
+          l.title.toLowerCase().includes(q) ||
+          l.country.toLowerCase().includes(q) ||
+          (l.region && l.region.toLowerCase().includes(q))
+        );
+      }
+      renderMarkers(result);
+      document.getElementById('bb-count').textContent = result.filter(l => l.status === 'published').length + ' location';
+      document.getElementById('bb-panel-empty').style.display = 'flex';
+      document.getElementById('bb-panel-content').style.display = 'none';
+    }
+
+    // Filtri chip
     document.querySelectorAll('.bb-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         document.querySelectorAll('.bb-chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
-        const filter = chip.dataset.filter;
-        filteredLocations = filter === 'all' ? [...locations]
-          : filter === 'saved' ? locations.filter(l => isSaved(l.slug))
-          : locations.filter(l => l.type === filter || l.continent === filter);
-        renderMarkers(filteredLocations);
-        document.getElementById('bb-count').textContent = filteredLocations.filter(l => l.status === 'published').length + ' location';
-        document.getElementById('bb-panel-empty').style.display = 'flex';
-        document.getElementById('bb-panel-content').style.display = 'none';
+        activeFilter = chip.dataset.filter;
+        applyFilters();
       });
+    });
+
+    // Ricerca
+    document.getElementById('bb-search').addEventListener('input', e => {
+      searchQuery = e.target.value.trim();
+      applyFilters();
     });
 
     // Navigazione pannello
@@ -545,6 +585,11 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-chip { font-size: 8px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; padding: 16px 14px; border: none; border-bottom: 2px solid transparent; background: none; color: rgba(250,250,248,0.5); cursor: pointer; }
   .bb-chip.active { color: var(--terra); border-bottom-color: var(--terra); }
   .bb-count { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.45); }
+  .bb-search-wrap { position: relative; display: flex; align-items: center; margin-right: 16px; }
+  .bb-search-icon { width: 13px; height: 13px; color: rgba(250,250,248,0.3); position: absolute; left: 10px; pointer-events: none; }
+  .bb-search { background: rgba(250,250,248,0.04); border: 1px solid rgba(201,185,154,0.15); color: rgba(250,250,248,0.8); font-size: 11px; font-weight: 300; letter-spacing: 0.06em; padding: 7px 12px 7px 30px; width: 180px; outline: none; transition: border-color 0.2s, width 0.2s; }
+  .bb-search::placeholder { color: rgba(250,250,248,0.25); }
+  .bb-search:focus { border-color: rgba(177,113,74,0.5); width: 220px; }
 
   /* APP — libro posato */
   .bb-app {
@@ -572,7 +617,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
   /* LAYOUT MAPPA */
   .bb-layout { display: grid; grid-template-columns: 1fr 360px; height: 600px; }
-  .bb-map-wrap { background: #141210; }
+  .bb-map-wrap { background: #141210; position: relative; }
+  .bb-legend { position: absolute; bottom: 32px; left: 12px; z-index: 1000; background: rgba(17,16,9,0.88); backdrop-filter: blur(4px); border: 1px solid rgba(201,185,154,0.12); padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; pointer-events: none; }
+  .bb-legend-item { display: flex; align-items: center; gap: 8px; font-size: 9px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,250,248,0.5); }
+  .bb-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .bb-legend-dot--available { background: #B1714A; }
+  .bb-legend-dot--saved { background: #E8C840; }
+  .bb-legend-dot--new { background: #6BBFA3; }
+  .bb-legend-dot--soon { background: rgba(250,250,248,0.15); border: 1px solid rgba(250,250,248,0.2); }
 
   /* PIN */
   :global(.bb-pin) { cursor: pointer; }
@@ -638,6 +690,8 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   :global(.bb-save-btn.is-saved) { color: var(--terra); border-color: var(--terra); }
   :global(.bb-pin-saved .bb-pin-dot) { background: #E8C840; box-shadow: 0 0 0 3px rgba(232,200,64,0.25); }
   :global(.bb-pin-saved .bb-pin-dot::after) { background: #E8C840; }
+  :global(.bb-pin-new) { position: absolute; top: -4px; right: -4px; width: 7px; height: 7px; border-radius: 50%; background: #6BBFA3; border: 1.5px solid #111009; }
+  :global(.bb-new-badge) { display: inline-block; font-size: 7px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; background: #6BBFA3; color: #0E0C09; padding: 2px 5px; border-radius: 2px; vertical-align: middle; margin-left: 6px; }
   .bb-chip-saved { border-left: 1px solid rgba(250,250,248,0.08); margin-left: 4px; padding-left: 16px; }
 
   /* OVERLAY */
