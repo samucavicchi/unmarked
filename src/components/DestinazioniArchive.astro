@@ -10,6 +10,7 @@ interface Props {
   currentContinent?: string | null;
   currentPaese?: string | null;
   backLink?: boolean;
+  grouped?: boolean;
 }
 
 const {
@@ -21,15 +22,25 @@ const {
   currentContinent = null,
   currentPaese = null,
   backLink = false,
+  grouped = false,
 } = Astro.props;
 
 const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
 const isAllActive = !currentContinent && !currentPaese;
 
 const heroEntry = items.find((e) => e.data.featured) ?? items[0] ?? null;
-const gridItems = heroEntry
-  ? items.filter((e) => e.slug !== heroEntry.slug)
-  : items;
+const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : items;
+
+// Ordine categorie per la visualizzazione a sezioni
+const CATEGORY_ORDER = ['Destinazione', 'Attrezzatura', 'Consigli di viaggio', 'Cosa portare', 'Ispirazione'];
+const grouped_sections = grouped
+  ? CATEGORY_ORDER
+      .map(cat => ({
+        cat,
+        entries: gridItems.filter(e => (e.data.category ?? 'Destinazione') === cat),
+      }))
+      .filter(s => s.entries.length > 0)
+  : [];
 ---
 
 {/* HERO CARD */}
@@ -88,31 +99,68 @@ const gridItems = heroEntry
   })}
 </div>
 
-{/* GRIGLIA */}
-{gridItems.length === 0 ? (
-  <div class="dst-empty">
-    <p>Nessun'altra destinazione qui per ora. Torna fra qualche giorno.</p>
-  </div>
-) : (
-  <div class="dst-grid">
-    {gridItems.map((entry) => (
-      <a href={`/libreria/${entry.slug}`} class="dst-card">
-        <div class="dst-card-img">
-          <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} />
-          <div class="dst-card-img-ov"></div>
-          <div class="dst-card-img-title">
-            <div class="dst-card-area">{entry.data.country} · {entry.data.continent}</div>
-            <div class="dst-card-name">{entry.data.title}</div>
+{/* VISTA FLAT (pagine filtrate per continente/paese) */}
+{!grouped && (
+  gridItems.length === 0 ? (
+    <div class="dst-empty">
+      <p>Nessun articolo qui per ora. Torna fra qualche giorno.</p>
+    </div>
+  ) : (
+    <div class="dst-grid">
+      {gridItems.map((entry) => (
+        <a href={`/libreria/${entry.slug}`} class="dst-card">
+          <div class="dst-card-img">
+            <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} />
+            <div class="dst-card-img-ov"></div>
+            <div class="dst-card-img-title">
+              <div class="dst-card-area">{entry.data.country}{entry.data.continent ? ` · ${entry.data.continent}` : ''}</div>
+              <div class="dst-card-name">{entry.data.title}</div>
+            </div>
           </div>
-        </div>
-        <div class="dst-card-body">
-          <div class="dst-card-desc">{entry.data.excerpt}</div>
-          <div class="dst-card-foot">
-            <span class="dst-card-label">{entry.data.region || 'Reportage'}</span>
-            <span class="dst-card-cta">Leggi</span>
+          <div class="dst-card-body">
+            <div class="dst-card-desc">{entry.data.excerpt}</div>
+            <div class="dst-card-foot">
+              <span class="dst-card-label">{entry.data.category || entry.data.region || 'Reportage'}</span>
+              <span class="dst-card-cta">Leggi</span>
+            </div>
           </div>
+        </a>
+      ))}
+    </div>
+  )
+)}
+
+{/* VISTA A SEZIONI PER CATEGORIA (pagina principale libreria) */}
+{grouped && (
+  <div class="dst-sections">
+    {grouped_sections.map(({ cat, entries }) => (
+      <section class="dst-section">
+        <div class="dst-section-header">
+          <span class="dst-section-label">{cat}</span>
+          <div class="dst-section-line"></div>
         </div>
-      </a>
+        <div class="dst-grid dst-grid--section">
+          {entries.map((entry) => (
+            <a href={`/libreria/${entry.slug}`} class="dst-card">
+              <div class="dst-card-img">
+                <img src={entry.data.coverImage.src} alt={entry.data.coverImageAlt} />
+                <div class="dst-card-img-ov"></div>
+                <div class="dst-card-img-title">
+                  <div class="dst-card-area">{entry.data.country}{entry.data.continent ? ` · ${entry.data.continent}` : ''}</div>
+                  <div class="dst-card-name">{entry.data.title}</div>
+                </div>
+              </div>
+              <div class="dst-card-body">
+                <div class="dst-card-desc">{entry.data.excerpt}</div>
+                <div class="dst-card-foot">
+                  <span class="dst-card-label">{entry.data.region || cat}</span>
+                  <span class="dst-card-cta">Leggi</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
     ))}
   </div>
 )}
@@ -169,6 +217,14 @@ const gridItems = heroEntry
 
 /* GRIGLIA */
 .dst-grid { padding: 40px 40px 60px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+
+/* SEZIONI PER CATEGORIA */
+.dst-sections { padding: 16px 0 60px; }
+.dst-section { margin-bottom: 12px; }
+.dst-section-header { display: flex; align-items: center; gap: 20px; padding: 32px 40px 0; }
+.dst-section-label { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); white-space: nowrap; }
+.dst-section-line { flex: 1; height: 1px; background: var(--light-border); }
+.dst-grid--section { padding-top: 24px; padding-bottom: 0; }
 .dst-empty { text-align: center; padding: 80px 40px; color: var(--muted); font-style: italic; }
 
 /* CARD */
