@@ -148,4 +148,39 @@ Carica le foto in `public/` e aggiorna i path.
 
 ---
 
-*Fine manuale v7 — 1 Giugno 2026.*
+---
+
+## 11. Aggiungere una location al Black Book (Spotsbook)
+
+1. Vai su https://unmarked.it/admin → **Black Book** → **New**
+2. Compila i campi:
+   - **Titolo, Paese, Continente, Tipo** — obbligatori
+   - **Lat / Lng** — coordinate GPS precise (es. da Google Maps: tasto destro → "Che cosa c'è qui?")
+   - **Stato** → `published` per renderla visibile, `coming_soon` per il pin sfumato
+   - **Ora ottimale** — es. "06:15 – 07:45" (appare come "Luce ottimale")
+   - **Periodo** — es. "Giugno – Settembre"
+   - **Tecnica consigliata** — campo libero multiriga (focale, diaframma, consigli di scatto)
+   - **Composizione consigliata** — suggerimenti compositivi
+   - **Difficoltà fotografica** — Bassa / Media / Alta
+   - **Avvicinamento** — Bassa / Media / Alta (difficoltà per raggiungere lo spot)
+   - **Accesso** — descrizione testuale del percorso
+   - **Anti-mainstream** — consiglio alternativo rispetto al modo "turistico" di fotografare il posto
+   - **Annotazioni a mano** — note brevi in stile campo (appaiono con ↳, font a mano)
+   - **Attrezzatura consigliata** — spunta le voci che servono (Treppiede, Filtri, Grandangolo, Tele, Lente luminosa, Cover impermeabile)
+   - **Checklist pratica** — consigli logistici (es. "porta stivali", "prenota guida con 3 mesi anticipo")
+   - **Nota personale** — commento personale, appare con ★
+   - **Coordinate testuali** — es. "-1.0333, 29.6833 · Bwindi NP" (copiabili dagli utenti con un click)
+   - **Immagini overlay** — carica le foto direttamente, vengono salvate in `public/spotsbook/`. La prima foto appare come preview nel pannello laterale
+3. Pubblica → Netlify rebuilda in ~30s
+
+### Tipi di pin sulla mappa
+| Colore | Significato |
+|---|---|
+| Terra cotta | Location disponibile |
+| Giallo | Salvata dall'utente |
+| Verde acqua + pallino | Nuova (pubblicata negli ultimi 30 giorni) |
+| Grigio semitrasparente | Coming soon (non cliccabile) |
+
+---
+
+*Fine manuale v8 — 8 Giugno 2026.*

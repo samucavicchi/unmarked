@@ -238,7 +238,7 @@ Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.j
 
 ---
 
-## 11. BLACK BOOK
+## 11. BLACK BOOK (SPOTSBOOK)
 
 ### Struttura
 - `src/pages/spotsbook.astro` — pagina SSR (`/spotsbook`)
@@ -248,16 +248,58 @@ Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.j
 
 ### Logica accesso
 - Non abbonati: vedono hero + teaser con mappa sfumata + CTA abbonamento
-- Abbonati (`isPremium: true` in Clerk `publicMetadata`): vedono la mappa Leaflet completa con pannello note laterale
+- Abbonati (`isPremium: true` in Clerk `publicMetadata`): vedono la mappa Leaflet completa con pannello laterale + overlay dettaglio
 
 ### Aggiungere una location
 1. Vai su `/admin` → Black Book → New
-2. Compila: titolo, paese, coordinate GPS (lat/lng), tipo, testo, annotazioni a mano, checklist
+2. Compila i campi (vedi sotto)
 3. Imposta **Stato**: `published` (pin visibile e cliccabile) o `coming_soon` (pin sfumato, non cliccabile)
 4. Pubblica → Netlify rebuilda
 
-### Campi principali
-`title, country, region?, continent, type, lat, lng, publishDate, status(published/coming_soon), bestTime?, bestSeason?, focalLength?, isoRange?, access?, difficulty?, handnotes[], checklist[], personalNote?, coordinates?`
+### Campi CMS e schema
+
+| Campo CMS | Nome nel codice | Tipo | Note |
+|---|---|---|---|
+| Titolo | `title` | string | obbligatorio |
+| Paese | `country` | string | obbligatorio |
+| Regione | `region` | string | opzionale |
+| Continente | `continent` | enum 5 | obbligatorio |
+| Tipo | `type` | enum 6 | Wildlife, Paesaggio, Golden hour, Blue hour, Architettura, Persone |
+| Lat / Lng | `lat`, `lng` | number | coordinate GPS |
+| Stato | `status` | enum | `published` / `coming_soon` |
+| Ora ottimale | `bestTime` | string | es. "06:15 – 07:45" — appare come "Luce ottimale" |
+| Periodo | `bestSeason` | string | es. "Giugno – Settembre" |
+| Tecnica consigliata | `focalLength` | text | campo multiriga, ex "Focale consigliata" |
+| Composizione consigliata | `isoRange` | string | ex "ISO consigliata" — rinominato |
+| Accesso | `access` | string | es. "35 min a piedi" |
+| Difficoltà fotografica | `difficulty` | enum Bassa/Media/Alta | |
+| Avvicinamento | `avvicinamento` | enum Bassa/Media/Alta | difficoltà di avvicinamento |
+| Anti-mainstream | `antiMainstream` | text | consiglio alternativo editoriale |
+| Annotazioni a mano | `handnotes[]` | list string | appaiono con freccia ↳, font Caveat |
+| Checklist pratica | `checklist[]` | list string | consigli logistici con flag |
+| Attrezzatura consigliata | `equipment[]` | multi-select 6 voci | Treppiede, Filtri, Grandangolo, Tele, Lente luminosa, Cover impermeabile |
+| Nota personale | `personalNote` | string | appare con stellina ★ |
+| Coordinate testuali | `coordinates` | string | es. "-1.03, 29.68 · Bwindi NP" — copiabili con click |
+| Immagini overlay | `images[]` | list {src, alt} | upload da admin → `public/spotsbook/`; prima foto = preview nel pannello |
+
+### Interfaccia abbonati
+
+**Toolbar**: filtri chip per tipo e continente + chip "Salvati" + campo ricerca (filtra per titolo, paese, regione in tempo reale).
+
+**Mappa Leaflet**: pin colorati su sfondo CartoDB Dark.
+- Terra cotta = disponibile
+- Giallo `#E8C840` = salvata (localStorage)
+- Verde acqua `#6BBFA3` + pallino = nuova (pubblicata negli ultimi 30 giorni)
+- Grigio semitrasparente = coming soon (non cliccabile)
+- Legenda pin in basso a sinistra della mappa
+
+**Pannello laterale** (click su pin): foto preview, paese · continente, titolo, Periodo, Luce ottimale, Difficoltà fotografica (blocco terra cotta), bottoni "Scopri tutto" + salva, link "Apri in Google Maps" in fondo.
+
+**Overlay dettaglio** (click "Scopri tutto"): galleria foto cliccabile → lightbox, blocchi editoriali (Difficoltà fotografica, Tecnica consigliata, Composizione consigliata, Anti-mainstream), griglia Accesso + Difficoltà di avvicinamento, annotazioni a mano, attrezzatura (lista con flag), checklist pratica, nota personale, coordinate copiabili, link Google Maps.
+
+**Lightbox**: click su foto in overlay apre l'immagine grande. Il pannello overlay rimane visibile sulla destra (lightbox limitato a `right: 560px`). Chiudere l'overlay chiude anche il lightbox.
+
+**Salvataggio location**: `localStorage` con chiave `spotsbook_saved`. Quando Clerk sarà integrato, sostituire le 3 funzioni `getSaved()`, `toggleSave()`, `isSaved()` in `spotsbook.astro` con chiamate API Clerk.
 
 ### Body del markdown
 Il corpo del file `.md` è il testo descrittivo principale della location (supporta grassetto e corsivo).
@@ -298,4 +340,4 @@ Il corpo del file `.md` è il testo descrittivo principale della location (suppo
 
 ---
 
-*Fine documento v8 — 3 Giugno 2026.*
+*Fine documento v9 — 8 Giugno 2026.*
