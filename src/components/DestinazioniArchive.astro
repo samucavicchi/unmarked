@@ -28,11 +28,17 @@ const {
 const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
 const isAllActive = !currentContinent && !currentPaese;
 
-const heroEntry = items.find((e) => e.data.featured) ?? items[0] ?? null;
+// In modalità grouped non estraiamo la hero — tutti gli articoli vanno nelle sezioni
+const heroEntry = grouped ? null : (items.find((e) => e.data.featured) ?? items[0] ?? null);
 const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : items;
 
-// Ordine categorie per la visualizzazione a sezioni
+// Contatori per la hero classica
 const CATEGORY_ORDER = ['Destinazione', 'Attrezzatura', 'Consigli di viaggio', 'Cosa portare', 'Ispirazione'];
+const categoryCounts = CATEGORY_ORDER.map(cat => ({
+  cat,
+  count: items.filter(e => (e.data.category ?? 'Destinazione') === cat).length,
+})).filter(s => s.count > 0);
+
 const grouped_sections = grouped
   ? CATEGORY_ORDER
       .map(cat => ({
@@ -43,8 +49,27 @@ const grouped_sections = grouped
   : [];
 ---
 
-{/* HERO CARD */}
-{heroEntry ? (
+{/* HERO CLASSICA — pagina principale libreria */}
+{grouped && (
+  <div class="dst-hero-classic">
+    <div class="dst-hero-classic-content">
+      <div class="dst-hero-tag">{eyebrow}</div>
+      <h1 class="dst-hero-title">{title}</h1>
+      <p class="dst-hero-sub">{description}</p>
+      <div class="dst-hero-cats">
+        {categoryCounts.map(({ cat, count }) => (
+          <div class="dst-hero-cat">
+            <span class="dst-hero-cat-num">{count}</span>
+            <span class="dst-hero-cat-label">{cat}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+{/* HERO CARD — pagine filtrate (continente/paese) */}
+{!grouped && heroEntry && (
   <div class="dst-hero-wrap">
     {backLink && (
       <div class="dst-hero-topbar">
@@ -64,18 +89,21 @@ const grouped_sections = grouped
             <h1 class="dst-hero-card-title">{heroEntry.data.title}</h1>
             {heroEntry.data.subtitle && <p class="dst-hero-card-sub">{heroEntry.data.subtitle}</p>}
           </div>
-          <span class="dst-hero-card-cta-btn">Leggi il reportage</span>
+          <span class="dst-hero-card-cta-btn">Leggi</span>
         </div>
       </div>
       <div class="dst-hero-card-strip">
         <div class="dst-hero-strip-desc">{heroEntry.data.excerpt}</div>
         <div class="dst-hero-strip-foot">
-          <span class="dst-hero-strip-label">{heroEntry.data.region || 'Reportage'}</span>
+          <span class="dst-hero-strip-label">{heroEntry.data.region || heroEntry.data.category || 'Reportage'}</span>
         </div>
       </div>
     </a>
   </div>
-) : (
+)}
+
+{/* FALLBACK — nessun articolo */}
+{!grouped && !heroEntry && (
   <div class="dst-hero">
     <div class="dst-hero-overlay"></div>
     <div class="dst-hero-content">
@@ -198,6 +226,15 @@ const grouped_sections = grouped
 .dst-hero-strip-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
 .dst-hero-strip-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--light-border); }
 .dst-hero-strip-label { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+/* HERO CLASSICA (pagina principale libreria) */
+.dst-hero-classic { background: var(--dark); padding: 80px 40px 64px; border-bottom: 1px solid rgba(201,185,154,0.12); }
+.dst-hero-classic-content { max-width: 760px; }
+.dst-hero-cats { display: flex; gap: 0; margin-top: 40px; border-top: 1px solid rgba(201,185,154,0.12); }
+.dst-hero-cat { padding: 20px 32px 20px 0; margin-right: 32px; border-right: 1px solid rgba(201,185,154,0.1); display: flex; flex-direction: column; gap: 4px; }
+.dst-hero-cat:last-child { border-right: none; }
+.dst-hero-cat-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: #FAFAF8; line-height: 1; }
+.dst-hero-cat-label { font-size: 8px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,250,248,0.35); }
 
 /* FALLBACK HERO */
 .dst-hero { position: relative; width: 100%; min-height: 280px; background: var(--dark); padding: 56px 40px 48px; overflow: hidden; }
