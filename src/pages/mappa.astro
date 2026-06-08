@@ -116,10 +116,9 @@ const allPins = [...destPins, ...itPins];
       scrollWheelZoom: true,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap © CARTO',
-      subdomains: 'abcd',
-      maxZoom: 14,
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© Esri, NGS',
+      maxZoom: 12,
     }).addTo(map);
 
     const destIcon = L.divIcon({ className: '', html: '<div class="map-pin map-pin-dest"></div>', iconSize: [14,14], iconAnchor: [7,7] });
@@ -214,6 +213,7 @@ const allPins = [...destPins, ...itPins];
   .mappa-map {
     flex: 1;
     min-height: 500px;
+    filter: saturate(0.35) brightness(0.97);
   }
 
   /* Pin personalizzati */
