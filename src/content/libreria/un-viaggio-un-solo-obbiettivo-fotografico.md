@@ -33,6 +33,11 @@ essentialToKnow:
     description: Pensi che questo esercizio sia limitante? ti sbagli è proprio il
       contrario. Questa "costrinzione" amplifica la tua capacità di ragionare,
       di adattarti, di creare.
+schede:
+  - label: Difficoltà
+    text: Molto difficile
+  - label: Durata
+    text: 4 ore e mezzo
 mapCenter:
   zoom: 8
   lat: 16.001
