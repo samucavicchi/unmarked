@@ -87,9 +87,9 @@ collections:
         required: false
         collapsed: true
         fields:
-          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float" }
-          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float" }
-          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8 }
+          - { label: "Latitudine", name: "lat", widget: "number", value_type: "float", required: false }
+          - { label: "Longitudine", name: "lng", widget: "number", value_type: "float", required: false }
+          - { label: "Zoom", name: "zoom", widget: "number", value_type: "int", default: 8, required: false }
       - label: "Marker mappa"
         name: "mapMarkers"
         widget: "list"
