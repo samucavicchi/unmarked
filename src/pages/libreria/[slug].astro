@@ -67,7 +67,19 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </div>
     </header>
 
-    <!-- BODY editoriale con drop cap e foto full-bleed -->
+    <!-- APERTURA: striscia scura con excerpt + meta -->
+    <div class="article-apertura">
+      <div class="article-apertura-inner">
+        <p class="article-apertura-excerpt">{data.excerpt}</p>
+        <div class="article-apertura-meta">
+          <span>{formattedDate}</span>
+          {data.category && <span class="article-apertura-dot">·</span>}
+          {data.category && <span>{data.category}</span>}
+        </div>
+      </div>
+    </div>
+
+    <!-- BODY editoriale con drop cap -->
     <div class="article-body">
       <Content />
     </div>
@@ -114,7 +126,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     {data.essentialToKnow && data.essentialToKnow.length > 0 && (
       <section class="article-essential">
         <div class="essential-inner">
-          <h2 class="essential-title">Essenziale da sapere</h2>
+          <div class="essential-title">Essenziale da sapere</div>
           <div class="essential-grid">
             {data.essentialToKnow.map((tip) => (
               <div class="essential-item">
@@ -131,7 +143,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     {data.mapCenter && (
       <section class="article-map-section">
         <div class="article-map-head">
-          <h2 class="article-map-title">Dove siamo stati</h2>
+          <div class="article-map-title">Dove siamo stati</div>
         </div>
         <div
           id="leaflet-map"
@@ -323,16 +335,53 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     color: rgba(250, 250, 248, 0.55);
   }
 
+  /* APERTURA */
+  .article-apertura {
+    background: var(--dark);
+    border-bottom: 1px solid rgba(201,185,154,0.15);
+  }
+  .article-apertura-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 40px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .article-apertura-excerpt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.55;
+    color: rgba(250,250,248,0.82);
+    margin: 0;
+    padding-left: 24px;
+    border-left: 2px solid var(--terra);
+  }
+  .article-apertura-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.3);
+  }
+  .article-apertura-dot { color: var(--terra); }
+
   /* BODY editoriale */
   .article-body {
-    max-width: 720px;
-    margin: 80px auto 80px;
-    padding: 0 40px;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 72px 40px 80px;
     font-family: 'Cormorant Garamond', serif;
     font-size: 20px;
     font-weight: 400;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--dark);
+    counter-reset: section;
   }
   .article-body :global(p:first-of-type::first-letter) {
     font-family: 'Cormorant Garamond', serif;
@@ -344,34 +393,44 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     color: var(--terra);
     margin-top: 4px;
   }
-  .article-body :global(p) { margin-bottom: 24px; }
+  .article-body :global(p) { margin-bottom: 26px; }
   .article-body :global(h2) {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    line-height: 1.15;
-    margin: 56px 0 18px;
-    letter-spacing: 0.005em;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin: 64px 0 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(177,113,74,0.25);
+    counter-increment: section;
+  }
+  .article-body :global(h2::before) {
+    content: counter(section, decimal-leading-zero) " — ";
+    color: rgba(177,113,74,0.45);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    margin-right: 4px;
   }
   .article-body :global(h3) {
     font-family: 'Cormorant Garamond', serif;
     font-size: 26px;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.3;
     margin: 44px 0 14px;
+    color: var(--dark);
   }
   .article-body :global(blockquote) {
     border: 0;
-    border-top: 1px solid var(--terra);
-    border-bottom: 1px solid var(--terra);
-    padding: 36px 0;
-    margin: 56px 0;
+    border-left: 3px solid var(--terra);
+    padding: 8px 0 8px 28px;
+    margin: 52px 0;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
+    font-size: 25px;
     font-style: italic;
-    line-height: 1.4;
+    line-height: 1.5;
     color: var(--dark);
-    text-align: center;
   }
   .article-body :global(blockquote p) { margin: 0; }
   .article-body :global(a) {
@@ -441,47 +500,56 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   .article-essential {
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    background: var(--beige);
-    padding: 80px 40px;
+    background: var(--dark);
+    padding: 72px 40px;
     margin-top: 80px;
     margin-bottom: 80px;
   }
   .essential-inner {
-    max-width: 1280px;
+    max-width: 1100px;
     margin: 0 auto;
   }
   .essential-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: var(--dark);
-    margin: 0 0 40px;
-    letter-spacing: 0.005em;
-    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin: 0 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .essential-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(201,185,154,0.15);
   }
   .essential-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    border-top: 1px solid rgba(201,185,154,0.12);
   }
   .essential-item {
-    background: #fff;
-    padding: 28px 24px;
-    border-radius: 3px;
-    box-shadow: 0 2px 8px rgba(26, 24, 20, 0.06);
+    padding: 32px 28px 32px 0;
+    border-bottom: 1px solid rgba(201,185,154,0.12);
+    border-right: 1px solid rgba(201,185,154,0.12);
   }
+  .essential-item:nth-child(3n) { border-right: none; }
   .essential-item-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
-    font-weight: 400;
-    color: var(--dark);
-    margin: 0 0 12px;
-    letter-spacing: 0.01em;
+    font-weight: 300;
+    color: #FAFAF8;
+    margin: 0 0 10px;
+    line-height: 1.25;
   }
   .essential-item-desc {
     font-size: 13px;
-    line-height: 1.6;
-    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(250,250,248,0.45);
     margin: 0;
   }
 
@@ -541,26 +609,32 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
 
   /* MAPPA */
   .article-map-section {
-    max-width: 1080px;
+    max-width: 1100px;
     margin: 0 auto 80px;
     padding: 0 40px;
   }
   .article-map-head {
-    border-bottom: 1px solid var(--light-border);
-    padding-bottom: 16px;
-    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
   }
   .article-map-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--dark);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
     margin: 0;
-    letter-spacing: 0.02em;
+  }
+  .article-map-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--light-border);
   }
   .article-map {
-    height: 420px;
-    border-radius: 3px;
+    height: 400px;
     overflow: hidden;
     border: 1px solid var(--light-border);
   }
@@ -680,35 +754,36 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
 
   /* ARTICOLI CORRELATI */
   .article-related {
-    max-width: 1280px;
+    max-width: 1100px;
     margin: 0 auto 60px;
     padding: 0 40px;
   }
   .related-head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--light-border);
-    padding-bottom: 16px;
+    align-items: center;
     margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--light-border);
   }
   .related-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--dark);
-    letter-spacing: 0.02em;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
     margin: 0;
   }
   .related-link {
     font-size: 9px;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--terra);
+    color: rgba(26,24,20,0.4);
     text-decoration: none;
+    transition: color 0.2s;
   }
-  .related-link:hover { text-decoration: underline; }
+  .related-link:hover { color: var(--terra); }
   .related-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -734,24 +809,26 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     .article-hero { padding: 40px 28px 50px; height: auto; min-height: 68vh; }
     .article-title { font-size: 50px; }
     .article-subtitle { font-size: 17px; }
-    .article-body { font-size: 18px; padding: 0 24px; margin: 56px auto; }
+    .article-apertura-inner { padding: 40px 24px 36px; }
+    .article-apertura-excerpt { font-size: 21px; }
+    .article-body { font-size: 18px; padding: 56px 24px 64px; }
     .article-body-2 { margin-top: 40px; margin-bottom: 40px; }
     .article-body :global(p:first-of-type::first-letter) { font-size: 64px; }
-    .article-body :global(h2) { font-size: 28px; }
+    .article-body :global(h2) { font-size: 11px; }
     .article-body :global(h3) { font-size: 22px; }
-    .article-body :global(blockquote) { font-size: 22px; padding: 24px 0; margin: 36px 0; }
+    .article-body :global(blockquote) { font-size: 21px; padding: 8px 0 8px 20px; margin: 36px 0; }
     .article-interlude-img { height: 70vh; }
     .article-pullquote { padding: 60px 24px; }
-    .article-pullquote blockquote p { font-size: 30px; }
-    .article-pullquote blockquote p::before { font-size: 50px; top: -24px; left: -8px; }
+    .article-pullquote blockquote p { font-size: 28px; }
     .gallery-grid { grid-template-columns: 1fr; }
     .gallery-item img { height: 260px; }
     .article-essential { padding: 56px 24px; margin-top: 56px; margin-bottom: 56px; }
-    .essential-title { font-size: 28px; margin-bottom: 32px; }
-    .essential-grid { grid-template-columns: 1fr; gap: 24px; }
+    .essential-grid { grid-template-columns: 1fr; }
+    .essential-item { border-right: none; padding: 28px 0; }
     .cta-inner { grid-template-columns: 1fr; gap: 32px; }
     .cta-headline { font-size: 36px; }
     .related-grid { grid-template-columns: repeat(2, 1fr); }
+    .article-map-section { padding: 0 24px; }
   }
   @media (max-width: 600px) {
     .gallery-grid { grid-template-columns: 1fr; }
