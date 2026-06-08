@@ -121,8 +121,8 @@ const allPins = [...destPins, ...itPins];
       maxZoom: 12,
     }).addTo(map);
 
-    const destIcon = L.divIcon({ className: '', html: '<div class="map-pin map-pin-dest"></div>', iconSize: [14,14], iconAnchor: [7,7] });
-    const itIcon  = L.divIcon({ className: '', html: '<div class="map-pin map-pin-it"></div>',   iconSize: [14,14], iconAnchor: [7,7] });
+    const destIcon = L.divIcon({ className: '', html: '<div class="map-pin map-pin-dest"></div>', iconSize: [12,12], iconAnchor: [6,6] });
+    const itIcon  = L.divIcon({ className: '', html: '<div class="map-pin map-pin-it"></div>',   iconSize: [12,12], iconAnchor: [6,6] });
 
     const markers = [];
 
@@ -216,16 +216,16 @@ const allPins = [...destPins, ...itPins];
     filter: saturate(0.35) brightness(0.97);
   }
 
-  /* Pin personalizzati */
+  /* Pin personalizzati — diamante cartografico */
   :global(.map-pin) {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border: 1.5px solid rgba(255,252,240,0.85);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
   }
-  :global(.map-pin-dest) { background: var(--terra, #C4855A); }
-  :global(.map-pin-it) { background: #2c2c2c; }
+  :global(.map-pin-dest) { background: #9B6B3A; }
+  :global(.map-pin-it) { background: #3d3028; }
 
   /* Popup */
   :global(.unmarked-popup .leaflet-popup-content-wrapper) {
