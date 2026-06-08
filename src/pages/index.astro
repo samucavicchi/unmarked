@@ -119,7 +119,7 @@ const formatDateShort = (date) =>
   <!-- MAPPA -->
   <section class="home-map-section">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <div class="home-map-head">
+    <div class="home-map-head sec-head">
       <div>
         <h2 class="sec-title">Il mondo di Unmarked</h2>
         <p class="home-map-sub">{homePins.length} luoghi raccontati finora.</p>
@@ -128,6 +128,13 @@ const formatDateShort = (date) =>
     </div>
     <div class="home-map-wrap">
       <div id="home-map" class="home-map-canvas"></div>
+    </div>
+    <div class="home-map-footer">
+      <a href="/mappa" class="home-map-footer-link">
+        <span class="home-map-footer-line"></span>
+        <span>Vedi la mappa completa</span>
+        <span class="home-map-footer-line"></span>
+      </a>
     </div>
   </section>
 
@@ -155,9 +162,9 @@ const formatDateShort = (date) =>
 
       const pinIcon = L.divIcon({
         className: '',
-        html: '<div style="width:8px;height:8px;border-radius:50%;background:#9B6B3A;opacity:0.75;"></div>',
-        iconSize: [8,8],
-        iconAnchor: [4,4]
+        html: '<div style="width:11px;height:11px;border-radius:50%;background:#9B6B3A;border:2px solid rgba(255,255,255,0.7);box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>',
+        iconSize: [11,11],
+        iconAnchor: [5,5]
       });
 
       homePins.forEach((pin) => {
@@ -294,18 +301,44 @@ const formatDateShort = (date) =>
 <style>
   /* MAPPA HOME */
   .home-map-section {
-    padding: 0 40px 80px;
+    padding: 80px 40px 80px;
   }
   .home-map-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 8px;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 32px;
+  }
+  .home-map-footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 20px;
+    text-align: center;
+  }
+  .home-map-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(26,24,20,0.45);
+    transition: color 0.2s;
+  }
+  .home-map-footer-link:hover { color: var(--terra); }
+  .home-map-footer-line {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.4;
   }
   .home-map-sub {
     font-size: 13px;
