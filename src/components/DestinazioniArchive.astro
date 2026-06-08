@@ -73,7 +73,7 @@ const grouped_sections = grouped
   <div class="dst-hero-wrap">
     {backLink && (
       <div class="dst-hero-topbar">
-        <a href="/libreria" class="dst-hero-back">← Tutta la libreria</a>
+        <a href="/libreria" class="dst-hero-back">Tutta la libreria</a>
       </div>
     )}
     <a href={`/libreria/${heroEntry.slug}`} class="dst-hero-card">
@@ -196,9 +196,10 @@ const grouped_sections = grouped
 <style>
 /* HERO WRAP */
 .dst-hero-wrap { position: relative; }
-.dst-hero-topbar { padding: 16px 40px 0; }
-.dst-hero-back { font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); text-decoration: none; }
-.dst-hero-back:hover { text-decoration: underline; }
+.dst-hero-topbar { padding: 0; background: var(--dark); border-bottom: 1px solid rgba(201,185,154,0.1); }
+.dst-hero-back { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.45); text-decoration: none; transition: color 0.2s; }
+.dst-hero-back::before { content: '←'; font-size: 13px; }
+.dst-hero-back:hover { color: var(--terra); }
 
 /* HERO CARD */
 .dst-hero-card { display: block; text-decoration: none; color: inherit; }
