@@ -56,6 +56,11 @@ const libreria = defineCollection({
           })
         )
         .default([]),
+      // Schede editoriali (campo+testo libero, stile blocchi Spotsbook)
+      schede: z.array(z.object({
+        label: z.string(),
+        text: z.string(),
+      })).optional(),
       // Slug dell'itinerario correlato per il blocco CTA "C'è un itinerario per questo posto"
       relatedItinerary: z.string().optional(),
     }),

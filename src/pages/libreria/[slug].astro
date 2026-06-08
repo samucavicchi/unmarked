@@ -111,6 +111,18 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </div>
     )}
 
+    <!-- SCHEDE EDITORIALI -->
+    {data.schede && data.schede.length > 0 && (
+      <div class="article-schede">
+        {data.schede.map((s) => (
+          <div class="article-scheda">
+            <div class="article-scheda-label">{s.label}</div>
+            <div class="article-scheda-text">{s.text}</div>
+          </div>
+        ))}
+      </div>
+    )}
+
     <!-- GALLERIA 2 -->
     {data.gallery2 && data.gallery2.length > 0 && (
       <section class="article-gallery-2">
@@ -824,6 +836,35 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     text-decoration: none;
   }
   .back-link:hover { text-decoration: underline; }
+
+  /* SCHEDE EDITORIALI */
+  .article-schede {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 40px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .article-scheda {
+    padding: 16px 20px;
+    border-left: 2px solid var(--terra);
+    background: rgba(177,113,74,0.04);
+  }
+  .article-scheda-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .article-scheda-text {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--dark);
+  }
 
   /* BARRA DI LETTURA */
   .reading-bar {

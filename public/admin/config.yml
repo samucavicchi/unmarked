@@ -71,6 +71,15 @@ collections:
         fields:
           - { label: "Titolo", name: "title", widget: "string" }
           - { label: "Descrizione", name: "description", widget: "text" }
+      - label: "Schede editoriali"
+        name: "schede"
+        widget: "list"
+        required: false
+        hint: "Blocchi label+testo liberi che appaiono dopo il corpo dell'articolo (es. Tecnica usata, Attrezzatura, Info pratiche...)"
+        summary: "{{fields.label}}"
+        fields:
+          - { label: "Nome campo", name: "label", widget: "string", hint: "Es. Tecnica usata, Attrezzatura, Cosa portare..." }
+          - { label: "Testo", name: "text", widget: "text" }
       - { label: "Itinerario correlato", name: "relatedItinerary", widget: "select", options: ["Namibia"], required: false, hint: "Seleziona l'itinerario da collegare a questa destinazione." }
       - label: "Centro mappa (opzionale)"
         name: "mapCenter"

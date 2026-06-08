@@ -115,17 +115,29 @@ const grouped_sections = grouped
   </div>
 )}
 
-{/* FILTRI — sfondo scuro */}
-<div class="dst-filters-bar">
-  <a href="/libreria" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
-  {continenti.map((c) => {
-    const cSlug = slugify(c);
-    const active = currentContinent === cSlug;
-    return (
-      <a href={`/libreria/continente/${cSlug}`} class={`dst-filter-btn ${active ? 'active' : ''}`}>{c}</a>
-    );
-  })}
-</div>
+{/* FILTRI CATEGORIA — pagina principale */}
+{grouped && categoryCounts.length > 1 && (
+  <div class="dst-filters-bar">
+    <button class="dst-filter-btn active" data-cat="all">Tutti</button>
+    {categoryCounts.map(({ cat }) => (
+      <button class="dst-filter-btn" data-cat={cat}>{cat}</button>
+    ))}
+  </div>
+)}
+
+{/* FILTRI CONTINENTE — pagine filtrate */}
+{!grouped && (
+  <div class="dst-filters-bar">
+    <a href="/libreria" class={`dst-filter-btn ${isAllActive ? 'active' : ''}`}>Tutti</a>
+    {continenti.map((c) => {
+      const cSlug = slugify(c);
+      const active = currentContinent === cSlug;
+      return (
+        <a href={`/libreria/continente/${cSlug}`} class={`dst-filter-btn ${active ? 'active' : ''}`}>{c}</a>
+      );
+    })}
+  </div>
+)}
 
 {/* VISTA FLAT (pagine filtrate per continente/paese) */}
 {!grouped && (
@@ -162,7 +174,7 @@ const grouped_sections = grouped
 {grouped && (
   <div class="dst-sections">
     {grouped_sections.map(({ cat, entries }) => (
-      <section class="dst-section">
+      <section class="dst-section" data-section={cat}>
         <div class="dst-section-header">
           <span class="dst-section-label">{cat}</span>
           <div class="dst-section-line"></div>
@@ -300,3 +312,16 @@ const grouped_sections = grouped
   .dst-grid { grid-template-columns: 1fr; }
 }
 </style>
+
+<script>
+  document.querySelectorAll('.dst-filter-btn[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dst-filter-btn[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('.dst-section[data-section]').forEach(sec => {
+        sec.style.display = (cat === 'all' || sec.dataset.section === cat) ? '' : 'none';
+      });
+    });
+  });
+</script>
