@@ -9,8 +9,9 @@ const searchData = [
     type: 'destinazione',
     title: e.data.title,
     subtitle: e.data.subtitle || '',
-    country: e.data.country,
-    continent: e.data.continent,
+    country: e.data.country || '',
+    continent: e.data.continent || '',
+    category: e.data.category || 'Destinazione',
     slug: `/libreria/${e.slug}`,
     img: e.data.coverImage.src,
   })),
@@ -95,7 +96,7 @@ const searchData = [
       ${filtered.map((d) => `
         <a href="${d.slug}" style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;text-decoration:none;color:inherit;border-bottom:1px solid rgba(201,185,154,0.12);transition:background 0.15s;" onmouseover="this.style.background='rgba(201,185,154,0.08)'" onmouseout="this.style.background='none'">
           <div>
-            <div style="font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;margin-bottom:3px;">${d.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${d.country}</div>
+            <div style="font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;margin-bottom:3px;">${d.type === 'destinazione' ? (d.category || 'Libreria') : 'Itinerario'}${d.country ? ' · ' + d.country : ''}</div>
             <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:#1a1814;">${d.title}</div>
           </div>
           <div style="color:#aaa;font-size:13px;margin-left:16px;">→</div>

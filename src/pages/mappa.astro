@@ -16,19 +16,19 @@ const countryCoords: Record<string, [number, number]> = {
 };
 
 const destPins = destinazioni
-  .filter((e) => e.data.coverImage)
+  .filter((e) => e.data.coverImage && (e.data.mapCenter || e.data.country))
   .map((e) => {
     const center = e.data.mapCenter;
     const coords = center
       ? [center.lat, center.lng]
-      : countryCoords[e.data.country] ?? null;
+      : (e.data.country ? countryCoords[e.data.country] ?? null : null);
     if (!coords) return null;
     return {
       type: 'destinazione',
       lat: coords[0],
       lng: coords[1],
       title: e.data.title,
-      country: e.data.country,
+      country: e.data.country || '',
       slug: `/libreria/${e.slug}`,
       img: e.data.coverImage.src,
     };

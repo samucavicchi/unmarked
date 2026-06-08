@@ -59,7 +59,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       <div class="article-hero-overlay"></div>
       <div class="article-hero-content">
         <div class="article-tag">
-          {data.country} · {data.continent}{data.region ? ` · ${data.region}` : ''}
+          {data.category || 'Libreria'}{data.country ? ` · ${data.country}` : ''}{data.continent ? ` · ${data.continent}` : ''}{data.region ? ` · ${data.region}` : ''}
         </div>
         <h1 class="article-title">{data.title}</h1>
         {data.subtitle && <p class="article-subtitle">{data.subtitle}</p>}
