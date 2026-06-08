@@ -973,33 +973,41 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   }
 
   @media (max-width: 900px) {
-    .article-hero { padding: 40px 28px 50px; height: auto; min-height: 68vh; }
-    .article-title { font-size: 50px; }
-    .article-subtitle { font-size: 17px; }
-    .article-apertura-inner { padding: 40px 24px 36px; }
-    .article-apertura-excerpt { font-size: 21px; }
-    .article-body { font-size: 18px; padding: 56px 24px 64px; }
+    .article-hero { padding: 40px 24px 48px; height: auto; min-height: 65vh; }
+    .article-title { font-size: 44px; }
+    .article-subtitle { font-size: 16px; }
+    .article-apertura-inner { padding: 36px 24px 32px; }
+    .article-apertura-excerpt { font-size: 20px; }
+    .article-body { font-size: 18px; padding: 48px 24px 56px; }
     .article-body-2 { margin-top: 40px; margin-bottom: 40px; }
-    .article-body :global(p:first-of-type::first-letter) { font-size: 64px; }
-    .article-body :global(h2) { font-size: 11px; }
+    .article-body :global(p:first-of-type::first-letter) { font-size: 60px; }
+    .article-body :global(h2) { font-size: 10px; }
     .article-body :global(h3) { font-size: 22px; }
-    .article-body :global(blockquote) { font-size: 21px; padding: 8px 0 8px 20px; margin: 36px 0; }
-    .article-interlude-img { height: 70vh; }
-    .article-pullquote { padding: 60px 24px; }
-    .article-pullquote blockquote p { font-size: 28px; }
+    .article-body :global(blockquote) { font-size: 20px; padding: 8px 0 8px 18px; margin: 32px 0; }
+    .article-schede { padding: 0 24px 48px; }
+    .article-end { padding: 0 24px; margin: 56px auto 56px; }
+    .article-interlude-img { height: 60vh; }
+    .article-pullquote { padding: 52px 24px; }
+    .article-pullquote blockquote p { font-size: 26px; }
     .gallery-grid { grid-template-columns: 1fr; }
     .gallery-item img { height: 260px; }
-    .article-essential { padding: 56px 24px; margin-top: 56px; margin-bottom: 56px; }
+    .article-essential { padding: 48px 24px; margin-top: 48px; margin-bottom: 48px; }
     .essential-grid { grid-template-columns: 1fr; }
-    .essential-item { border-right: none; padding: 28px 0; }
-    .cta-inner { grid-template-columns: 1fr; gap: 32px; }
-    .cta-headline { font-size: 36px; }
+    .essential-item { border-right: none; padding: 24px 0; }
+    .cta-inner { grid-template-columns: 1fr; gap: 28px; }
+    .cta-card { grid-template-columns: 1fr; }
+    .cta-card-img { min-height: 200px; }
+    .cta-headline { font-size: 32px; }
+    .article-related { padding: 0 24px; }
     .related-grid { grid-template-columns: repeat(2, 1fr); }
     .article-map-section { padding: 0 24px; }
+    .article-back { padding: 0 24px; }
   }
   @media (max-width: 600px) {
+    .article-title { font-size: 36px; }
     .gallery-grid { grid-template-columns: 1fr; }
     .gallery-item img { height: 200px; }
     .related-grid { grid-template-columns: 1fr; }
+    .cta-inner { grid-template-columns: 1fr; }
   }
 </style>

@@ -295,14 +295,21 @@ const grouped_sections = grouped
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
+  .dst-hero-classic { padding: 48px 24px 40px; }
+  .dst-hero-cats { gap: 0; flex-wrap: wrap; margin-top: 28px; }
+  .dst-hero-cat { padding: 16px 24px 16px 0; margin-right: 24px; }
+  .dst-hero-cat-num { font-size: 28px; }
   .dst-hero-card-photo { height: 420px; }
   .dst-hero-card-title { font-size: 44px; }
   .dst-hero-card-bottom { padding: 28px 24px 32px; gap: 20px; }
   .dst-hero-card-top { padding: 20px 24px; }
-  .dst-hero-topbar { padding: 14px 24px 0; }
+  .dst-hero-topbar { }
+  .dst-hero-back { padding: 14px 24px; }
   .dst-hero-card-strip { padding: 16px 24px 18px; }
-  .dst-grid { grid-template-columns: repeat(2, 1fr); padding: 32px 24px 40px; gap: 20px; }
-  .dst-filters-bar { padding: 14px 24px; }
+  .dst-grid { grid-template-columns: repeat(2, 1fr); padding: 24px 24px 32px; gap: 16px; }
+  .dst-filters-bar { padding: 0 24px; overflow-x: auto; flex-wrap: nowrap; }
+  .dst-section-header { padding: 24px 24px 0; }
+  .dst-grid--section { padding-top: 16px; }
 }
 @media (max-width: 600px) {
   .dst-hero-card-photo { height: 360px; }
@@ -310,6 +317,8 @@ const grouped_sections = grouped
   .dst-hero-card-bottom { flex-direction: column; align-items: flex-start; gap: 16px; }
   .dst-hero-card-cta-btn { align-self: flex-start; }
   .dst-grid { grid-template-columns: 1fr; }
+  .dst-hero-cats { flex-direction: column; gap: 0; }
+  .dst-hero-cat { border-right: none; border-bottom: 1px solid rgba(201,185,154,0.1); padding: 14px 0; margin: 0; }
 }
 </style>
 
