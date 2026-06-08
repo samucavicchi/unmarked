@@ -137,8 +137,7 @@ const formatDateShort = (date) =>
       if (!document.getElementById('home-map')) return;
       const map = L.map('home-map', {
         center: [20, 15],
-        zoom: 1.5,
-        zoomSnap: 0.5,
+        zoom: 2,
         zoomControl: false,
         scrollWheelZoom: false,
         dragging: false,
@@ -318,8 +317,6 @@ const formatDateShort = (date) =>
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    max-width: 1350px;
-    margin: 0 auto;
     border: 1px solid rgba(201,185,154,0.35);
     box-shadow: 0 8px 40px rgba(26,24,20,0.12), 0 2px 12px rgba(26,24,20,0.07);
   }
