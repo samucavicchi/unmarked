@@ -1,5 +1,5 @@
 # UNMARKED — Manuale d'uso quotidiano
-*Aggiornato al 1 Giugno 2026*
+*Aggiornato al 9 Giugno 2026*
 
 Documento operativo per gestire il sito da solo.
 Per l'architettura tecnica completa, vedi `unmarked-architettura.md`.
@@ -183,4 +183,76 @@ Carica le foto in `public/` e aggiorna i path.
 
 ---
 
-*Fine manuale v8 — 8 Giugno 2026.*
+---
+
+## 12. Gestire lo Shop
+
+### Struttura
+- `src/data/shop-data.ts` — catalogo prodotti (unico file da modificare per prezzi, testi, immagini)
+- `src/pages/shop.astro` — vetrina pubblica `/shop`
+- `src/pages/download.astro` — pagina download per prodotti digitali `/download?session=...`
+- `src/pages/shop/grazie.astro` — conferma ordine per prodotti fisici `/shop/grazie?session=...`
+
+### Aggiungere o modificare un prodotto
+
+1. Apri `src/data/shop-data.ts`
+2. Aggiungi un oggetto nell'array `shopProducts` seguendo la struttura esistente
+3. Crea il prodotto su **Stripe Dashboard → Products → Add product**
+   - Aggiungi nome, prezzo fisso in EUR
+   - Copia il **Price ID** (es. `price_1Pxxx...`) e incollalo nel campo `stripePriceId`
+4. Per i **digitali**: carica il file in `public/downloads/` con il nome indicato in `downloadPath`
+5. Carica l'immagine in `public/shop/` con il nome indicato in `image`
+6. Commit + push → Netlify rebuilda
+
+### Tipi di prodotto
+
+| Campo `type` | Comportamento checkout |
+|---|---|
+| `digital` | Stripe senza raccolta indirizzo → redirect a `/download?session=...` |
+| `physical` | Stripe con raccolta indirizzo spedizione → redirect a `/shop/grazie?session=...` |
+
+### Come funziona il download (digitali)
+
+1. Utente paga → Stripe redirect a `/download?session={id}`
+2. La pagina chiama Stripe per verificare `payment_status === 'paid'`
+3. Se ok: mostra il pulsante di download diretto al file in `public/downloads/`
+4. Se ko: mostra messaggio di errore con email supporto
+
+Il link non ha scadenza — l'utente può salvare la pagina o usare il link nell'email di conferma Stripe.
+
+### Ordini fisici
+
+Gli ordini fisici non richiedono nessuna azione tecnica dal sito. Dopo il pagamento:
+1. Stripe ti invia email di conferma con indirizzo di spedizione
+2. Trovi tutti gli ordini su **Stripe Dashboard → Payments**
+3. Spedisci manualmente e segna come spedito (opzionale: usa Stripe Shipping nel dashboard)
+
+### Campi di shop-data.ts
+
+| Campo | Note |
+|---|---|
+| `id` | Stringa unica (es. `preset-desert-light`) — usata come chiave nel checkout |
+| `type` | `'digital'` o `'physical'` |
+| `price` | Solo per display — il prezzo reale è quello definito su Stripe |
+| `stripePriceId` | **Obbligatorio** — copiare da Stripe Dashboard |
+| `image` | Path relativo a `public/` (es. `/shop/preset.jpg`) |
+| `downloadPath` | Solo digitali — path al file in `public/downloads/` |
+| `shipping` | Solo fisici — `true` per abilitare raccolta indirizzo |
+| `shippingCountries` | Array ISO 3166-1 alpha-2 — vuoto `[]` = lista default (IT, DE, FR, GB, US...) |
+| `available` | `false` = prodotto nascosto dalla vetrina |
+| `badge` | Etichetta opzionale (es. "Bestseller", "Edizione limitata") |
+
+---
+
+## 13. Spotsbook — pin di anteprima per non abbonati
+
+Il campo **"Anteprima pubblica"** in ogni location Black Book (`preview: true`) determina quali pin sono visibili e cliccabili nella mappa teaser per i non abbonati.
+
+- **Pin `preview: true`**: visibile a tutti, cliccabile → apre pannello completo con tutto il contenuto della location + CTA abbonamento
+- **Pin `preview: false`** (default): pin sfumato visibile, cliccabile → apre pannello "Location bloccata" + CTA
+
+Per cambiarlo: `/admin` → Black Book → location → toggle **"Anteprima pubblica"** → Pubblica.
+
+---
+
+*Fine manuale v9 — 9 Giugno 2026.*
