@@ -415,14 +415,17 @@ const initiale = (userName || userEmail)[0].toUpperCase();
   }
 
   @media (max-width: 768px) {
-    .acc-hero { padding: 40px 24px 36px; }
-    .acc-hero-inner { flex-wrap: wrap; gap: 20px; }
-    .acc-hero-status { order: -1; margin-left: auto; }
-    .acc-name { font-size: 32px; }
-    .acc-body { padding: 40px 24px 80px; }
+    .acc-hero { padding: 36px 24px 32px; }
+    .acc-hero-inner { flex-wrap: wrap; gap: 16px; }
+    /* Badge in alto a destra, avatar + info nella riga sotto */
+    .acc-hero-status { width: 100%; display: flex; justify-content: flex-end; order: -1; }
+    .acc-avatar-img, .acc-avatar-placeholder { width: 56px; height: 56px; font-size: 26px; }
+    .acc-name { font-size: 28px; }
+    .acc-body { padding: 36px 20px 80px; }
     .acc-plan-box { padding: 20px; }
     .acc-plan-top { flex-direction: column; gap: 12px; }
     .acc-plan-actions { flex-direction: column; align-items: flex-start; }
     .acc-link-sub { display: none; }
+    .acc-section-label { font-size: 8px; }
   }
 </style>

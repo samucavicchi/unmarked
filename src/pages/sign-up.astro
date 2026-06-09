@@ -234,9 +234,13 @@ import { SignUp } from '@clerk/astro/components';
 
   @media (max-width: 768px) {
     .auth-wrap { grid-template-columns: 1fr; }
-    .auth-left { padding: 48px 32px; min-height: auto; }
+    /* Form prima, branding dopo */
+    .auth-right { order: -1; padding: 48px 24px 32px; }
+    .auth-left { padding: 40px 24px; min-height: auto; }
     .auth-left::before { display: none; }
-    .auth-title { font-size: 52px; }
-    .auth-right { padding: 48px 24px; }
+    .auth-title { font-size: 44px; }
+    .auth-sub { margin-bottom: 20px; font-size: 13px; }
+    .auth-divider { display: none; }
+    .auth-features { display: none; }
   }
 </style>
