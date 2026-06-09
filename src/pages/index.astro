@@ -48,7 +48,7 @@ const grid = tutteLeDestinazioni_sorted
 const tuttiGliItinerari = (await getCollection('itinerari')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
-const itinerariHome = tuttiGliItinerari.slice(0, 4);
+const itinerariHome = tuttiGliItinerari.slice(0, 2);
 
 const tuttiIFilm = (await getCollection('film')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
@@ -198,7 +198,7 @@ const formatDateShort = (date) =>
           </div>
         </div>
       )}
-      {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="mini" />)}
+      {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="home" />)}
     </div>
   </div>
 

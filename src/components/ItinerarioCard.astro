@@ -7,13 +7,28 @@ import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
   entry: CollectionEntry<'itinerari'>;
-  variant?: 'full' | 'mini';
+  variant?: 'full' | 'mini' | 'home';
 }
 
 const { entry, variant = 'full' } = Astro.props;
 const { data } = entry;
 const href = `/itinerari/${entry.slug}`;
 ---
+
+{variant === 'home' && (
+  <a href={href} class="it-home-card">
+    <div class="it-home-img">
+      <img src={data.coverImage.src} alt={data.coverImageAlt} loading="lazy" />
+      <div class="it-home-overlay"></div>
+      <div class="it-home-price">€{data.price}</div>
+    </div>
+    <div class="it-home-body">
+      <div class="it-home-tag">{data.country} · {data.continent}</div>
+      <div class="it-home-title">{data.title}</div>
+      <div class="it-home-meta">{data.duration} giorni · {data.difficulty} · {data.bestSeason}</div>
+    </div>
+  </a>
+)}
 
 {variant === 'mini' && (
   <a href={href} class="it-card it-card-link">
@@ -41,6 +56,19 @@ const href = `/itinerari/${entry.slug}`;
 )}
 
 <style>
+  /* HOME VARIANT */
+  .it-home-card { display: block; text-decoration: none; color: inherit; border: 1px solid rgba(201,185,154,0.15); transition: border-color 0.2s; }
+  .it-home-card:hover { border-color: rgba(201,185,154,0.4); }
+  .it-home-img { position: relative; height: 280px; overflow: hidden; }
+  .it-home-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
+  .it-home-card:hover .it-home-img img { transform: scale(1.03); }
+  .it-home-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,24,20,0.65) 0%, transparent 55%); }
+  .it-home-price { position: absolute; top: 14px; right: 14px; background: var(--terra); color: #FAFAF8; font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; padding: 4px 12px; letter-spacing: 0.02em; }
+  .it-home-body { padding: 18px 20px 22px; background: rgba(255,255,255,0.03); }
+  .it-home-tag { font-size: 8px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+  .it-home-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: #FAFAF8; line-height: 1.2; margin-bottom: 10px; }
+  .it-home-meta { font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.35); }
+
   .it-card-link {
     text-decoration: none;
     color: inherit;
