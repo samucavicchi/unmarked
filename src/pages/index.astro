@@ -50,6 +50,11 @@ const tuttiGliItinerari = (await getCollection('itinerari')).sort(
 );
 const itinerariHome = tuttiGliItinerari.slice(0, 2);
 
+const spotsbookLocations = (await getCollection('blackbook'))
+  .filter(l => l.data.status === 'published')
+  .map(l => ({ lat: l.data.lat, lng: l.data.lng }));
+const spotsbookCount = spotsbookLocations.length;
+
 const tuttiIFilm = (await getCollection('film')).sort(
   (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
 );
@@ -201,6 +206,52 @@ const formatDateShort = (date) =>
       {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="home" />)}
     </div>
   </div>
+
+  <!-- SPOTSBOOK TEASER -->
+  <section class="sb-teaser">
+    <div id="sb-teaser-map" class="sb-teaser-map"></div>
+    <div class="sb-teaser-fade-l"></div>
+    <div class="sb-teaser-fade-r"></div>
+    <div class="sb-teaser-overlay">
+      <div class="sb-teaser-tag">Spotsbook · Solo abbonati</div>
+      <h2 class="sb-teaser-title">Location fotografiche segrete.<br/>Coordinate precise. Luce perfetta.</h2>
+      <p class="sb-teaser-sub">Quello che abbiamo trovato sul campo e che non mettiamo sulle guide.<br/>{spotsbookCount} location disponibili, +3 ogni mese.</p>
+      <a href="/spotsbook" class="sb-teaser-btn">Sblocca lo Spotsbook</a>
+    </div>
+  </section>
+
+  <script define:vars={{ spotsbookLocations }}>
+    (function() {
+      const el = document.getElementById('sb-teaser-map');
+      if (!el) return;
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(css);
+      const js = document.createElement('script');
+      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      js.onload = () => {
+        const map = L.map('sb-teaser-map', {
+          center: [20, 20], zoom: 2,
+          zoomControl: false, dragging: false, scrollWheelZoom: false,
+          doubleClickZoom: false, keyboard: false, touchZoom: false,
+          attributionControl: false
+        });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+        const icon = L.divIcon({
+          className: '',
+          html: '<div style="width:9px;height:9px;border-radius:50%;background:#C4855A;border:1.5px solid rgba(255,252,240,0.6);box-shadow:0 1px 4px rgba(0,0,0,0.5);"></div>',
+          iconSize: [9,9], iconAnchor: [4,4]
+        });
+        spotsbookLocations.forEach(loc => {
+          L.marker([loc.lat, loc.lng], { icon, interactive: false }).addTo(map);
+        });
+      };
+      document.head.appendChild(js);
+    })();
+  </script>
 
   <!-- FILM (un solo film featured a tutta larghezza) -->
   <section>
@@ -368,6 +419,23 @@ const formatDateShort = (date) =>
   .card-link { text-decoration: none; color: inherit; display: block; }
   .feat-img-bg, .side-thumb-bg { width: 100%; height: 100%; }
   .it-card-placeholder { opacity: 0.6; cursor: default; }
+
+  /* SPOTSBOOK TEASER */
+  .sb-teaser { position: relative; height: 480px; overflow: hidden; background: #0E0C09; }
+  .sb-teaser-map { position: absolute; inset: 0; filter: saturate(0) brightness(0.6); }
+  .sb-teaser-fade-l { position: absolute; top: 0; left: 0; bottom: 0; width: 30%; background: linear-gradient(to right, #0E0C09 0%, transparent 100%); z-index: 2; pointer-events: none; }
+  .sb-teaser-fade-r { position: absolute; top: 0; right: 0; bottom: 0; width: 30%; background: linear-gradient(to left, #0E0C09 0%, transparent 100%); z-index: 2; pointer-events: none; }
+  .sb-teaser-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; z-index: 3; padding: 0 40px; }
+  .sb-teaser-tag { font-size: 9px; font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: #C4855A; margin-bottom: 16px; }
+  .sb-teaser-title { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; color: #FAFAF8; line-height: 1.1; margin-bottom: 16px; }
+  .sb-teaser-sub { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.7; margin-bottom: 28px; }
+  .sb-teaser-btn { display: inline-block; background: #C4855A; color: #fff; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 32px; text-decoration: none; transition: opacity 0.2s; }
+  .sb-teaser-btn:hover { opacity: 0.85; }
+  @media (max-width: 768px) {
+    .sb-teaser { height: 380px; }
+    .sb-teaser-title { font-size: 28px; }
+    .sb-teaser-sub { font-size: 12px; }
+  }
 
   /* Film a tutta larghezza, look cinematic 21:9 */
   .film-home-wide { margin-top: 8px; }
