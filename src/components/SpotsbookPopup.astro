@@ -29,26 +29,30 @@
 
 <script is:inline>
 (function() {
-  const STORAGE_KEY = 'sb_popup_seen';
+  const TS_KEY = 'sb_popup_ts';
+  const SESSION_KEY = 'sb_popup_session';
+  const THREE_HOURS = 30 * 60 * 1000;
+
   const popup = document.getElementById('sb-popup');
   if (!popup) return;
 
-  // Non mostrare se già visto o se utente premium o se su /spotsbook
-  if (localStorage.getItem(STORAGE_KEY)) return;
+  // Escludi pagine non pertinenti
   const path = window.location.pathname;
   if (path.startsWith('/spotsbook') || path.startsWith('/account') || path.startsWith('/sign')) return;
-
-  // Solo home e articoli libreria
   const isHome = path === '/' || path === '';
   const isArticle = path.startsWith('/libreria/') && path.split('/').length > 2;
   if (!isHome && !isArticle) return;
 
-  let shown = false;
+  // Già mostrato in questa sessione di navigazione → stop
+  if (sessionStorage.getItem(SESSION_KEY)) return;
+
+  // Mostrato meno di 3 ore fa → stop
+  const lastShown = parseInt(localStorage.getItem(TS_KEY) || '0', 10);
+  if (lastShown && (Date.now() - lastShown) < THREE_HOURS) return;
 
   function showPopup() {
-    if (shown) return;
-    shown = true;
-    localStorage.setItem(STORAGE_KEY, '1');
+    sessionStorage.setItem(SESSION_KEY, '1');
+    localStorage.setItem(TS_KEY, String(Date.now()));
     popup.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   }
@@ -58,10 +62,9 @@
     document.body.style.overflow = '';
   }
 
-  // Trigger: 50% scroll
   function onScroll() {
-    const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-    if (scrolled >= 0.5) {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    if (total > 0 && window.scrollY / total >= 0.5) {
       showPopup();
       window.removeEventListener('scroll', onScroll);
     }
