@@ -444,13 +444,11 @@ const gallery = data.gallery || [];
 
   <div class="consulenza-strip">
     <div class="consulenza-strip-left">
-      <div class="consulenza-strip-icon">✦</div>
-      <div class="consulenza-strip-text">
-        <div class="consulenza-strip-title">Vuoi un itinerario costruito su misura?</div>
-        <div class="consulenza-strip-sub">Una consulenza con noi per il tuo viaggio specifico.</div>
-      </div>
+      <div class="consulenza-strip-label">Su misura</div>
+      <div class="consulenza-strip-title">Vuoi un itinerario costruito su misura?</div>
+      <div class="consulenza-strip-sub">Una consulenza con noi per il tuo viaggio specifico.</div>
     </div>
-    <a href="/consulenze" class="consulenza-strip-cta">Scopri →</a>
+    <a href="/consulenze" class="consulenza-strip-cta">Scopri le consulenze →</a>
   </div>
 
   {/* Lightbox per gallerie */}
@@ -828,13 +826,13 @@ const gallery = data.gallery || [];
   .lightbox-caption { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.5); letter-spacing: 0.1em; max-width: 80vw; text-align: center; }
 
   /* CONSULENZA STRIP */
-  .consulenza-strip { margin: 48px 40px 80px; background: var(--beige); border: 1px solid #d8cec0; border-radius: 3px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-  .consulenza-strip-left { display: flex; align-items: center; gap: 14px; }
-  .consulenza-strip-icon { font-size: 18px; flex-shrink: 0; color: var(--terra); }
-  .consulenza-strip-title { font-size: 13px; font-weight: 300; color: var(--dark); margin-bottom: 2px; }
-  .consulenza-strip-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
-  .consulenza-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terra); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(196,133,90,0.3); padding-bottom: 1px; flex-shrink: 0; }
-  .consulenza-strip-cta:hover { border-color: var(--terra); }
+  .consulenza-strip { margin: 48px 40px 80px; background: var(--dark); border: 1px solid rgba(201,185,154,0.15); padding: 32px 36px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+  .consulenza-strip-left { flex: 1; }
+  .consulenza-strip-label { font-size: 8px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; }
+  .consulenza-strip-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: #FAFAF8; margin-bottom: 6px; line-height: 1.2; }
+  .consulenza-strip-sub { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.45); }
+  .consulenza-strip-cta { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #FAFAF8; text-decoration: none; white-space: nowrap; border: 1px solid rgba(201,185,154,0.3); padding: 13px 24px; flex-shrink: 0; transition: border-color 0.2s; }
+  .consulenza-strip-cta:hover { border-color: var(--terra); color: var(--terra); }
 
   /* KML DOWNLOAD */
   .kml-download-btn {
