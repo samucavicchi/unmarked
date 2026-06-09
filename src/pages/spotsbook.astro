@@ -117,17 +117,19 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
             className: '',
             html: isPreview
               ? `<div style="width:13px;height:13px;border-radius:50%;background:#B1714A;border:2px solid rgba(255,252,240,0.8);box-shadow:0 0 0 4px rgba(177,113,74,0.25);cursor:pointer"></div>`
-              : `<div style="width:8px;height:8px;border-radius:50%;background:#B1714A;opacity:0.45;"></div>`,
+              : `<div style="width:8px;height:8px;border-radius:50%;background:#B1714A;opacity:0.45;cursor:pointer"></div>`,
             iconSize: isPreview ? [13,13] : [8,8],
             iconAnchor: isPreview ? [6,6] : [4,4]
           });
-          const marker = L.marker([loc.lat, loc.lng], { icon, interactive: isPreview });
-          if (isPreview) {
-            marker.on('click', (e) => {
-              L.DomEvent.stopPropagation(e);
+          const marker = L.marker([loc.lat, loc.lng], { icon, interactive: true });
+          marker.on('click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            if (isPreview) {
               openTeaserPanel(loc);
-            });
-          }
+            } else {
+              openLockedPanel();
+            }
+          });
           marker.addTo(map);
         });
       };
@@ -201,14 +203,24 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         document.body.style.overflow = 'hidden';
       }
 
-      document.getElementById('bb-teaser-panel-close').addEventListener('click', () => {
+      function openLockedPanel() {
+        const panel = document.getElementById('bb-teaser-panel');
+        const content = document.getElementById('bb-teaser-panel-content');
+        content.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;text-align:center;gap:16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(177,113,74,0.6)" stroke-width="1" width="48" height="48"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#FAFAF8;line-height:1.1">Location bloccata</div>
+            <div style="font-size:13px;font-weight:300;color:rgba(250,250,248,0.45);line-height:1.7;max-width:320px">Abbonati per accedere a questa e a tutte le altre location fotografiche segrete — coordinate precise, tecnica, luce ottimale e note dal campo.</div>
+          </div>
+        `;
+        panel.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      window.closeTeaserPanel = function() {
         document.getElementById('bb-teaser-panel').classList.remove('is-open');
         document.body.style.overflow = '';
-      });
-      document.getElementById('bb-teaser-panel-backdrop').addEventListener('click', () => {
-        document.getElementById('bb-teaser-panel').classList.remove('is-open');
-        document.body.style.overflow = '';
-      });
+      };
     </script>
   ) : (
     <!-- MAPPA + PANNELLO per abbonati -->
@@ -269,9 +281,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
 <!-- PANNELLO TEASER (preview pin per non abbonati) -->
 <div id="bb-teaser-panel" class="tbp-wrap" aria-hidden="true">
-  <div class="tbp-backdrop" id="bb-teaser-panel-backdrop"></div>
+  <div class="tbp-backdrop" id="bb-teaser-panel-backdrop" onclick="window.closeTeaserPanel()"></div>
   <div class="tbp-panel">
-    <button class="tbp-close" id="bb-teaser-panel-close" aria-label="Chiudi">
+    <button class="tbp-close" id="bb-teaser-panel-close" aria-label="Chiudi" onclick="window.closeTeaserPanel()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
     <div class="tbp-scroll" id="bb-teaser-panel-content"></div>
