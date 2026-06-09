@@ -1,0 +1,372 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { shopProducts } from '../../data/shop-data';
+
+export function getStaticPaths() {
+  return shopProducts
+    .filter(p => p.available)
+    .map(p => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params;
+const product = shopProducts.find(p => p.id === id);
+if (!product) return Astro.redirect('/shop');
+
+const isDigital = product.type === 'digital';
+const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice(0, 3);
+---
+
+<BaseLayout
+  title={`${product.title} — Unmarked Shop`}
+  description={product.description}
+>
+
+  <div class="pd-wrap">
+
+    <!-- BREADCRUMB -->
+    <div class="pd-breadcrumb">
+      <a href="/shop">Shop</a>
+      <span>→</span>
+      <span>{product.title}</span>
+    </div>
+
+    <!-- PRODOTTO -->
+    <div class="pd-main">
+
+      <!-- IMMAGINE -->
+      <div class="pd-img-wrap">
+        <div class="pd-img" style={`background-image: url('${product.image}')`}></div>
+        {product.badge && <div class="pd-badge">{product.badge}</div>}
+      </div>
+
+      <!-- DETTAGLI -->
+      <div class="pd-info">
+        <div class="pd-type">
+          {isDigital ? (
+            <span class="pd-type-tag pd-type-digital">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v10m0 0l-3-3m3 3l3-3"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+              Digitale — download immediato
+            </span>
+          ) : (
+            <span class="pd-type-tag pd-type-physical">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.5 9H6.5L5 8z"/><path d="M3 5h2.5l1.5 3M16 5h2.5L21 8"/><circle cx="9" cy="20" r="1"/><circle cx="15" cy="20" r="1"/></svg>
+              Fisico — spedizione inclusa
+            </span>
+          )}
+        </div>
+
+        <div class="pd-sub">{product.subtitle}</div>
+        <h1 class="pd-title">{product.title}</h1>
+
+        {product.fullDescription && (
+          <p class="pd-desc">{product.fullDescription}</p>
+        )}
+
+        {product.details && product.details.length > 0 && (
+          <ul class="pd-details">
+            {product.details.map(d => (
+              <li class="pd-detail-item">
+                <span class="pd-detail-dot"></span>
+                {d}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div class="pd-buy">
+          <div class="pd-price">€{product.price}</div>
+          <button class="pd-buy-btn" id="buy-btn" data-product-id={product.id}>
+            {isDigital ? 'Acquista e scarica' : 'Acquista'}
+          </button>
+        </div>
+
+        {!isDigital && (
+          <p class="pd-shipping-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Spedito in tutta Europa. L'indirizzo viene raccolto al checkout.
+          </p>
+        )}
+      </div>
+
+    </div>
+
+    <!-- ALTRI PRODOTTI -->
+    {otherProducts.length > 0 && (
+      <div class="pd-others">
+        <div class="pd-others-label">Altri prodotti</div>
+        <div class="pd-others-grid">
+          {otherProducts.map(p => (
+            <a href={`/shop/${p.id}`} class="pd-other-card">
+              <div class="pd-other-img" style={`background-image: url('${p.image}')`}></div>
+              <div class="pd-other-info">
+                <div class="pd-other-sub">{p.subtitle}</div>
+                <div class="pd-other-title">{p.title}</div>
+                <div class="pd-other-price">€{p.price}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+  </div>
+
+</BaseLayout>
+
+<script>
+  document.getElementById('buy-btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('buy-btn') as HTMLButtonElement;
+    const productId = btn.dataset.productId;
+    btn.textContent = '...';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'shop', productId }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Errore durante il checkout. Riprova.');
+        btn.textContent = 'Acquista';
+        btn.disabled = false;
+      }
+    } catch {
+      alert('Errore di rete. Riprova.');
+      btn.textContent = 'Acquista';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .pd-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 40px 100px;
+  }
+
+  /* BREADCRUMB */
+  .pd-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 48px;
+  }
+  .pd-breadcrumb a { color: var(--terra); text-decoration: none; }
+  .pd-breadcrumb a:hover { text-decoration: underline; }
+
+  /* LAYOUT PRINCIPALE */
+  .pd-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid rgba(201,185,154,0.15);
+  }
+
+  /* IMMAGINE */
+  .pd-img-wrap {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: rgba(201,185,154,0.08);
+  }
+  .pd-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .pd-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--terra);
+    color: #fff;
+    padding: 5px 12px;
+  }
+
+  /* INFO */
+  .pd-type { margin-bottom: 20px; }
+  .pd-type-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid rgba(201,185,154,0.3);
+    color: var(--muted);
+  }
+  .pd-sub {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 10px;
+  }
+  .pd-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+  .pd-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  /* DETAILS */
+  .pd-details {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 36px;
+    padding: 24px;
+    background: rgba(201,185,154,0.06);
+    border-left: 2px solid rgba(201,185,154,0.3);
+  }
+  .pd-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.5;
+  }
+  .pd-detail-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--terra);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  /* BUY */
+  .pd-buy {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+  .pd-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+  }
+  .pd-buy-btn {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: #FAFAF8;
+    border: none;
+    padding: 16px 40px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .pd-buy-btn:hover { background: var(--terra); }
+  .pd-buy-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .pd-shipping-note {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(138,126,106,0.7);
+  }
+
+  /* ALTRI PRODOTTI */
+  .pd-others-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .pd-others-label::before { content: ''; width: 24px; height: 1px; background: var(--terra); display: block; }
+  .pd-others-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .pd-other-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(201,185,154,0.15);
+    transition: border-color 0.2s;
+  }
+  .pd-other-card:hover { border-color: var(--terra); }
+  .pd-other-img {
+    aspect-ratio: 3/2;
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(201,185,154,0.08);
+  }
+  .pd-other-info { padding: 16px 18px; }
+  .pd-other-sub {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 4px;
+  }
+  .pd-other-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .pd-other-price {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+  }
+
+  @media (max-width: 768px) {
+    .pd-wrap { padding: 24px 20px 80px; }
+    .pd-main { grid-template-columns: 1fr; gap: 32px; }
+    .pd-title { font-size: 38px; }
+    .pd-price { font-size: 36px; }
+    .pd-buy { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .pd-buy-btn { width: 100%; text-align: center; }
+    .pd-others-grid { grid-template-columns: 1fr; }
+  }
+</style>

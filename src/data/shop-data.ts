@@ -11,17 +11,19 @@ export type ShopProduct = {
   title: string;
   subtitle: string;
   type: 'digital' | 'physical';
-  price: number; // EUR, intero (es. 29)
-  stripePriceId: string; // ← da aggiornare con ID reale da Stripe
-  image: string; // path relativo a /public/
-  description: string;
-  badge?: string; // es. "Nuovo", "Bestseller"
+  price: number;
+  stripePriceId: string;
+  image: string;
+  description: string;        // breve — usata nella card
+  fullDescription?: string;   // lunga — usata nella pagina prodotto
+  details?: string[];         // bullet point — usati nella pagina prodotto
+  badge?: string;
   available: boolean;
   // Solo per digitali
-  downloadPath?: string; // es. '/downloads/preset-pack.zip'
+  downloadPath?: string;
   // Solo per fisici
   shipping?: true;
-  shippingCountries?: string[]; // es. ['IT', 'DE', 'FR'] — vuoto = worldwide
+  shippingCountries?: string[];
 };
 
 export const shopProducts: ShopProduct[] = [
@@ -35,6 +37,14 @@ export const shopProducts: ShopProduct[] = [
     stripePriceId: 'price_1TgRVkLV5vyDSjg1tujK08zU',
     image: 'https://picsum.photos/seed/desert/800/600',
     description: '18 preset Lightroom per luce desertica e artica. Calibrati su Sony, Nikon e Canon. Compatibili con Lightroom Classic, CC e mobile.',
+    fullDescription: 'Questi preset nascono da anni di riprese nel deserto namibiano e sugli altipiani islandesi. Non sono filtri da applicare e dimenticare — sono punti di partenza calibrati sulla luce reale di quei posti, pensati per chi vuole un risultato che sembri girato sul campo e non su un monitor.',
+    details: [
+      '18 preset per Lightroom Classic, CC e mobile',
+      'Calibrati su Sony A7 series, Nikon Z series e Canon R series',
+      'File .xmp + istruzioni di installazione incluse',
+      'Download immediato dopo l\'acquisto',
+      'Aggiornamenti futuri gratuiti',
+    ],
     badge: 'Bestseller',
     available: true,
     downloadPath: '/downloads/desert-light-presets.zip',
@@ -49,7 +59,17 @@ export const shopProducts: ShopProduct[] = [
     price: 89,
     stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl',
     image: 'https://picsum.photos/seed/africa/800/600',
-    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata. Consegnata con certificato di autenticità.',
+    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
+    fullDescription: 'Le dune del Sossusvlei all\'alba, prima che arrivino i pullman. Questa foto è stata scattata dopo due ore di cammino nel buio — il risultato è quella luce radente che colora le creste di rosso e lascia le valli in ombra. Una delle immagini che più mi rappresenta.',
+    details: [
+      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
+      'Formato 30×40 cm',
+      'Tiratura limitata: 50 esemplari',
+      'Firmata e numerata a mano',
+      'Consegnata con certificato di autenticità',
+      'Spedita in tubo rigido protettivo',
+      'Prodotta su ordinazione in 5–7 giorni lavorativi',
+    ],
     badge: 'Edizione limitata',
     available: true,
     shipping: true,
@@ -63,7 +83,17 @@ export const shopProducts: ShopProduct[] = [
     price: 89,
     stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq',
     image: 'https://picsum.photos/seed/iceland/800/600',
-    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata. Consegnata con certificato di autenticità.',
+    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
+    fullDescription: 'Aldeyarfoss è una cascata che non trovi sui cartelloni. Ci si arriva su una strada sterrata nel nord dell\'Islanda, e la cosa che colpisce è il contrasto tra il basalto nero delle colonne e il bianco dell\'acqua. Questa foto è stata scattata in una mattina di giugno con luce diffusa — nessun cielo spettacolare, solo forma e materia.',
+    details: [
+      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
+      'Formato 30×40 cm',
+      'Tiratura limitata: 50 esemplari',
+      'Firmata e numerata a mano',
+      'Consegnata con certificato di autenticità',
+      'Spedita in tubo rigido protettivo',
+      'Prodotta su ordinazione in 5–7 giorni lavorativi',
+    ],
     available: true,
     shipping: true,
     shippingCountries: [],
@@ -77,6 +107,15 @@ export const shopProducts: ShopProduct[] = [
     stripePriceId: 'price_1TgRkPLV5vyDSjg1msBILyOt',
     image: 'https://picsum.photos/seed/travel/800/600',
     description: 'Tote bag in canvas naturale pesante (400g). Stampa serigrafica in bianco. Manici lunghi. Dimensioni 38×42 cm.',
+    fullDescription: 'Una borsa che va in aereo, al mercato e in darkroom. Canvas naturale pesante, stampa serigrafica a mano con inchiostro bianco. Nessun logo urlato — solo "Unmarked" in piccolo sulla tasca frontale.',
+    details: [
+      'Canvas naturale 100% cotone pesante (400g)',
+      'Stampa serigrafica in bianco',
+      'Manici lunghi (60 cm) per spalla',
+      'Tasca frontale con zip',
+      'Dimensioni: 38×42 cm',
+      'Lavabile in lavatrice a 30°',
+    ],
     available: true,
     shipping: true,
     shippingCountries: [],

@@ -47,7 +47,7 @@ const physical = available.filter(p => p.type === 'physical');
               <p class="sh-card-desc">{product.description}</p>
               <div class="sh-card-footer">
                 <div class="sh-price">€{product.price}</div>
-                <button class="sh-buy-btn" data-product-id={product.id}>Acquista</button>
+                <a href={`/shop/${product.id}`} class="sh-discover-btn">Scopri →</a>
               </div>
             </div>
           </div>
@@ -80,7 +80,7 @@ const physical = available.filter(p => p.type === 'physical');
               <p class="sh-card-desc">{product.description}</p>
               <div class="sh-card-footer">
                 <div class="sh-price">€{product.price}</div>
-                <button class="sh-buy-btn" data-product-id={product.id}>Acquista</button>
+                <a href={`/shop/${product.id}`} class="sh-discover-btn">Scopri →</a>
               </div>
             </div>
           </div>
@@ -168,9 +168,8 @@ const physical = available.filter(p => p.type === 'physical');
   .sh-card-desc { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.7; flex: 1; margin-bottom: 20px; }
   .sh-card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(201,185,154,0.2); padding-top: 16px; }
   .sh-price { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
-  .sh-buy-btn { font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; background: var(--dark); color: #FAFAF8; border: none; padding: 12px 24px; cursor: pointer; transition: background 0.2s; }
-  .sh-buy-btn:hover { background: var(--terra); }
-  .sh-buy-btn:disabled { opacity: 0.5; cursor: default; }
+  .sh-discover-btn { font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; background: var(--dark); color: #FAFAF8; padding: 12px 24px; text-decoration: none; transition: background 0.2s; display: inline-block; }
+  .sh-discover-btn:hover { background: var(--terra); }
   .sh-notes { background: rgba(201,185,154,0.06); border-top: 1px solid rgba(201,185,154,0.15); }
   .sh-notes-inner { max-width: 1200px; margin: 0 auto; padding: 48px 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
   .sh-note-title { font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; }
