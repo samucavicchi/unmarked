@@ -1,0 +1,390 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { shopProducts } from '../data/shop-data';
+
+const available = shopProducts.filter(p => p.available);
+const digital = available.filter(p => p.type === 'digital');
+const physical = available.filter(p => p.type === 'physical');
+---
+
+<BaseLayout
+  title="Shop — Unmarked"
+  description="Preset fotografici, stampe fine art e oggetti Unmarked. Fatti sul campo, pensati per chi ci vive."
+>
+
+  <!-- HERO -->
+  <section class="sh-hero">
+    <div class="sh-hero-inner">
+      <div class="sh-label">Unmarked · Shop</div>
+      <h1 class="sh-title">Fatti sul campo.</h1>
+      <p class="sh-sub">Preset calibrati sul campo, stampe fine art in edizione limitata e oggetti pensati per chi viaggia con una macchina fotografica.</p>
+    </div>
+  </section>
+
+  <div class="sh-separator"></div>
+
+  <!-- DIGITALI -->
+  {digital.length > 0 && (
+    <section class="sh-section">
+      <div class="sh-section-header">
+        <div class="sh-section-label">Digitale</div>
+        <p class="sh-section-desc">Download immediato dopo l'acquisto.</p>
+      </div>
+      <div class="sh-grid sh-grid-digital">
+        {digital.map(product => (
+          <div class="sh-card" data-id={product.id}>
+            <div class="sh-card-img-wrap">
+              <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
+              {product.badge && <div class="sh-badge">{product.badge}</div>}
+              <div class="sh-type-pill sh-type-digital">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v10m0 0l-3-3m3 3l3-3"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+                Digitale
+              </div>
+            </div>
+            <div class="sh-card-body">
+              <div class="sh-card-sub">{product.subtitle}</div>
+              <h2 class="sh-card-title">{product.title}</h2>
+              <p class="sh-card-desc">{product.description}</p>
+              <div class="sh-card-footer">
+                <div class="sh-price">€{product.price}</div>
+                <button
+                  class="sh-buy-btn"
+                  data-product-id={product.id}
+                  data-product-type="digital"
+                >
+                  Acquista
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- FISICI -->
+  {physical.length > 0 && (
+    <section class="sh-section">
+      <div class="sh-section-header">
+        <div class="sh-section-label">Fisico</div>
+        <p class="sh-section-desc">Spedito in tutta Europa. L'indirizzo viene raccolto al checkout.</p>
+      </div>
+      <div class="sh-grid sh-grid-physical">
+        {physical.map(product => (
+          <div class="sh-card" data-id={product.id}>
+            <div class="sh-card-img-wrap">
+              <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
+              {product.badge && <div class="sh-badge">{product.badge}</div>}
+              <div class="sh-type-pill sh-type-physical">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.5 9H6.5L5 8z"/><path d="M3 5h2.5l1.5 3M16 5h2.5L21 8"/><circle cx="9" cy="20" r="1"/><circle cx="15" cy="20" r="1"/></svg>
+                Fisico
+              </div>
+            </div>
+            <div class="sh-card-body">
+              <div class="sh-card-sub">{product.subtitle}</div>
+              <h2 class="sh-card-title">{product.title}</h2>
+              <p class="sh-card-desc">{product.description}</p>
+              <div class="sh-card-footer">
+                <div class="sh-price">€{product.price}</div>
+                <button
+                  class="sh-buy-btn"
+                  data-product-id={product.id}
+                  data-product-type="physical"
+                >
+                  Acquista
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- NOTE SPEDIZIONE -->
+  <section class="sh-notes">
+    <div class="sh-notes-inner">
+      <div class="sh-note">
+        <div class="sh-note-title">Stampe</div>
+        <div class="sh-note-text">Prodotte su ordinazione in 5–7 giorni lavorativi. Spedite in tubo rigido protettivo. Tiratura limitata — ogni esemplare firmato e numerato.</div>
+      </div>
+      <div class="sh-note">
+        <div class="sh-note-title">Digitali</div>
+        <div class="sh-note-text">Link di download disponibile subito dopo il pagamento. File compatibile con Lightroom Classic, CC e mobile. Nessuna scadenza.</div>
+      </div>
+      <div class="sh-note">
+        <div class="sh-note-title">Resi</div>
+        <div class="sh-note-text">I prodotti fisici si possono restituire entro 14 giorni se danneggiati. I digitali non sono rimborsabili dopo il download.</div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.sh-buy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const productId = (btn as HTMLElement).dataset.productId;
+      btn.textContent = '...';
+      (btn as HTMLButtonElement).disabled = true;
+
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'shop', productId }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert('Errore durante il checkout. Riprova.');
+          btn.textContent = 'Acquista';
+          (btn as HTMLButtonElement).disabled = false;
+        }
+      } catch {
+        alert('Errore di rete. Riprova.');
+        btn.textContent = 'Acquista';
+        (btn as HTMLButtonElement).disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  /* HERO */
+  .sh-hero {
+    background: #1A1814;
+    padding: 80px 56px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sh-hero::before {
+    content: '—';
+    position: absolute;
+    right: 56px;
+    bottom: -60px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 320px;
+    font-weight: 300;
+    color: rgba(201,185,154,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .sh-hero-inner { max-width: 700px; position: relative; z-index: 1; }
+  .sh-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .sh-label::before { content: ''; width: 24px; height: 1px; background: var(--terra); display: block; }
+  .sh-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  .sh-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.45);
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .sh-separator {
+    height: 2px;
+    background: var(--cream);
+    border-bottom: 2px solid var(--terra);
+  }
+
+  /* SEZIONI */
+  .sh-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 40px;
+    border-bottom: 1px solid rgba(201,185,154,0.15);
+  }
+  .sh-section-header { margin-bottom: 40px; }
+  .sh-section-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .sh-section-label::before { content: ''; width: 24px; height: 1px; background: var(--terra); display: block; }
+  .sh-section-desc {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    padding-left: 36px;
+  }
+
+  /* GRIGLIE */
+  .sh-grid { display: grid; gap: 2px; }
+  .sh-grid-digital { grid-template-columns: repeat(2, 1fr); }
+  .sh-grid-physical { grid-template-columns: repeat(3, 1fr); }
+
+  /* CARD */
+  .sh-card {
+    background: var(--cream);
+    border: 1px solid rgba(201,185,154,0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  .sh-card-img-wrap {
+    position: relative;
+    aspect-ratio: 3/2;
+    overflow: hidden;
+    background: rgba(201,185,154,0.1);
+  }
+  .sh-grid-digital .sh-card-img-wrap { aspect-ratio: 4/3; }
+  .sh-card-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease;
+  }
+  .sh-card:hover .sh-card-img { transform: scale(1.03); }
+  .sh-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--terra);
+    color: #fff;
+    padding: 4px 10px;
+    z-index: 1;
+  }
+  .sh-type-pill {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 1;
+    backdrop-filter: blur(4px);
+  }
+  .sh-type-digital { background: rgba(26,24,20,0.75); color: rgba(250,250,248,0.8); }
+  .sh-type-physical { background: rgba(26,24,20,0.75); color: rgba(250,250,248,0.8); }
+
+  .sh-card-body {
+    padding: 24px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .sh-card-sub {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .sh-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .sh-card-desc {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+    flex: 1;
+    margin-bottom: 20px;
+  }
+  .sh-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(201,185,154,0.2);
+    padding-top: 16px;
+  }
+  .sh-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--dark);
+  }
+  .sh-buy-btn {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: #FAFAF8;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .sh-buy-btn:hover { background: var(--terra); }
+  .sh-buy-btn:disabled { opacity: 0.5; cursor: default; }
+
+  /* NOTE */
+  .sh-notes {
+    background: rgba(201,185,154,0.06);
+    border-top: 1px solid rgba(201,185,154,0.15);
+  }
+  .sh-notes-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+  }
+  .sh-note-title {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 10px;
+  }
+  .sh-note-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .sh-hero { padding: 48px 20px 40px; }
+    .sh-title { font-size: 48px; }
+    .sh-section { padding: 48px 20px; }
+    .sh-grid-digital { grid-template-columns: 1fr; }
+    .sh-grid-physical { grid-template-columns: 1fr; }
+    .sh-notes-inner { grid-template-columns: 1fr; gap: 28px; padding: 40px 20px; }
+    .sh-card-title { font-size: 22px; }
+  }
+</style>

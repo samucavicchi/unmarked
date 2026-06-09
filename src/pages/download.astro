@@ -1,0 +1,176 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Stripe from 'stripe';
+import { shopProducts } from '../data/shop-data';
+
+const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2024-11-20.acacia',
+});
+
+const sessionId = Astro.url.searchParams.get('session');
+
+let error: string | null = null;
+let product: typeof shopProducts[0] | null = null;
+let customerEmail: string | null = null;
+
+if (!sessionId) {
+  error = 'Link non valido.';
+} else {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== 'paid') {
+      error = 'Il pagamento non risulta completato. Contatta supporto@unmarked.it';
+    } else if (session.metadata?.type !== 'shop' || session.metadata?.productType !== 'digital') {
+      error = 'Questo link non corrisponde a un prodotto digitale.';
+    } else {
+      const productId = session.metadata?.productId;
+      product = shopProducts.find(p => p.id === productId) ?? null;
+      customerEmail = session.customer_details?.email ?? null;
+      if (!product) error = 'Prodotto non trovato. Contatta supporto@unmarked.it';
+    }
+  } catch (e: any) {
+    error = 'Sessione non valida o scaduta.';
+  }
+}
+---
+
+<BaseLayout
+  title="Download — Unmarked"
+  description="Scarica il tuo prodotto Unmarked"
+>
+  <div class="dl-wrap">
+
+    {error ? (
+      <div class="dl-box dl-error">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(196,133,90,0.6)" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01" stroke-linecap="round"/></svg>
+        <h1 class="dl-title">Oops</h1>
+        <p class="dl-text">{error}</p>
+        <a href="/shop" class="dl-back">← Torna allo shop</a>
+      </div>
+    ) : product ? (
+      <div class="dl-box dl-success">
+        <div class="dl-check">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C4855A" stroke-width="1.5"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="dl-label">Pagamento confermato</div>
+        <h1 class="dl-title">{product.title}</h1>
+        <p class="dl-sub">{product.subtitle}</p>
+        {customerEmail && (
+          <p class="dl-email">Una copia del link è stata inviata a <strong>{customerEmail}</strong></p>
+        )}
+        <div class="dl-divider"></div>
+        <a href={product.downloadPath} class="dl-btn" download>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          Scarica il file
+        </a>
+        <p class="dl-note">Il link è valido per sempre — salva questa pagina o usa il link nella tua email.</p>
+        <a href="/shop" class="dl-back">← Torna allo shop</a>
+      </div>
+    ) : null}
+
+  </div>
+</BaseLayout>
+
+<style>
+  .dl-wrap {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    background: var(--cream);
+  }
+  .dl-box {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .dl-check {
+    width: 64px;
+    height: 64px;
+    border: 1px solid rgba(196,133,90,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .dl-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .dl-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+    margin: 0;
+  }
+  .dl-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    margin: 0;
+  }
+  .dl-email {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    margin: 0;
+  }
+  .dl-email strong { font-weight: 400; color: var(--dark); }
+  .dl-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(201,185,154,0.3);
+    margin: 8px 0;
+  }
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    background: var(--dark);
+    color: #FAFAF8;
+    padding: 16px 40px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .dl-btn:hover { background: var(--terra); }
+  .dl-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(138,126,106,0.7);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .dl-back {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+    transition: color 0.2s;
+  }
+  .dl-back:hover { color: var(--terra); }
+  .dl-text {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+</style>

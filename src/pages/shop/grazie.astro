@@ -1,0 +1,166 @@
+---
+export const prerender = false;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2024-11-20.acacia',
+});
+
+const sessionId = Astro.url.searchParams.get('session');
+
+let customerName: string | null = null;
+let customerEmail: string | null = null;
+let shippingAddress: Stripe.Address | null = null;
+let productName: string | null = null;
+let error: string | null = null;
+
+if (!sessionId) {
+  error = 'Link non valido.';
+} else {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status !== 'paid') {
+      error = 'Pagamento non confermato.';
+    } else {
+      customerName = session.customer_details?.name ?? null;
+      customerEmail = session.customer_details?.email ?? null;
+      shippingAddress = session.shipping_details?.address ?? null;
+      productName = session.metadata?.productId ?? null;
+    }
+  } catch {
+    error = 'Sessione non valida.';
+  }
+}
+---
+
+<BaseLayout title="Ordine confermato — Unmarked" description="Grazie per il tuo acquisto">
+  <div class="gz-wrap">
+
+    {error ? (
+      <div class="gz-box">
+        <p class="gz-text">{error}</p>
+        <a href="/shop" class="gz-back">← Torna allo shop</a>
+      </div>
+    ) : (
+      <div class="gz-box">
+        <div class="gz-check">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C4855A" stroke-width="1.5"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="gz-label">Ordine confermato</div>
+        <h1 class="gz-title">Grazie{customerName ? `, ${customerName.split(' ')[0]}` : ''}.
+        </h1>
+        <p class="gz-sub">Riceverai una conferma via email{customerEmail ? ` a ${customerEmail}` : ''}. Spediremo il tuo ordine entro 5–7 giorni lavorativi.</p>
+
+        {shippingAddress && (
+          <div class="gz-address">
+            <div class="gz-address-label">Indirizzo di spedizione</div>
+            <div class="gz-address-text">
+              {shippingAddress.line1}<br/>
+              {shippingAddress.line2 && <>{shippingAddress.line2}<br/></>}
+              {shippingAddress.postal_code} {shippingAddress.city}<br/>
+              {shippingAddress.country}
+            </div>
+          </div>
+        )}
+
+        <div class="gz-divider"></div>
+        <p class="gz-note">Per qualsiasi domanda: <a href="mailto:supporto@unmarked.it">supporto@unmarked.it</a></p>
+        <a href="/shop" class="gz-back">← Torna allo shop</a>
+      </div>
+    )}
+
+  </div>
+</BaseLayout>
+
+<style>
+  .gz-wrap {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    background: var(--cream);
+  }
+  .gz-box {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .gz-check {
+    width: 64px;
+    height: 64px;
+    border: 1px solid rgba(196,133,90,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .gz-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .gz-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+    margin: 0;
+  }
+  .gz-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .gz-address {
+    background: rgba(201,185,154,0.1);
+    border: 1px solid rgba(201,185,154,0.2);
+    padding: 20px 28px;
+    text-align: left;
+    width: 100%;
+  }
+  .gz-address-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 10px;
+  }
+  .gz-address-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1.8;
+  }
+  .gz-divider { width: 40px; height: 1px; background: rgba(201,185,154,0.3); margin: 4px 0; }
+  .gz-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+    margin: 0;
+  }
+  .gz-note a { color: var(--terra); text-decoration: none; }
+  .gz-note a:hover { text-decoration: underline; }
+  .gz-back {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .gz-back:hover { color: var(--terra); }
+  .gz-text { font-size: 14px; font-weight: 300; color: var(--muted); }
+</style>

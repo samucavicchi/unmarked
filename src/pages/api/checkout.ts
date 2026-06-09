@@ -1,12 +1,13 @@
 // src/pages/api/checkout.ts
 // Endpoint SSR — crea una Stripe Checkout Session e restituisce l'URL.
 // POST /api/checkout
-// Body: { type: 'subscription' | 'single', slug?: string, price?: number, title?: string }
+// Body: { type: 'subscription' | 'single' | 'shop', slug?: string, price?: number, title?: string, productId?: string }
 
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
+import { shopProducts } from '../../data/shop-data';
 
 const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-11-20.acacia',
@@ -15,11 +16,12 @@ const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
 export const POST: APIRoute = async ({ request, locals, url }) => {
   try {
     const body = await request.json();
-    const { type, slug, price, title } = body as {
-      type: 'subscription' | 'single';
+    const { type, slug, price, title, productId } = body as {
+      type: 'subscription' | 'single' | 'shop';
       slug?: string;
       price?: number;
       title?: string;
+      productId?: string;
     };
 
     // Auth — utente loggato (opzionale: il pagamento funziona anche senza account)
@@ -97,6 +99,44 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
           userId: userId ?? '',
         },
         allow_promotion_codes: true,
+        locale: 'it',
+      });
+    }
+
+    } else if (type === 'shop') {
+      // Acquisto prodotto shop (digitale o fisico)
+      const product = shopProducts.find(p => p.id === productId);
+      if (!product) {
+        return new Response(JSON.stringify({ error: 'Prodotto non trovato' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      const isDigital = product.type === 'digital';
+      const shopSuccessUrl = isDigital
+        ? `${origin}/download?session={CHECKOUT_SESSION_ID}`
+        : `${origin}/shop/grazie?session={CHECKOUT_SESSION_ID}`;
+
+      session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card'],
+        line_items: [{ price: product.stripePriceId, quantity: 1 }],
+        success_url: shopSuccessUrl,
+        cancel_url: `${origin}/shop`,
+        ...(isDigital ? {} : {
+          shipping_address_collection: {
+            allowed_countries: product.shippingCountries?.length
+              ? (product.shippingCountries as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[])
+              : ['IT', 'AT', 'BE', 'CH', 'DE', 'ES', 'FR', 'GB', 'NL', 'PT', 'SE', 'US', 'CA', 'AU'],
+          },
+        }),
+        ...(userId ? { client_reference_id: userId } : {}),
+        metadata: {
+          type: 'shop',
+          productId: product.id,
+          productType: product.type,
+          userId: userId ?? '',
+        },
         locale: 'it',
       });
     }
