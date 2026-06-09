@@ -35,10 +35,7 @@ const initiale = (userName || userEmail)[0].toUpperCase();
   <div class="acc-hero">
     <div class="acc-hero-inner">
       <div class="acc-avatar">
-        {avatarUrl
-          ? <img src={avatarUrl} alt={userName || 'Avatar'} class="acc-avatar-img" />
-          : <div class="acc-avatar-placeholder">{initiale}</div>
-        }
+        <div class="acc-avatar-placeholder">{initiale}</div>
       </div>
       <div class="acc-hero-info">
         <div class="acc-label">Account · Unmarked</div>
