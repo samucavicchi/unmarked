@@ -50,7 +50,14 @@
   const lastShown = parseInt(localStorage.getItem(TS_KEY) || '0', 10);
   if (lastShown && (Date.now() - lastShown) < THREE_HOURS) return;
 
+  function isPremiumUser() {
+    try {
+      return !!(window.Clerk?.user?.publicMetadata?.isPremium);
+    } catch { return false; }
+  }
+
   function showPopup() {
+    if (isPremiumUser()) return;
     sessionStorage.setItem(SESSION_KEY, '1');
     localStorage.setItem(TS_KEY, String(Date.now()));
     popup.classList.add('is-open');
@@ -69,7 +76,19 @@
       window.removeEventListener('scroll', onScroll);
     }
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Aspetta che Clerk carichi prima di attivare il listener
+  function initScroll() {
+    if (isPremiumUser()) return;
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  if (window.Clerk?.loaded) {
+    initScroll();
+  } else {
+    document.addEventListener('clerk:loaded', initScroll);
+    setTimeout(initScroll, 1500); // fallback se clerk non spara l'evento
+  }
 
   document.getElementById('sb-popup-backdrop').addEventListener('click', closePopup);
   document.getElementById('sb-popup-close').addEventListener('click', closePopup);
