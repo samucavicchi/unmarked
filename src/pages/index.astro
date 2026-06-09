@@ -160,12 +160,12 @@ const formatDateShort = (date) =>
         attribution: '© Esri, NGS',
       }).addTo(map);
 
-      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="36" viewBox="0 0 30 36">
-        <path d="M15,2 C24,2 28,9 28,17 C28,25 22,31 15,34 C8,31 2,25 2,17 C2,9 6,2 15,2 Z"
-              fill="none" stroke="#7A5230" stroke-width="1.5" opacity="0.85"/>
-        <circle cx="15" cy="17" r="8" fill="#7A5230"/>
-      </svg>`;
-      const pinIcon = L.divIcon({ className: '', html: pinSvg, iconSize: [30,36], iconAnchor: [15,34] });
+      const pinIcon = L.divIcon({
+        className: '',
+        html: '<div style="width:10px;height:10px;border-radius:50%;background:#7A5230;border:2px solid rgba(245,239,228,0.9);box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>',
+        iconSize: [10,10],
+        iconAnchor: [5,5]
+      });
 
       homePins.forEach((pin) => {
         L.marker([pin.lat, pin.lng], { icon: pinIcon, interactive: false }).addTo(map);
