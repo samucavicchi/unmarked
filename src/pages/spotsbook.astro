@@ -81,10 +81,23 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       preview: l.data.preview || false,
       title: l.data.title,
       country: l.data.country,
+      region: l.data.region || '',
       continent: l.data.continent,
       type: l.data.type,
       bestTime: l.data.bestTime || '',
       bestSeason: l.data.bestSeason || '',
+      focalLength: l.data.focalLength || '',
+      isoRange: l.data.isoRange || '',
+      access: l.data.access || '',
+      difficulty: l.data.difficulty || '',
+      avvicinamento: l.data.avvicinamento || '',
+      handnotes: l.data.handnotes || [],
+      checklist: l.data.checklist || [],
+      equipment: l.data.equipment || [],
+      antiMainstream: l.data.antiMainstream || '',
+      personalNote: l.data.personalNote || '',
+      coordinates: l.data.coordinates || '',
+      images: l.data.images || [],
     })) }}>
       const css = document.createElement('link');
       css.rel = 'stylesheet';
@@ -98,57 +111,104 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           subdomains: 'abcd', maxZoom: 19, attribution: ''
         }).addTo(map);
 
-        // popup container
-        const popup = document.createElement('div');
-        popup.id = 'bb-teaser-popup';
-        popup.style.cssText = `
-          display:none; position:absolute; z-index:2000;
-          background:#111009; border:1px solid rgba(201,185,154,0.2);
-          box-shadow:0 8px 32px rgba(0,0,0,0.6);
-          padding:20px 22px 18px; width:240px; pointer-events:all;
-        `;
-        document.getElementById('bb-teaser-map').appendChild(popup);
-
-        // chiudi popup cliccando fuori
-        map.on('click', () => { popup.style.display = 'none'; });
-
         teaserLocations.forEach(loc => {
           const isPreview = loc.preview;
           const icon = L.divIcon({
             className: '',
             html: isPreview
-              ? `<div style="width:13px;height:13px;border-radius:50%;background:#B1714A;border:2px solid rgba(255,252,240,0.8);box-shadow:0 0 0 4px rgba(177,113,74,0.25);cursor:pointer;transition:transform 0.15s"></div>`
-              : `<div style="width:7px;height:7px;border-radius:50%;background:#B1714A;opacity:0.18;filter:blur(1px)"></div>`,
-            iconSize: isPreview ? [13,13] : [7,7],
-            iconAnchor: isPreview ? [6,6] : [3,3]
+              ? `<div style="width:13px;height:13px;border-radius:50%;background:#B1714A;border:2px solid rgba(255,252,240,0.8);box-shadow:0 0 0 4px rgba(177,113,74,0.25);cursor:pointer"></div>`
+              : `<div style="width:8px;height:8px;border-radius:50%;background:#B1714A;opacity:0.45;"></div>`,
+            iconSize: isPreview ? [13,13] : [8,8],
+            iconAnchor: isPreview ? [6,6] : [4,4]
           });
           const marker = L.marker([loc.lat, loc.lng], { icon, interactive: isPreview });
           if (isPreview) {
             marker.on('click', (e) => {
               L.DomEvent.stopPropagation(e);
-              const point = map.latLngToContainerPoint([loc.lat, loc.lng]);
-              const mapEl = document.getElementById('bb-teaser-map');
-              const mapW = mapEl.offsetWidth;
-              // posiziona a sinistra o destra del pin
-              const left = point.x + 240 + 20 > mapW ? point.x - 240 - 10 : point.x + 18;
-              const top = Math.max(8, point.y - 80);
-              popup.style.left = left + 'px';
-              popup.style.top = top + 'px';
-              popup.innerHTML = `
-                <div style="font-size:8px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#C4855A;margin-bottom:8px">${loc.country} · ${loc.type}</div>
-                <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#FAFAF8;line-height:1.1;margin-bottom:12px">${loc.title}</div>
-                ${loc.bestTime ? `<div style="font-size:9px;font-weight:300;color:rgba(250,250,248,0.45);margin-bottom:4px">Luce ottimale <span style="color:rgba(250,250,248,0.7)">${loc.bestTime}</span></div>` : ''}
-                ${loc.bestSeason ? `<div style="font-size:9px;font-weight:300;color:rgba(250,250,248,0.45);margin-bottom:16px">Periodo <span style="color:rgba(250,250,248,0.7)">${loc.bestSeason}</span></div>` : ''}
-                <div style="font-size:9px;font-weight:300;color:rgba(250,250,248,0.3);margin-bottom:14px;font-style:italic">Coordinate, tecnica e accesso — solo per abbonati.</div>
-                <a href="/sign-up" style="display:block;text-align:center;font-size:9px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;background:#B1714A;color:#fff;padding:12px;text-decoration:none">Sblocca tutto</a>
-              `;
-              popup.style.display = 'block';
+              openTeaserPanel(loc);
             });
           }
           marker.addTo(map);
         });
       };
       document.head.appendChild(js);
+
+      function openTeaserPanel(loc) {
+        const panel = document.getElementById('bb-teaser-panel');
+        const content = document.getElementById('bb-teaser-panel-content');
+
+        let html = `
+          <div class="tbp-region">${loc.country}${loc.region ? ' · ' + loc.region : ''} · ${loc.type}</div>
+          <div class="tbp-title">${loc.title}</div>
+          <div class="tbp-meta">
+            ${loc.bestSeason ? `<div class="tbp-meta-row"><span class="tbp-meta-label">Periodo</span><span class="tbp-meta-val">${loc.bestSeason}</span></div>` : ''}
+            ${loc.bestTime ? `<div class="tbp-meta-row"><span class="tbp-meta-label">Luce ottimale</span><span class="tbp-meta-val">${loc.bestTime}</span></div>` : ''}
+          </div>
+        `;
+
+        if (loc.images && loc.images.length) {
+          html += `<div class="tbp-gallery">`;
+          loc.images.forEach(img => {
+            html += `<div class="tbp-img" style="background-image:url('${img.src}')"></div>`;
+          });
+          html += `</div>`;
+        }
+
+        if (loc.difficulty) html += `<div class="tbp-block"><div class="tbp-block-label">Difficoltà fotografica</div><div class="tbp-block-text">${loc.difficulty}</div></div>`;
+        if (loc.focalLength) html += `<div class="tbp-block"><div class="tbp-block-label">Tecnica consigliata</div><div class="tbp-block-text">${loc.focalLength}</div></div>`;
+        if (loc.isoRange) html += `<div class="tbp-block"><div class="tbp-block-label">Composizione consigliata</div><div class="tbp-block-text">${loc.isoRange}</div></div>`;
+        if (loc.antiMainstream) html += `<div class="tbp-block"><div class="tbp-block-label">↯ Anti-mainstream</div><div class="tbp-block-text">${loc.antiMainstream}</div></div>`;
+
+        const fields = [
+          { label: 'Accesso', val: loc.access },
+          { label: 'Avvicinamento', val: loc.avvicinamento },
+        ].filter(f => f.val);
+        if (fields.length) {
+          html += `<div class="tbp-fields">`;
+          fields.forEach(f => {
+            html += `<div class="tbp-field"><div class="tbp-field-label">${f.label}</div><div class="tbp-field-val">${f.val}</div></div>`;
+          });
+          html += `</div>`;
+        }
+
+        loc.handnotes.forEach(note => {
+          html += `<div class="tbp-handnote"><span>↳</span><span>${note}</span></div>`;
+        });
+
+        if (loc.equipment && loc.equipment.length) {
+          html += `<div class="tbp-equip-title">Attrezzatura</div><div class="tbp-equip-list">`;
+          loc.equipment.forEach(item => {
+            html += `<div class="tbp-equip-item"><span class="tbp-equip-check"></span><span class="tbp-equip-label">${item}</span></div>`;
+          });
+          html += `</div>`;
+        }
+
+        if (loc.checklist.length) {
+          html += `<div class="tbp-checklist">`;
+          loc.checklist.forEach(item => {
+            html += `<div class="tbp-check"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5 6.5-6.5" stroke="#C4855A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${item}</div>`;
+          });
+          html += `</div>`;
+        }
+
+        if (loc.personalNote) html += `<div class="tbp-personal">★ ${loc.personalNote}</div>`;
+
+        const coordText = loc.coordinates || `${loc.lat}, ${loc.lng}`;
+        html += `<div class="tbp-coords">${coordText}</div>`;
+
+        content.innerHTML = html;
+        panel.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      document.getElementById('bb-teaser-panel-close').addEventListener('click', () => {
+        document.getElementById('bb-teaser-panel').classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
+      document.getElementById('bb-teaser-panel-backdrop').addEventListener('click', () => {
+        document.getElementById('bb-teaser-panel').classList.remove('is-open');
+        document.body.style.overflow = '';
+      });
     </script>
   ) : (
     <!-- MAPPA + PANNELLO per abbonati -->
@@ -206,6 +266,22 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       </div>
     </section>
   )}
+
+<!-- PANNELLO TEASER (preview pin per non abbonati) -->
+<div id="bb-teaser-panel" class="tbp-wrap" aria-hidden="true">
+  <div class="tbp-backdrop" id="bb-teaser-panel-backdrop"></div>
+  <div class="tbp-panel">
+    <button class="tbp-close" id="bb-teaser-panel-close" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="tbp-scroll" id="bb-teaser-panel-content"></div>
+    <div class="tbp-footer">
+      <div class="tbp-footer-text">Questa è una sola location. Ce ne sono <strong>{publishedCount}</strong> nel Spotsbook, con nuove aggiunte ogni mese.</div>
+      <a href="/sign-up" class="bb-cta-btn">Sblocca tutto — €29/mese</a>
+      <a href="/sign-in" class="bb-cta-link" style="text-align:center">Hai già un account? Accedi</a>
+    </div>
+  </div>
+</div>
 
 <!-- LIGHTBOX IMMAGINI -->
 <div id="sb-lightbox" class="sbl-wrap" aria-hidden="true">
@@ -846,6 +922,48 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   }
   :global(.sbo-equip-label) { font-family: 'Caveat', cursive; font-size: 18px; color: rgba(250,250,248,0.8); }
 
+  /* PANNELLO TEASER */
+  .tbp-wrap { position: fixed; inset: 0; z-index: 3500; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+  .tbp-wrap.is-open { pointer-events: all; opacity: 1; }
+  .tbp-backdrop { position: absolute; inset: 0; background: rgba(10,8,5,0.8); backdrop-filter: blur(4px); }
+  .tbp-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 520px; max-width: 100vw; background: #111009; border-left: 1px solid rgba(201,185,154,0.15); transform: translateX(40px); transition: transform 0.35s ease; display: flex; flex-direction: column; }
+  .tbp-wrap.is-open .tbp-panel { transform: translateX(0); }
+  .tbp-close { position: absolute; top: 20px; right: 24px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.4); padding: 4px; transition: color 0.2s; z-index: 1; }
+  .tbp-close:hover { color: #FAFAF8; }
+  .tbp-close svg { width: 22px; height: 22px; display: block; }
+  .tbp-scroll { flex: 1; overflow-y: auto; padding: 48px 40px 24px; }
+  .tbp-footer { padding: 20px 40px 32px; border-top: 1px solid rgba(201,185,154,0.1); background: #0E0C09; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .tbp-footer-text { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.4); line-height: 1.6; margin-bottom: 4px; }
+  .tbp-footer-text strong { color: rgba(250,250,248,0.7); font-weight: 400; }
+
+  /* Contenuto pannello teaser */
+  :global(.tbp-region) { font-size: 9px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #C4855A; margin-bottom: 10px; }
+  :global(.tbp-title) { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin-bottom: 8px; }
+  :global(.tbp-meta) { display: flex; flex-direction: column; gap: 6px; margin: 12px 0 24px; }
+  :global(.tbp-meta-row) { display: flex; align-items: baseline; gap: 10px; }
+  :global(.tbp-meta-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.35); flex-shrink: 0; }
+  :global(.tbp-meta-val) { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: rgba(250,250,248,0.75); }
+  :global(.tbp-gallery) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 24px; }
+  :global(.tbp-img) { aspect-ratio: 3/2; background-size: cover; background-position: center; background-color: rgba(250,250,248,0.05); }
+  :global(.tbp-block) { margin: 8px 0; padding: 13px 15px; border-left: 2px solid var(--terra); background: rgba(177,113,74,0.06); }
+  :global(.tbp-block-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--terra); margin-bottom: 5px; }
+  :global(.tbp-block-text) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.8); line-height: 1.7; }
+  :global(.tbp-fields) { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(250,250,248,0.05); margin: 16px 0; }
+  :global(.tbp-field) { background: #111009; padding: 13px 15px; }
+  :global(.tbp-field-label) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 5px; }
+  :global(.tbp-field-val) { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.9); line-height: 1.4; }
+  :global(.tbp-handnote) { font-family: 'Caveat', cursive; font-size: 18px; color: #C4855A; display: flex; gap: 8px; margin: 7px 0; }
+  :global(.tbp-equip-title) { font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin: 20px 0 10px; }
+  :global(.tbp-equip-list) { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+  :global(.tbp-equip-item) { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  :global(.tbp-equip-check) { width: 14px; height: 14px; flex-shrink: 0; position: relative; }
+  :global(.tbp-equip-check::after) { content: ''; position: absolute; left: 2px; top: -1px; width: 5px; height: 10px; border: 2px solid var(--terra); border-top: none; border-left: none; transform: rotate(45deg); }
+  :global(.tbp-equip-label) { font-family: 'Caveat', cursive; font-size: 18px; color: rgba(250,250,248,0.8); }
+  :global(.tbp-checklist) { margin: 14px 0; }
+  :global(.tbp-check) { font-family: 'Caveat', cursive; font-size: 16px; color: rgba(250,250,248,0.75); display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+  :global(.tbp-personal) { font-family: 'Caveat', cursive; font-size: 16px; color: rgba(250,250,248,0.45); font-style: italic; margin: 14px 0 8px; }
+  :global(.tbp-coords) { font-size: 10px; font-family: monospace; color: rgba(250,250,248,0.25); letter-spacing: 0.06em; margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(250,250,248,0.06); }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     /* Hero */
@@ -879,6 +997,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
     /* Overlay — full screen su mobile */
     .sbo-panel { width: 100vw; border-left: none; }
+    /* Teaser panel — full screen su mobile */
+    .tbp-panel { width: 100vw; border-left: none; }
+    .tbp-footer { padding: 16px 24px 28px; }
     .sbl-wrap.from-overlay { right: 0; }
 
     /* Lightbox */
