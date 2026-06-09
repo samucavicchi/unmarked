@@ -5,17 +5,238 @@ import { SignUp } from '@clerk/astro/components';
 ---
 
 <BaseLayout title="Registrati — Unmarked" description="Crea il tuo account Unmarked">
-  <div class="signup-wrap">
-    <SignUp />
+  <div class="auth-wrap">
+
+    <!-- SINISTRA: branding -->
+    <div class="auth-left">
+      <div class="auth-left-inner">
+        <div class="auth-label">Unmarked · Abbonati</div>
+        <h1 class="auth-title">Entra.</h1>
+        <p class="auth-sub">Location segrete, itinerari senza filtri, note dal campo. Quello che non trovi sulle guide.</p>
+        <div class="auth-divider"></div>
+        <div class="auth-features">
+          <div class="auth-feat">
+            <span class="auth-feat-dot"></span>
+            Itinerari completi con giorni, mappe e contatti locali
+          </div>
+          <div class="auth-feat">
+            <span class="auth-feat-dot"></span>
+            Spotsbook — location fotografiche segrete con coordinate precise, ora ottimale e tecnica consigliata
+          </div>
+          <div class="auth-feat">
+            <span class="auth-feat-dot"></span>
+            +3 nuove location ogni mese
+          </div>
+          <div class="auth-feat">
+            <span class="auth-feat-dot"></span>
+            €29/mese — disdici quando vuoi
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESTRA: form Clerk -->
+    <div class="auth-right">
+      <SignUp appearance={{
+        variables: {
+          colorPrimary: '#C4855A',
+          colorBackground: '#FAFAF8',
+          colorText: '#1a1814',
+          colorTextSecondary: '#8a7e6a',
+          colorInputBackground: '#FAFAF8',
+          colorInputText: '#1a1814',
+          colorInputPlaceholder: '#b0a48e',
+          borderRadius: '0px',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '13px',
+          spacingUnit: '15px',
+        },
+      }} />
+    </div>
+
   </div>
 </BaseLayout>
 
 <style>
-  .signup-wrap {
+  .auth-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* SINISTRA */
+  .auth-left {
+    background: #1A1814;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 70vh;
-    padding: 60px 20px;
+    justify-content: center;
+    padding: 80px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-left::before {
+    content: 'U';
+    position: absolute;
+    right: -40px;
+    bottom: -80px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 420px;
+    font-weight: 300;
+    color: rgba(201,185,154,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .auth-left-inner {
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+  }
+  .auth-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #C4855A;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .auth-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: #C4855A;
+    display: block;
+  }
+  .auth-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  .auth-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.45);
+    line-height: 1.75;
+    margin-bottom: 40px;
+  }
+  .auth-divider {
+    width: 32px;
+    height: 1px;
+    background: rgba(201,185,154,0.25);
+    margin-bottom: 32px;
+  }
+  .auth-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .auth-feat {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.5);
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .auth-feat-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #C4855A;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* DESTRA */
+  .auth-right {
+    background: #FAFAF8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 48px;
+  }
+
+  /* Override Clerk */
+  :global(.cl-card) {
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  :global(.cl-headerTitle) {
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 32px !important;
+    font-weight: 300 !important;
+    color: #1a1814 !important;
+  }
+  :global(.cl-headerSubtitle) {
+    font-size: 13px !important;
+    color: #8a7e6a !important;
+  }
+  :global(.cl-formButtonPrimary) {
+    background: #C4855A !important;
+    border-radius: 0 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    box-shadow: none !important;
+  }
+  :global(.cl-formButtonPrimary:hover) {
+    background: #b07040 !important;
+    opacity: 1 !important;
+  }
+  :global(.cl-formFieldInput) {
+    border-radius: 0 !important;
+    border-color: rgba(201,185,154,0.4) !important;
+    background: #FAFAF8 !important;
+    color: #1a1814 !important;
+    font-size: 13px !important;
+  }
+  :global(.cl-formFieldInput:focus) {
+    border-color: #C4855A !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  :global(.cl-footerActionLink) {
+    color: #C4855A !important;
+  }
+  :global(.cl-dividerLine) {
+    background: rgba(201,185,154,0.3) !important;
+  }
+  :global(.cl-socialButtonsBlockButton) {
+    border-color: rgba(201,185,154,0.4) !important;
+    border-radius: 0 !important;
+    background: #FAFAF8 !important;
+    color: #1a1814 !important;
+    font-size: 12px !important;
+  }
+  :global(.cl-socialButtonsBlockButton:hover) {
+    border-color: #C4855A !important;
+    background: #FAFAF8 !important;
+  }
+  :global(.cl-formFieldLabel),
+  :global(.cl-formFieldLabelRow) {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    color: #8a7e6a !important;
+  }
+  :global(.cl-internal-b3fm6y) { display: none !important; }
+
+  @media (max-width: 768px) {
+    .auth-wrap { grid-template-columns: 1fr; }
+    .auth-left { padding: 48px 32px; min-height: auto; }
+    .auth-left::before { display: none; }
+    .auth-title { font-size: 52px; }
+    .auth-right { padding: 48px 24px; }
   }
 </style>
