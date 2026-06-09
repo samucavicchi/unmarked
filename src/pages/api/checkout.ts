@@ -65,7 +65,7 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
         allow_promotion_codes: true,
         locale: 'it',
       });
-    } else {
+    } else if (type === 'single') {
       // Acquisto singolo itinerario
       if (!price || !slug) {
         return new Response(
@@ -85,7 +85,7 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
                 name: title ? `Itinerario: ${title}` : `Itinerario ${slug}`,
                 description: 'Accesso permanente a questo itinerario Unmarked',
               },
-              unit_amount: Math.round(price * 100), // centesimi
+              unit_amount: Math.round(price * 100),
             },
             quantity: 1,
           },
@@ -93,16 +93,10 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
         success_url: successUrl,
         cancel_url: cancelUrl,
         ...(userId ? { client_reference_id: userId } : {}),
-        metadata: {
-          type: 'single',
-          slug,
-          userId: userId ?? '',
-        },
+        metadata: { type: 'single', slug, userId: userId ?? '' },
         allow_promotion_codes: true,
         locale: 'it',
       });
-    }
-
     } else if (type === 'shop') {
       // Acquisto prodotto shop (digitale o fisico)
       const product = shopProducts.find(p => p.id === productId);
@@ -138,6 +132,10 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
           userId: userId ?? '',
         },
         locale: 'it',
+      });
+    } else {
+      return new Response(JSON.stringify({ error: 'Tipo non valido' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' },
       });
     }
 
