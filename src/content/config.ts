@@ -241,6 +241,7 @@ const blackbook = defineCollection({
     lng: z.number(),
     publishDate: z.date(),
     status: z.enum(['published', 'coming_soon']).default('published'),
+    preview: z.boolean().default(false),   // visibile come anteprima ai non abbonati
     // Ora e stagione
     bestTime: z.string().optional(),         // es. "06:15 – 07:45"
     bestSeason: z.string().optional(),       // es. "Giugno – Settembre"

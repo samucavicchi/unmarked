@@ -337,6 +337,7 @@ collections:
       - { label: "Longitudine", name: "lng", widget: "number", value_type: "float", hint: "Es. 29.6833" }
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { label: "Stato", name: "status", widget: "select", options: ["published", "coming_soon"], default: "published", hint: "coming_soon = pin sfumato sulla mappa" }
+      - { label: "Anteprima pubblica", name: "preview", widget: "boolean", default: false, hint: "Se attivo, il pin è visibile anche ai non abbonati come assaggio" }
       - { label: "Ora ottimale", name: "bestTime", widget: "string", required: false, hint: "Es. 06:15 – 07:45" }
       - { label: "Periodo", name: "bestSeason", widget: "string", required: false, hint: "Es. Giugno – Settembre" }
       - { label: "Tecnica consigliata", name: "focalLength", widget: "text", required: false, hint: "Es. 200–400mm a f/5.6, scatta dal basso per isolare il soggetto..." }
