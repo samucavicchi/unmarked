@@ -1,0 +1,100 @@
+---
+// Popup Spotsbook — appare dopo 50% di scroll
+// Si mostra una sola volta (home o primo articolo) poi sparisce per sempre (localStorage)
+---
+
+<div id="sb-popup" class="sbp-wrap" aria-hidden="true">
+  <div class="sbp-backdrop" id="sb-popup-backdrop"></div>
+  <div class="sbp-modal">
+    <button class="sbp-close" id="sb-popup-close" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="sbp-tag">Spotsbook · Solo abbonati</div>
+    <h2 class="sbp-title">Location fotografiche segrete.<br/>Coordinate precise.</h2>
+    <p class="sbp-sub">Quello che abbiamo trovato sul campo e che non mettiamo sulle guide. Riservato agli abbonati Unmarked.</p>
+    <div class="sbp-pins" aria-hidden="true">
+      <span class="sbp-pin" style="left:12%;top:40%"></span>
+      <span class="sbp-pin" style="left:28%;top:60%"></span>
+      <span class="sbp-pin" style="left:45%;top:30%"></span>
+      <span class="sbp-pin" style="left:62%;top:55%"></span>
+      <span class="sbp-pin" style="left:78%;top:38%"></span>
+      <span class="sbp-pin" style="left:88%;top:65%"></span>
+    </div>
+    <div class="sbp-actions">
+      <a href="/spotsbook" class="sbp-btn-primary">Scopri lo Spotsbook</a>
+      <a href="/sign-up" class="sbp-btn-secondary">Abbonati — €29/mese</a>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const STORAGE_KEY = 'sb_popup_seen';
+  const popup = document.getElementById('sb-popup');
+  if (!popup) return;
+
+  // Non mostrare se già visto o se utente premium o se su /spotsbook
+  if (localStorage.getItem(STORAGE_KEY)) return;
+  const path = window.location.pathname;
+  if (path.startsWith('/spotsbook') || path.startsWith('/account') || path.startsWith('/sign')) return;
+
+  // Solo home e articoli libreria
+  const isHome = path === '/' || path === '';
+  const isArticle = path.startsWith('/libreria/') && path.split('/').length > 2;
+  if (!isHome && !isArticle) return;
+
+  let shown = false;
+
+  function showPopup() {
+    if (shown) return;
+    shown = true;
+    localStorage.setItem(STORAGE_KEY, '1');
+    popup.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePopup() {
+    popup.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  // Trigger: 50% scroll
+  function onScroll() {
+    const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    if (scrolled >= 0.5) {
+      showPopup();
+      window.removeEventListener('scroll', onScroll);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  document.getElementById('sb-popup-backdrop').addEventListener('click', closePopup);
+  document.getElementById('sb-popup-close').addEventListener('click', closePopup);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+})();
+</script>
+
+<style>
+  .sbp-wrap { position: fixed; inset: 0; z-index: 5000; pointer-events: none; opacity: 0; transition: opacity 0.3s; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .sbp-wrap.is-open { pointer-events: all; opacity: 1; }
+  .sbp-backdrop { position: absolute; inset: 0; background: rgba(10,8,5,0.8); backdrop-filter: blur(3px); }
+  .sbp-modal { position: relative; background: #111009; border: 1px solid rgba(201,185,154,0.18); max-width: 540px; width: 100%; padding: 48px 44px 44px; text-align: center; transform: translateY(20px); transition: transform 0.35s ease; overflow: hidden; }
+  .sbp-wrap.is-open .sbp-modal { transform: translateY(0); }
+  .sbp-close { position: absolute; top: 16px; right: 20px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.35); padding: 4px; transition: color 0.2s; }
+  .sbp-close:hover { color: rgba(250,250,248,0.7); }
+  .sbp-close svg { width: 20px; height: 20px; display: block; }
+  .sbp-tag { font-size: 8px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: #C4855A; margin-bottom: 14px; }
+  .sbp-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #FAFAF8; line-height: 1.1; margin-bottom: 14px; }
+  .sbp-sub { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.75; margin-bottom: 28px; }
+  .sbp-pins { position: absolute; inset: 0; pointer-events: none; opacity: 0.3; }
+  .sbp-pin { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #C4855A; border: 1px solid rgba(255,252,240,0.5); }
+  .sbp-actions { display: flex; flex-direction: column; gap: 10px; }
+  .sbp-btn-primary { display: block; background: #C4855A; color: #fff; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px; text-decoration: none; transition: opacity 0.2s; }
+  .sbp-btn-primary:hover { opacity: 0.88; }
+  .sbp-btn-secondary { display: block; background: none; border: 1px solid rgba(201,185,154,0.25); color: rgba(250,250,248,0.55); font-size: 9px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; padding: 12px; text-decoration: none; transition: all 0.2s; }
+  .sbp-btn-secondary:hover { border-color: #C4855A; color: rgba(250,250,248,0.85); }
+  @media (max-width: 600px) {
+    .sbp-modal { padding: 40px 24px 36px; }
+    .sbp-title { font-size: 26px; }
+  }
+</style>
