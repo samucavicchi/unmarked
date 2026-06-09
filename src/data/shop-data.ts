@@ -32,8 +32,8 @@ export const shopProducts: ShopProduct[] = [
     subtitle: 'Preset Pack — Namibia + Islanda',
     type: 'digital',
     price: 29,
-    stripePriceId: 'price_SOSTITUISCI_CON_ID_STRIPE', // ← Stripe Dashboard
-    image: '/shop/preset-desert-light.jpg',
+    stripePriceId: 'price_1TgRVkLV5vyDSjg1tujK08zU',
+    image: 'https://picsum.photos/seed/desert/800/600',
     description: '18 preset Lightroom per luce desertica e artica. Calibrati su Sony, Nikon e Canon. Compatibili con Lightroom Classic, CC e mobile.',
     badge: 'Bestseller',
     available: true,
@@ -47,8 +47,8 @@ export const shopProducts: ShopProduct[] = [
     subtitle: 'Fine Art Print · 30×40 cm',
     type: 'physical',
     price: 89,
-    stripePriceId: 'price_SOSTITUISCI_CON_ID_STRIPE', // ← Stripe Dashboard
-    image: '/shop/print-namibia-dune.jpg',
+    stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl',
+    image: 'https://picsum.photos/seed/africa/800/600',
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata. Consegnata con certificato di autenticità.',
     badge: 'Edizione limitata',
     available: true,
@@ -61,8 +61,8 @@ export const shopProducts: ShopProduct[] = [
     subtitle: 'Fine Art Print · 30×40 cm',
     type: 'physical',
     price: 89,
-    stripePriceId: 'price_SOSTITUISCI_CON_ID_STRIPE', // ← Stripe Dashboard
-    image: '/shop/print-islanda-aldeyarfoss.jpg',
+    stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq',
+    image: 'https://picsum.photos/seed/iceland/800/600',
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata. Consegnata con certificato di autenticità.',
     available: true,
     shipping: true,
@@ -74,8 +74,8 @@ export const shopProducts: ShopProduct[] = [
     subtitle: 'Canvas naturale 100% cotone',
     type: 'physical',
     price: 24,
-    stripePriceId: 'price_SOSTITUISCI_CON_ID_STRIPE', // ← Stripe Dashboard
-    image: '/shop/tote-bag.jpg',
+    stripePriceId: 'price_1TgRkPLV5vyDSjg1msBILyOt',
+    image: 'https://picsum.photos/seed/travel/800/600',
     description: 'Tote bag in canvas naturale pesante (400g). Stampa serigrafica in bianco. Manici lunghi. Dimensioni 38×42 cm.',
     available: true,
     shipping: true,
