@@ -8,6 +8,7 @@ lat: -1.0333
 lng: 29.6833
 publishDate: 2026-06-03
 status: "published"
+preview: true
 bestTime: "06:15 – 07:45"
 bestSeason: "Giugno – Settembre"
 focalLength: "200–400mm"
