@@ -121,29 +121,51 @@ const allPins = [...destPins, ...itPins];
       maxZoom: 12,
     }).addTo(map);
 
-    const destIcon = L.divIcon({ className: '', html: '<div class="map-pin map-pin-dest"></div>', iconSize: [12,12], iconAnchor: [6,6] });
-    const itIcon   = L.divIcon({ className: '', html: '<div class="map-pin map-pin-it"></div>',   iconSize: [12,12], iconAnchor: [6,6] });
+    function getPinSize(zoom) {
+      if (zoom <= 2) return 10;
+      if (zoom <= 4) return 13;
+      if (zoom <= 6) return 16;
+      return 20;
+    }
+
+    function makeIcon(type, size) {
+      const half = Math.round(size / 2);
+      const cls = type === 'destinazione' ? 'map-pin-dest' : 'map-pin-it';
+      return L.divIcon({
+        className: '',
+        html: `<div class="map-pin ${cls}" style="width:${size}px;height:${size}px;border-radius:50%;border:2px solid rgba(245,239,228,0.9);box-shadow:0 1px 4px rgba(0,0,0,0.4);"></div>`,
+        iconSize: [size, size],
+        iconAnchor: [half, half]
+      });
+    }
 
     const markers = [];
 
     allPins.forEach((pin) => {
-      const icon = pin.type === 'destinazione' ? destIcon : itIcon;
+      const size = getPinSize(map.getZoom());
+      const marker = L.marker([pin.lat, pin.lng], { icon: makeIcon(pin.type, size) })
+        .addTo(map);
       const extraInfo = pin.type === 'itinerario'
         ? `<div class="pop-meta">${pin.duration} giorni · €${pin.price}</div>` : '';
-      const marker = L.marker([pin.lat, pin.lng], { icon })
-        .addTo(map)
-        .bindPopup(`
-          <a href="${pin.slug}" class="pop-link">
-            <img src="${pin.img}" class="pop-img" alt="${pin.title}" />
-            <div class="pop-body">
-              <div class="pop-type">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div>
-              <div class="pop-title">${pin.title}</div>
-              ${extraInfo}
-              <div class="pop-cta">Scopri →</div>
-            </div>
-          </a>
-        `, { maxWidth: 220, className: 'unmarked-popup' });
+      marker.bindPopup(`
+        <a href="${pin.slug}" class="pop-link">
+          <img src="${pin.img}" class="pop-img" alt="${pin.title}" />
+          <div class="pop-body">
+            <div class="pop-type">${pin.type === 'destinazione' ? 'Destinazione' : 'Itinerario'} · ${pin.country}</div>
+            <div class="pop-title">${pin.title}</div>
+            ${extraInfo}
+            <div class="pop-cta">Scopri →</div>
+          </div>
+        </a>
+      `, { maxWidth: 220, className: 'unmarked-popup' });
       markers.push({ marker, type: pin.type });
+    });
+
+    map.on('zoomend', () => {
+      const size = getPinSize(map.getZoom());
+      markers.forEach(({ marker, type }) => {
+        marker.setIcon(makeIcon(type, size));
+      });
     });
 
     document.querySelectorAll('.mappa-filter').forEach((btn) => {
