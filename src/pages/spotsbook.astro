@@ -484,7 +484,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const pos = publishedLocs.indexOf(loc) + 1;
       document.getElementById('bb-nav-pos').textContent = `${pos} / ${publishedLocs.length}`;
 
-      map.setView([loc.lat, loc.lng], 6, { animate: true });
+      map.panTo([loc.lat, loc.lng], { animate: true });
     }
 
     window.handleSave = function(slug, btn) {
