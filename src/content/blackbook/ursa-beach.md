@@ -27,6 +27,7 @@ equipment:
   - Grandangolo
   - Treppiede
 personalNote: Posto bellissimo in ogni stagione, in inverno si evitano i turisti
-images: []
+images:
+  - src: /spotsbook/portogallo-sintra-1.jpg
 ---
 A pochi chilometri da Lisbona, quasi vale un aereo andata e ritorno
