@@ -26,6 +26,7 @@ equipment:
   - Treppiede
   - Tele
   - Grandangolo
-images: []
+images:
+  - src: /spotsbook/slovenia-1.jpg
 ---
 Una chiesa appoggiata su una docile collina con la natura slovena di sfondo
