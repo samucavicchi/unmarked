@@ -12,8 +12,8 @@ bestTime: Alba e tramonto
 bestSeason: da ottobre a maggio
 focalLength: Bracketing all'alba, la luce arriva alle spalle e la spiaggia è in ombra
 isoRange: Sia dall'alto che dalla spiaggia
-access: Prima di raggiungere Cabo da Roca, svoltare a sinistra, la strada
-  sterrata conduce al parcheggio piu vicino, da li 25 minuti in discesa.
+access: Prima di raggiungere Cabo da Roca, svoltare a destra, la strada sterrata
+  conduce al parcheggio piu vicino, da li 25 minuti a piedi in discesa.
 difficulty: Media
 avvicinamento: Media
 handnotes:
