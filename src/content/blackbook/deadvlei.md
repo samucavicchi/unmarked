@@ -31,6 +31,8 @@ equipment:
   - Grandangolo
   - Tele
 personalNote: Fotografo o no, una volta nella vita devi vedere questo posto!
-images: []
+images:
+  - src: /spotsbook/deadvlei-1.jpg
+  - src: /spotsbook/deadvlei-the-dune-99.jpg
 ---
 Un luogo unico, fuori dal tempo che lascia spazio ad interpretazioni personali.
