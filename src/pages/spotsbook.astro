@@ -106,7 +106,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       const js = document.createElement('script');
       js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       js.onload = () => {
-        const map = L.map('bb-teaser-map', { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, keyboard: false, tap: false, touchZoom: false }).setView([20, 20], 2);
+        const map = L.map('bb-teaser-map', { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, keyboard: false, tap: false, touchZoom: false, minZoom: 3 }).setView([20, 20], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
           subdomains: 'abcd', maxZoom: 19, attribution: ''
         }).addTo(map);
@@ -393,7 +393,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     // ─────────────────────────────────────────────
 
     function initMap() {
-      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false }).setView([20, 20], 2);
+      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false, minZoom: 3 }).setView([20, 20], 3);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
       }).addTo(map);
@@ -673,7 +673,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           const currentZoom = map.getZoom();
           map.flyTo(view.center, Math.min(currentZoom, view.zoom), { animate: true, duration: 1 });
         } else if (activeFilter === 'all') {
-          map.flyTo([20, 20], 2, { animate: true, duration: 1 });
+          map.flyTo([20, 20], 3, { animate: true, duration: 1 });
         }
       });
     });
