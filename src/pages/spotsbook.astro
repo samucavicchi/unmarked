@@ -393,7 +393,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     // ─────────────────────────────────────────────
 
     function initMap() {
-      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true }).setView([20, 20], 2);
+      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false }).setView([20, 20], 2);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
       }).addTo(map);
