@@ -23,6 +23,9 @@ handnotes:
     buon punto per accostare sfruttalo
 equipment:
   - Tele
-images: []
+images:
+  - src: /spotsbook/romania-orsi-2.jpg
+  - src: /spotsbook/romania-orsi-3.jpg
+  - src: /spotsbook/romania-orsi-1.jpg
 ---
 Uno degli incontri piu ravvicinati che possiate fare con gli **orsi** bruni
