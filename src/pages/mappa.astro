@@ -62,18 +62,35 @@ const allPins = [...destPins, ...itPins];
 
 <BaseLayout title="Il mondo di Unmarked — Mappa" description="Tutti i luoghi raccontati da Unmarked su una mappa interattiva.">
 
-  <div class="mappa-wrap">
-    <div class="mappa-header">
-      <h1 class="mappa-title">Il mondo di Unmarked</h1>
-      <p class="mappa-sub">Destinazioni e itinerari su una mappa.</p>
-      <div class="mappa-filters">
+  <!-- HERO -->
+  <section class="mp-hero">
+    <div class="mp-hero-inner">
+      <div class="mp-label">Unmarked · Mappa</div>
+      <h1 class="mp-title">Il mondo di Unmarked.</h1>
+      <p class="mp-sub">Destinazioni e itinerari su una mappa interattiva.</p>
+    </div>
+  </section>
+
+  <div class="mp-separator"></div>
+
+  <!-- FILTRI + MAPPA -->
+  <div class="mp-container">
+    <div class="mp-toolbar">
+      <div class="mp-filters">
         <button class="mappa-filter active" data-filter="tutti">Tutti</button>
         <button class="mappa-filter" data-filter="destinazione">Destinazioni</button>
         <button class="mappa-filter" data-filter="itinerario">Itinerari</button>
       </div>
+      <div class="mp-legend">
+        <span class="mp-legend-dot mp-legend-dest"></span>Destinazioni
+        <span class="mp-legend-dot mp-legend-it"></span>Itinerari
+      </div>
     </div>
-    <div id="world-map" class="mappa-map"></div>
+    <div class="mp-map-box">
+      <div id="world-map" class="mappa-map"></div>
+    </div>
   </div>
+
 </BaseLayout>
 
 <script is:inline define:vars={{ allPins }}>
@@ -190,58 +207,46 @@ const allPins = [...destPins, ...itPins];
 </script>
 
 <style>
-  .mappa-wrap {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 60px);
-  }
-  .mappa-header {
-    padding: 40px var(--gutter, 40px) 24px;
-    display: flex;
-    align-items: baseline;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .mappa-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--dark);
-    margin: 0;
-  }
-  .mappa-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin: 0;
-  }
-  .mappa-filters {
-    margin-left: auto;
-    display: flex;
-    gap: 8px;
-  }
+  /* HERO */
+  .mp-hero { background: #1A1814; padding: 64px 56px 52px; position: relative; overflow: hidden; }
+  .mp-hero::before { content: '—'; position: absolute; right: 56px; bottom: -60px; font-family: 'Cormorant Garamond', serif; font-size: 320px; font-weight: 300; color: rgba(201,185,154,0.04); line-height: 1; pointer-events: none; }
+  .mp-hero-inner { max-width: 700px; position: relative; z-index: 1; }
+  .mp-label { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .mp-label::before { content: ''; width: 24px; height: 1px; background: var(--terra); display: block; }
+  .mp-title { font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; color: #FAFAF8; line-height: 0.95; margin-bottom: 16px; }
+  .mp-sub { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.7; }
+  .mp-separator { height: 2px; background: var(--cream); border-bottom: 2px solid var(--terra); }
+
+  /* CONTAINER */
+  .mp-container { max-width: 1300px; margin: 0 auto; padding: 40px 40px 80px; }
+
+  /* TOOLBAR */
+  .mp-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .mp-filters { display: flex; gap: 8px; }
   .mappa-filter {
     background: none;
     border: 1px solid rgba(201,185,154,0.3);
     color: var(--muted);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 2px;
+    padding: 7px 16px;
     cursor: pointer;
     transition: all 0.2s;
   }
   .mappa-filter.active,
-  .mappa-filter:hover {
-    border-color: var(--terra);
-    color: var(--terra);
-  }
-  .mappa-map {
-    flex: 1;
-    min-height: 500px;
-    filter: saturate(0.35) brightness(0.97);
-  }
+  .mappa-filter:hover { border-color: var(--terra); color: var(--terra); }
+
+  /* LEGENDA */
+  .mp-legend { display: flex; align-items: center; gap: 16px; font-size: 10px; font-weight: 300; color: var(--muted); letter-spacing: 0.1em; }
+  .mp-legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .mp-legend-dest { background: #B1714A; }
+  .mp-legend-it { background: #6b5a48; }
+
+  /* MAPPA */
+  .mp-map-box { border: 1px solid rgba(201,185,154,0.2); overflow: hidden; }
+  .mappa-map { height: 620px; width: 100%; filter: saturate(0.35) brightness(0.97); }
 
   :global(.map-pin) { width:12px; height:12px; border-radius:50%; border:2px solid rgba(245,239,228,0.9); box-shadow:0 1px 3px rgba(0,0,0,0.4); }
   :global(.map-pin-dest) { background:#7A5230; }
@@ -298,5 +303,14 @@ const allPins = [...destPins, ...itPins];
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #C4855A;
+  }
+
+  @media (max-width: 768px) {
+    .mp-hero { padding: 40px 20px 36px; }
+    .mp-title { font-size: 44px; }
+    .mp-container { padding: 28px 16px 60px; }
+    .mp-toolbar { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .mp-legend { display: none; }
+    .mappa-map { height: 420px; }
   }
 </style>
