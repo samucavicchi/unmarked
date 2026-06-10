@@ -651,6 +651,15 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       document.getElementById('bb-panel-content').style.display = 'none';
     }
 
+    // Centri continentali per flyTo
+    const continentViews = {
+      'Africa':    { center: [5, 20],    zoom: 3 },
+      'Europa':    { center: [52, 15],   zoom: 4 },
+      'Asia':      { center: [35, 90],   zoom: 3 },
+      'Americhe':  { center: [5, -75],   zoom: 3 },
+      'Oceania':   { center: [-25, 135], zoom: 4 },
+    };
+
     // Filtri chip
     document.querySelectorAll('.bb-chip').forEach(chip => {
       chip.addEventListener('click', () => {
@@ -658,6 +667,14 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         chip.classList.add('active');
         activeFilter = chip.dataset.filter;
         applyFilters();
+
+        const view = continentViews[activeFilter];
+        if (view) {
+          const currentZoom = map.getZoom();
+          map.flyTo(view.center, Math.min(currentZoom, view.zoom), { animate: true, duration: 1 });
+        } else if (activeFilter === 'all') {
+          map.flyTo([20, 20], 2, { animate: true, duration: 1 });
+        }
       });
     });
 
