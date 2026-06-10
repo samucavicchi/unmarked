@@ -29,5 +29,6 @@ equipment:
 personalNote: Posto bellissimo in ogni stagione, in inverno si evitano i turisti
 images:
   - src: /spotsbook/portogallo-sintra-1.jpg
+  - src: /spotsbook/portogallo-sintra-2.jpg
 ---
 A pochi chilometri da Lisbona, quasi vale un aereo andata e ritorno
