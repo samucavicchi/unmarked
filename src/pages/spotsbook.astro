@@ -393,9 +393,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     // ─────────────────────────────────────────────
 
     function initMap() {
-      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false, minZoom: 3 }).setView([20, 20], 3);
+      map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false, minZoom: 2 }).setView([20, 20], 2);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
+        attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19, noWrap: true
       }).addTo(map);
       L.control.zoom({ position: 'bottomright' }).addTo(map);
       renderMarkers(locations);
@@ -673,7 +673,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           const currentZoom = map.getZoom();
           map.flyTo(view.center, Math.min(currentZoom, view.zoom), { animate: true, duration: 1 });
         } else if (activeFilter === 'all') {
-          map.flyTo([20, 20], 3, { animate: true, duration: 1 });
+          map.flyTo([20, 20], 2, { animate: true, duration: 1 });
         }
       });
     });
