@@ -672,7 +672,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         if (view) {
           const currentZoom = map.getZoom();
           map.flyTo(view.center, Math.min(currentZoom, view.zoom), { animate: true, duration: 1 });
-        } else if (activeFilter === 'all') {
+        } else {
           map.flyTo([20, 20], 2, { animate: true, duration: 1 });
         }
       });
