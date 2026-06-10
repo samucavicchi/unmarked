@@ -31,6 +31,8 @@ equipment:
   - Treppiede
   - Grandangolo
   - Tele
-images: []
+images:
+  - src: /spotsbook/spitzkoppe-1.jpg
+  - src: /spotsbook/spitzkoppe-2.jpg
 ---
 Un luogo conosciuto per lo piu da climbers, fotograficamente eccezionale, ma magico da vivere.
