@@ -33,7 +33,7 @@ equipment:
   - Tele
   - Filtri
 images:
-  - src: /spotsbook/faroe-drangarnnir-1.jpg
   - src: /spotsbook/faroe-drangarnnir-2.jpg
+  - src: /spotsbook/faroe-drangarnnir-1.jpg
 ---
 Un luogo suggestivo ed un'icona fotografica delle Faroe
