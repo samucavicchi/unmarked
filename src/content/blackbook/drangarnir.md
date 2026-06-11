@@ -32,6 +32,8 @@ equipment:
   - Grandangolo
   - Tele
   - Filtri
-images: []
+images:
+  - src: /spotsbook/faroe-drangarnnir-1.jpg
+  - src: /spotsbook/faroe-drangarnnir-2.jpg
 ---
 Un luogo suggestivo ed un'icona fotografica delle Faroe
