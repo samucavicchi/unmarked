@@ -27,6 +27,7 @@ equipment:
   - Treppiede
   - Tele
   - Grandangolo
-images: []
+images:
+  - src: /spotsbook/utah-castleton-tower-1.jpg
 ---
 Una preview della monument valley, non molto conosciuta ma davvero bella
