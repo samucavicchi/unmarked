@@ -1,5 +1,5 @@
 ---
-title: Icelandic Reindeer View
+title: Icelandic Reindeer
 country: Isalnda
 continent: Europa
 type: Wildlife
