@@ -24,6 +24,7 @@ handnotes:
 equipment:
   - Treppiede
   - Grandangolo
-images: []
+images:
+  - src: /spotsbook/scozia-eilean-donan-1.jpg
 ---
 Un icona della scozia, che puo regalare luci e riflessi idimenticabili
