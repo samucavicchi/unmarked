@@ -47,7 +47,7 @@ const initiale = (userName || userEmail)[0].toUpperCase();
       </div>
       <div class="acc-hero-status">
         {isPremium
-          ? <div class="acc-badge acc-badge-active">Abbonato</div>
+          ? <div class="acc-badge acc-badge-active">Unmarked Pro</div>
           : <div class="acc-badge acc-badge-inactive">Free</div>
         }
       </div>
@@ -57,9 +57,9 @@ const initiale = (userName || userEmail)[0].toUpperCase();
   <!-- CORPO -->
   <div class="acc-body">
 
-    <!-- ABBONAMENTO -->
+    <!-- UNMARKED PRO -->
     <section class="acc-section">
-      <div class="acc-section-label">Abbonamento</div>
+      <div class="acc-section-label">Unmarked Pro</div>
       {isPremium ? (
         <div class="acc-plan-box acc-plan-active">
           <div class="acc-plan-top">
@@ -77,14 +77,14 @@ const initiale = (userName || userEmail)[0].toUpperCase();
               target="_blank"
               rel="noopener"
             >
-              Gestisci abbonamento →
+              Gestisci piano →
             </a>
           )}
         </div>
       ) : (
         <div class="acc-plan-box acc-plan-inactive">
-          <div class="acc-plan-name">Nessun abbonamento attivo</div>
-          <div class="acc-plan-desc">Abbonati per accedere a tutti gli itinerari senza limiti e allo Spotsbook.</div>
+          <div class="acc-plan-name">Non sei ancora Unmarked Pro</div>
+          <div class="acc-plan-desc">Entra a far parte di Unmarked Pro per accedere a tutti gli itinerari senza limiti e allo Spotsbook.</div>
           <div class="acc-plan-actions">
             <a href="/spotsbook" class="acc-cta-btn">Scopri lo Spotsbook</a>
             <a href="/itinerari" class="acc-cta-secondary">Vedi gli itinerari →</a>

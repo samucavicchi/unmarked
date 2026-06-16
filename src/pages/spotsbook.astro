@@ -21,7 +21,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
 <BaseLayout
   title="Spotsbook — Unmarked"
-  description="Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. Riservato agli abbonati Unmarked."
+  description="Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. Riservato agli Unmarked Pro."
 >
   <link rel="preconnect" href="https://fonts.googleapis.com" slot="head" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin slot="head" />
@@ -36,7 +36,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   <section class="bb-hero">
     <div class="bb-hero-inner">
       <div class="bb-hero-left">
-        <div class="bb-label">Unmarked · Abbonati</div>
+        <div class="bb-label">Unmarked · Pro</div>
         <h1 class="bb-title">Spotsbook</h1>
         <p class="bb-sub">Coordinate precise, ora giusta, luce perfetta. Quello che abbiamo trovato sul campo — e che non mettiamo sulle guide.</p>
         <div class="bb-stats">
@@ -66,9 +66,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         <div class="bb-teaser-map-fade"></div>
       </div>
       <div class="bb-teaser-cta">
-        <div class="bb-label bb-label-light">Spotsbook · Solo abbonati</div>
+        <div class="bb-label bb-label-light">Spotsbook · Unmarked Pro</div>
         <h2 class="bb-teaser-title">Location fotografiche segrete.<br/>Coordinate precise.</h2>
-        <p class="bb-teaser-text">{publishedCount} location sul campo con ora giusta, luce perfetta e note che non mettiamo sulle guide. Riservato agli abbonati Unmarked.</p>
+        <p class="bb-teaser-text">{publishedCount} location sul campo con ora giusta, luce perfetta e note che non mettiamo sulle guide. Riservato agli Unmarked Pro.</p>
         <div class="bb-teaser-actions">
           <a href="/sign-up" class="bb-cta-btn">Sblocca tutto — €29/mese</a>
           <a href="/sign-in" class="bb-cta-link">Hai già un account? Accedi</a>
@@ -211,7 +211,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
           <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;text-align:center;gap:16px">
             <svg viewBox="0 0 24 24" fill="none" stroke="rgba(177,113,74,0.6)" stroke-width="1" width="48" height="48"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#FAFAF8;line-height:1.1">Location bloccata</div>
-            <div style="font-size:13px;font-weight:300;color:rgba(250,250,248,0.45);line-height:1.7;max-width:320px">Abbonati per accedere a questa e a tutte le altre location fotografiche segrete — coordinate precise, tecnica, luce ottimale e note dal campo.</div>
+            <div style="font-size:13px;font-weight:300;color:rgba(250,250,248,0.45);line-height:1.7;max-width:320px">Entra a far parte di Unmarked Pro per accedere a questa e a tutte le altre location fotografiche segrete — coordinate precise, tecnica, luce ottimale e note dal campo.</div>
           </div>
         `;
         panel.classList.add('is-open');
