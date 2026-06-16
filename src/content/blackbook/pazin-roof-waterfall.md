@@ -24,6 +24,7 @@ equipment:
   - Treppiede
   - Grandangolo
   - Filtri
-images: []
+images:
+  - src: /spotsbook/lipizza-cavallo-8-dimensioni-grandi.jpeg
 ---
 Una cascata sconosicuta, molto bella soprattutto nel periodo giusto
