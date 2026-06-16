@@ -1,5 +1,5 @@
 ---
-title: Unmarked - Podcast
+title: Episodio 1 - Unmarked
 subtitle: Il podcast di viaggio che ti porta ad esplorare l'inesplorato
 episodeNumber: 1
 topic: Storie
