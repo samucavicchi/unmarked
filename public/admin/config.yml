@@ -311,6 +311,7 @@ collections:
       - { label: "Data pubblicazione", name: "publishDate", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { label: "In primo piano", name: "featured", widget: "boolean", default: false }
       - { label: "Spotify Episode ID", name: "spotifyEpisodeId", widget: "string" }
+      - { label: "Ha il video", name: "hasVideo", widget: "boolean", default: false, hint: "Attiva se l'episodio ha anche il video su Spotify — l'embed diventa più grande" }
       - { label: "Durata (minuti)", name: "duration", widget: "number", value_type: "int", min: 1, max: 240 }
       - {
           label: "Show notes",
