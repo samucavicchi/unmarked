@@ -1,0 +1,338 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+let currentUser: Awaited<ReturnType<typeof Astro.locals.currentUser>> = null;
+try {
+  currentUser = await Astro.locals.currentUser();
+} catch (_) {}
+
+const isPremium = !!(currentUser?.publicMetadata?.isPremium);
+---
+
+<BaseLayout title="Unmarked Pro — Accesso completo" description="Itinerari senza filtri, location segrete, note dal campo. Tutto ciò che non trovi sulle guide.">
+
+  <!-- HERO -->
+  <div class="pro-hero">
+    <div class="pro-hero-inner">
+      <div class="pro-label">Unmarked · Pro</div>
+      <h1 class="pro-title">Quello che non<br/>trovi sulle guide.</h1>
+      <p class="pro-sub">Itinerari completi, location fotografiche segrete con coordinate precise, note dal campo. Aggiornato ogni mese.</p>
+      {isPremium ? (
+        <a href="/account" class="pro-cta-btn">Vai al tuo account →</a>
+      ) : (
+        <button class="pro-cta-btn" id="pro-subscribe-btn">Inizia con Unmarked Pro — €29/mese</button>
+      )}
+      <div class="pro-price-note">Disdici quando vuoi. Nessun vincolo.</div>
+    </div>
+    <div class="pro-hero-deco" aria-hidden="true">U</div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="pro-features-wrap">
+    <div class="pro-features">
+
+      <div class="pro-feat">
+        <div class="pro-feat-num">01</div>
+        <div class="pro-feat-body">
+          <div class="pro-feat-title">Itinerari completi</div>
+          <div class="pro-feat-desc">Giorni strutturati, mappe, contatti locali, tempi reali e tutto ciò che serve per muoversi senza improvvisare. Niente tappe generiche, solo quello che abbiamo testato sul campo.</div>
+        </div>
+      </div>
+
+      <div class="pro-feat">
+        <div class="pro-feat-num">02</div>
+        <div class="pro-feat-body">
+          <div class="pro-feat-title">Spotsbook</div>
+          <div class="pro-feat-desc">Location fotografiche che non mettiamo sulle guide. Coordinate precise, ora ottimale, luce, tecnica consigliata e note personali. Aggiornato con nuove location ogni mese.</div>
+        </div>
+      </div>
+
+      <div class="pro-feat">
+        <div class="pro-feat-num">03</div>
+        <div class="pro-feat-body">
+          <div class="pro-feat-title">Contenuti in anteprima</div>
+          <div class="pro-feat-desc">Ogni nuovo itinerario e ogni nuova location dello Spotsbook disponibili subito per gli Unmarked Pro, prima di chiunque altro.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PIANO -->
+  <div class="pro-plan-wrap">
+    <div class="pro-plan">
+      <div class="pro-plan-left">
+        <div class="pro-plan-label">Piano mensile</div>
+        <div class="pro-plan-price">€29<span class="pro-plan-period">/mese</span></div>
+        <div class="pro-plan-note">IVA inclusa · disdici quando vuoi</div>
+      </div>
+      <div class="pro-plan-right">
+        <ul class="pro-plan-list">
+          <li>Accesso a tutti gli itinerari Unmarked</li>
+          <li>Spotsbook completo — location aggiornate ogni mese</li>
+          <li>+3 nuove location al mese</li>
+          <li>Nuovi itinerari in anteprima</li>
+          <li>Nessun vincolo — disdici in qualsiasi momento</li>
+        </ul>
+        {isPremium ? (
+          <a href="/account" class="pro-plan-btn">Gestisci il tuo piano →</a>
+        ) : (
+          <button class="pro-plan-btn" id="pro-subscribe-btn-2">Inizia ora →</button>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    async function startCheckout() {
+      const btns = document.querySelectorAll('#pro-subscribe-btn, #pro-subscribe-btn-2');
+      btns.forEach(b => { b.disabled = true; b.textContent = 'Caricamento…'; });
+
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'subscription' }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Errore');
+        }
+      } catch (err) {
+        btns.forEach(b => { b.disabled = false; b.textContent = b.id === 'pro-subscribe-btn' ? 'Inizia con Unmarked Pro — €29/mese' : 'Inizia ora →'; });
+        alert('Si è verificato un errore. Riprova tra un momento.');
+      }
+    }
+
+    document.getElementById('pro-subscribe-btn')?.addEventListener('click', startCheckout);
+    document.getElementById('pro-subscribe-btn-2')?.addEventListener('click', startCheckout);
+  </script>
+
+</BaseLayout>
+
+<style>
+  /* HERO */
+  .pro-hero {
+    background: #1A1814;
+    padding: 100px 56px 96px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(201,185,154,0.1);
+  }
+  .pro-hero-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .pro-hero-deco {
+    position: absolute;
+    right: -60px;
+    bottom: -120px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 520px;
+    font-weight: 300;
+    color: rgba(201,185,154,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .pro-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #C4855A;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .pro-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: #C4855A;
+  }
+  .pro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+  .pro-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.45);
+    line-height: 1.75;
+    max-width: 480px;
+    margin-bottom: 44px;
+  }
+  .pro-cta-btn {
+    display: inline-block;
+    background: #C4855A;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-bottom: 16px;
+  }
+  .pro-cta-btn:hover { opacity: 0.85; }
+  .pro-cta-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pro-price-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.3);
+    letter-spacing: 0.06em;
+  }
+
+  /* FEATURES */
+  .pro-features-wrap {
+    padding: 80px 56px;
+    background: #FAFAF8;
+  }
+  .pro-features {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pro-feat {
+    display: flex;
+    gap: 40px;
+    padding: 40px 0;
+    border-bottom: 1px solid rgba(201,185,154,0.2);
+  }
+  .pro-feat:first-child { border-top: 1px solid rgba(201,185,154,0.2); }
+  .pro-feat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: #C4855A;
+    letter-spacing: 0.1em;
+    min-width: 32px;
+    padding-top: 3px;
+  }
+  .pro-feat-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--dark);
+    margin-bottom: 10px;
+  }
+  .pro-feat-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 540px;
+  }
+
+  /* PIANO */
+  .pro-plan-wrap {
+    background: #1A1814;
+    padding: 80px 56px;
+    border-top: 1px solid rgba(201,185,154,0.1);
+  }
+  .pro-plan {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 80px;
+    align-items: flex-start;
+  }
+  .pro-plan-left { flex-shrink: 0; }
+  .pro-plan-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #C4855A;
+    margin-bottom: 16px;
+  }
+  .pro-plan-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .pro-plan-period {
+    font-size: 20px;
+    color: rgba(250,250,248,0.4);
+  }
+  .pro-plan-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.3);
+    letter-spacing: 0.04em;
+  }
+  .pro-plan-right { flex: 1; padding-top: 8px; }
+  .pro-plan-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pro-plan-list li {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.55);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+  }
+  .pro-plan-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #C4855A;
+  }
+  .pro-plan-btn {
+    display: inline-block;
+    background: #C4855A;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .pro-plan-btn:hover { opacity: 0.85; }
+  .pro-plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  @media (max-width: 768px) {
+    .pro-hero { padding: 64px 24px 72px; }
+    .pro-hero-deco { display: none; }
+    .pro-title { font-size: 44px; }
+    .pro-sub { font-size: 14px; }
+    .pro-features-wrap { padding: 48px 24px; }
+    .pro-feat { flex-direction: column; gap: 12px; padding: 32px 0; }
+    .pro-plan-wrap { padding: 56px 24px; }
+    .pro-plan { flex-direction: column; gap: 40px; }
+    .pro-plan-price { font-size: 48px; }
+  }
+</style>
