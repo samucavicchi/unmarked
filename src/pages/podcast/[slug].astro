@@ -28,6 +28,9 @@ const numLabel = String(data.episodeNumber).padStart(2, '0');
 const spotifyEmbedUrl = data.spotifyEpisodeId
   ? `https://open.spotify.com/embed/episode/${data.spotifyEpisodeId}?utm_source=oembed`
   : null;
+const youtubeEmbedUrl = data.youtubeId
+  ? `https://www.youtube.com/embed/${data.youtubeId}`
+  : null;
 ---
 
 <BaseLayout
@@ -50,12 +53,23 @@ const spotifyEmbedUrl = data.spotifyEpisodeId
     </header>
 
     <div class="pod-player-wrap">
-      {spotifyEmbedUrl ? (
+      {youtubeEmbedUrl ? (
+        <div class="pod-video-wrap">
+          <iframe
+            class="pod-video"
+            src={youtubeEmbedUrl}
+            frameborder="0"
+            allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
+      ) : spotifyEmbedUrl ? (
         <iframe
           class="pod-player"
           src={spotifyEmbedUrl}
           width="100%"
-          height={data.hasVideo ? 500 : 232}
+          height="232"
           frameborder="0"
           allowfullscreen
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -161,6 +175,17 @@ const spotifyEmbedUrl = data.spotifyEpisodeId
     width: 100%;
     height: 48px;
     accent-color: var(--terra);
+  }
+  .pod-video-wrap {
+    position: relative;
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
+  .pod-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .pod-body {
