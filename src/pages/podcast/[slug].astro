@@ -61,6 +61,16 @@ const spotifyEmbedUrl = data.spotifyEpisodeId
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+      ) : data.anchorEmbedUrl ? (
+        <iframe
+          class="pod-player"
+          src={data.anchorEmbedUrl}
+          width="100%"
+          height="180"
+          frameborder="0"
+          scrolling="no"
+          loading="lazy"
+        ></iframe>
       ) : data.audioUrl ? (
         <audio class="pod-audio" controls preload="metadata">
           <source src={data.audioUrl} type="audio/mpeg" />

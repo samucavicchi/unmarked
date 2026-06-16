@@ -98,7 +98,12 @@ async function main() {
     const episodeNumber = parseInt(extractTag(item, 'itunes:episode')) || (items.length - i);
     const subtitle = extractTag(item, 'itunes:subtitle') || '';
 
-    // Spotify episode ID: lasciato vuoto — compilare via CMS
+    // Anchor embed URL — estratto dal link RSS, funziona senza API
+    const episodeLink = extractTag(item, 'link');
+    const anchorEmbedUrl = episodeLink
+      ? episodeLink.replace('https://podcasters.spotify.com/pod/show', 'https://anchor.fm').replace('/episodes/', '/embed/episodes/')
+      : '';
+
     const frontmatter = [
       '---',
       `title: "${title.replace(/"/g, "'")}"`,
@@ -111,6 +116,7 @@ async function main() {
       `featured: false`,
       `spotifyEpisodeId: ''`,
       `audioUrl: ${audioUrl}`,
+      anchorEmbedUrl ? `anchorEmbedUrl: ${anchorEmbedUrl}` : null,
       `duration: ${duration}`,
       '---',
       '',
