@@ -1055,10 +1055,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     .bb-toolbar { padding: 0 16px; overflow-x: auto; }
     .bb-toolbar-right { display: none; }
 
-    /* App layout — mappa sopra, pannello sotto */
+    /* App layout — mappa sopra, pannello nascosto su mobile */
     .bb-app { margin: 0; padding: 0; }
-    .bb-layout { grid-template-columns: 1fr; grid-template-rows: 360px auto; height: auto; }
-    .bb-panel { min-height: 320px; border-left: none; border-top: 1px solid rgba(250,250,248,0.06); overflow-y: auto; }
+    .bb-layout { grid-template-columns: 1fr; grid-template-rows: 360px; height: auto; }
+    .bb-panel { display: none; }
     .bb-panel-body { padding: 12px 20px; }
     :global(.bb-panel-header) { padding: 16px 20px 0; }
     :global(.bb-panel-name) { font-size: 24px; padding: 0; }
