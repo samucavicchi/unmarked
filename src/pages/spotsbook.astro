@@ -278,6 +278,19 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       </div>
       </div>
     </section>
+
+    <!-- MOBILE PIN PREVIEW (solo mobile, utenti Pro) -->
+    <div id="bb-mobile-preview" class="bb-mobile-preview" aria-hidden="true">
+      <button class="bb-mobile-preview-close" onclick="document.getElementById('bb-mobile-preview').classList.remove('is-open')" aria-label="Chiudi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="bb-mobile-preview-img" id="bb-mobile-preview-img"></div>
+      <div class="bb-mobile-preview-info">
+        <div class="bb-mobile-preview-region" id="bb-mobile-preview-region"></div>
+        <div class="bb-mobile-preview-title" id="bb-mobile-preview-title"></div>
+        <button class="bb-mobile-preview-btn" id="bb-mobile-preview-btn">Scopri tutto →</button>
+      </div>
+    </div>
   )}
 
 <!-- PANNELLO TEASER (preview pin per non abbonati) -->
@@ -441,9 +454,36 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       });
     }
 
+    function showMobilePreview(index, loc) {
+      const preview = document.getElementById('bb-mobile-preview');
+      if (!preview) return;
+      const imgEl = document.getElementById('bb-mobile-preview-img');
+      const regionEl = document.getElementById('bb-mobile-preview-region');
+      const titleEl = document.getElementById('bb-mobile-preview-title');
+      const btn = document.getElementById('bb-mobile-preview-btn');
+      const previewImg = loc.images && loc.images.length ? loc.images[0].src : '';
+      imgEl.style.backgroundImage = previewImg ? `url('${previewImg}')` : 'none';
+      imgEl.style.display = previewImg ? 'block' : 'none';
+      regionEl.textContent = `${loc.country} · ${loc.type}`;
+      titleEl.textContent = loc.title;
+      btn.onclick = () => {
+        preview.classList.remove('is-open');
+        openOverlay(index);
+      };
+      preview.classList.add('is-open');
+    }
+
     function openPanel(index, locs) {
       currentIndex = index;
       const loc = locs[index];
+
+      // Su mobile mostra il card preview sopra la mappa invece del pannello sotto
+      if (window.innerWidth <= 768) {
+        showMobilePreview(index, loc);
+        map.panTo([loc.lat, loc.lng], { animate: true });
+        return;
+      }
+
       const top = document.getElementById('bb-panel-top');
       const body = document.getElementById('bb-panel-body');
 
@@ -1005,7 +1045,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     .bb-stat { padding: 20px 0; margin: 0; text-align: center; }
 
     /* Teaser */
-    .bb-teaser { grid-template-columns: 1fr; grid-template-rows: 260px auto; height: auto; }
+    .bb-teaser { grid-template-columns: 1fr; grid-template-rows: 380px auto; height: auto; }
     .bb-teaser-cta { padding: 40px 24px; border-left: none; border-top: 1px solid rgba(201,185,154,0.12); }
     .bb-teaser-title { font-size: 32px; }
     .bb-teaser-actions { align-items: center; }
@@ -1017,8 +1057,8 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
     /* App layout — mappa sopra, pannello sotto */
     .bb-app { margin: 0; padding: 0; }
-    .bb-layout { grid-template-columns: 1fr; grid-template-rows: 280px auto; height: auto; }
-    .bb-panel { min-height: 320px; border-left: none; border-top: 1px solid rgba(250,250,248,0.06); }
+    .bb-layout { grid-template-columns: 1fr; grid-template-rows: 360px auto; height: auto; }
+    .bb-panel { min-height: 320px; border-left: none; border-top: 1px solid rgba(250,250,248,0.06); overflow-y: auto; }
     .bb-panel-body { padding: 12px 20px; }
     :global(.bb-panel-header) { padding: 16px 20px 0; }
     :global(.bb-panel-name) { font-size: 24px; padding: 0; }
@@ -1026,9 +1066,9 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     :global(.bb-panel-preview) { height: 120px; }
 
     /* Overlay — full screen su mobile */
-    .sbo-panel { width: 100vw; border-left: none; }
+    .sbo-panel { width: 100vw; border-left: none; overflow-y: auto; }
     /* Teaser panel — full screen su mobile */
-    .tbp-panel { width: 100vw; border-left: none; }
+    .tbp-panel { width: 100vw; border-left: none; overflow-y: auto; }
     .tbp-scroll { padding: 40px 24px 20px; }
     .tbp-footer { padding: 16px 24px 28px; }
     .sbl-wrap.from-overlay { right: 0; }
@@ -1036,5 +1076,81 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     /* Lightbox */
     .sbl-img { max-width: 95vw; max-height: 75vh; }
     .sbl-close { top: 16px; right: 16px; }
+  }
+
+  /* MOBILE PIN PREVIEW */
+  .bb-mobile-preview {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .bb-mobile-preview {
+      display: flex;
+      position: fixed;
+      bottom: -160px;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+      background: #1A1814;
+      border-top: 1px solid rgba(201,185,154,0.2);
+      padding: 16px 20px 24px;
+      gap: 16px;
+      align-items: center;
+      transition: bottom 0.3s ease;
+    }
+    .bb-mobile-preview.is-open {
+      bottom: 0;
+    }
+    .bb-mobile-preview-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: rgba(250,250,248,0.35);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+    }
+    .bb-mobile-preview-close svg { width: 16px; height: 16px; }
+    .bb-mobile-preview-img {
+      width: 72px;
+      height: 72px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+    .bb-mobile-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .bb-mobile-preview-region {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C4855A;
+      margin-bottom: 4px;
+    }
+    .bb-mobile-preview-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: #FAFAF8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 10px;
+    }
+    .bb-mobile-preview-btn {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fff;
+      background: #C4855A;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
   }
 </style>
