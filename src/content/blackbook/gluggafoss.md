@@ -30,5 +30,6 @@ equipment:
 personalNote: Dopo il caos di Seljalandsfoss questa cascata vi darà una boccata d'aria fresca
 images:
   - src: /spotsbook/islanda-seljalandsfoss-b-1.jpg
+  - src: /spotsbook/islanda-4.jpg
 ---
 Una cascata a portata di tour main stream, ma poco conosciuta e spesso deserta
