@@ -3,8 +3,8 @@ title: Gluggafoss
 country: Islanda
 continent: Europa
 type: Paesaggio
-lat: 63.719167
-lng: -26
+lat: 63.718946
+lng: -19.892831
 publishDate: 2026-06-23
 status: published
 preview: false
