@@ -5,7 +5,7 @@ region: Veneto
 continent: Europa
 type: Paesaggio
 lat: 46.244114
-lng: 12301667
+lng: 12.301667
 publishDate: 2026-06-26
 status: published
 preview: false
