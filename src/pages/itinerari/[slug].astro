@@ -259,7 +259,7 @@ const gallery = data.gallery || [];
     </div>
   </div>
 
-  {/* Step B: Vale il viaggio (strutturato) */}
+  {/* Step B: Vale il viaggio (strutturato) — layout a tab */}
   {vale && valeCols.some((c) => c.items.length > 0) && (
     <div class="vale">
       <div class="vale-head">
@@ -267,58 +267,64 @@ const gallery = data.gallery || [];
         <div class="vale-sub">Strutture e posti selezionati di persona — non sponsorizzati</div>
       </div>
 
-      <div class="vale-grid">
-        {valeCols.map((col) => (
-          <div>
-            <div class="vale-col-label">{col.label}</div>
-            {(userIsPremium ? col.items : col.items.slice(0, 1)).map((it: any) => (
-              <div class="vale-item">
-                <div class="vale-item-header">
-                  <div class="vale-item-name">{it.name}</div>
-                  <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
-                </div>
-                {it.location && <div class="vale-item-loc">{it.location}</div>}
-                <div class="vale-item-desc">{it.description}</div>
-                {it.tip && <div class="vale-item-tip">{it.tip}</div>}
-                {it.price && <div class="vale-item-price" set:html={it.price.replace(/(€\d[\d.,]*|Da €\d[\d.,]*\/[^\s,]+|Circa €\d[\d.,]*[^\s,]*|\d+€\/[^\s,]+|gratuito|libero)/i, '<strong>$1</strong>')}></div>}
-              </div>
-            ))}
-          </div>
+      <div class="vale-tabs" role="tablist">
+        {valeCols.filter(c => c.items.length > 0).map((col, i) => (
+          <button
+            class={`vale-tab${i === 0 ? ' active' : ''}`}
+            data-target={`vale-panel-${col.key}`}
+            role="tab"
+          >
+            {col.label}
+          </button>
         ))}
       </div>
 
-      {!userIsPremium && valeHasPaywall && (
-        <div class="vale-paywall-wrap">
-          <div class="vale-blur">
-            <div class="vale-grid">
-              {valeCols.map((col) => (
+      {valeCols.map((col, i) => col.items.length > 0 && (
+        <div class={`vale-panel${i === 0 ? ' active' : ''}`} id={`vale-panel-${col.key}`} role="tabpanel">
+          {(userIsPremium ? col.items : col.items.slice(0, 1)).map((it: any) => (
+            <div class="vale-item">
+              <div class="vale-item-header">
                 <div>
-                  {col.items.slice(1).map((it: any) => (
-                    <div class="vale-item">
-                      <div class="vale-item-header">
-                        <div class="vale-item-name">{it.name}</div>
-                        <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
-                      </div>
-                      {it.location && <div class="vale-item-loc">{it.location}</div>}
-                      <div class="vale-item-desc">{it.description}</div>
-                      {it.tip && <div class="vale-item-tip">{it.tip}</div>}
-                      {it.price && <div class="vale-item-price">{it.price}</div>}
-                    </div>
-                  ))}
+                  <div class="vale-item-name">{it.name}</div>
+                  {it.location && <div class="vale-item-loc">{it.location}</div>}
                 </div>
-              ))}
+                <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+              </div>
+              <div class="vale-item-desc">{it.description}</div>
+              {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+              {it.price && <div class="vale-item-price" set:html={it.price.replace(/(€\d[\d.,]*|Da €\d[\d.,]*\/[^\s,]+|Circa €\d[\d.,]*[^\s,]*|\d+€\/[^\s,]+|gratuito|libero)/i, '<strong>$1</strong>')}></div>}
             </div>
-          </div>
-          <div class="vale-overlay"></div>
-          <div class="vale-pw-box">
-            <div class="vale-pw-title">Altri consigli riservati agli Unmarked Pro</div>
-            <div class="vale-pw-sub">Dove dormire davvero, dove mangiare senza finire in trappola turistica e cosa non perdere per nessun motivo.</div>
-            <button class="vale-pw-btn-sub" data-checkout="subscription">Unmarked Pro — €29/mese</button>
-            <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
-            <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
-          </div>
+          ))}
+
+          {!userIsPremium && col.items.length > 1 && (
+            <div class="vale-paywall-wrap">
+              <div class="vale-blur">
+                {col.items.slice(1).map((it: any) => (
+                  <div class="vale-item">
+                    <div class="vale-item-header">
+                      <div>
+                        <div class="vale-item-name">{it.name}</div>
+                        {it.location && <div class="vale-item-loc">{it.location}</div>}
+                      </div>
+                      <div class={`vale-item-badge badge-${it.badge || 'must'}`}>{badgeLabels[it.badge] || badgeLabels.must}</div>
+                    </div>
+                    <div class="vale-item-desc">{it.description}</div>
+                    {it.tip && <div class="vale-item-tip">{it.tip}</div>}
+                  </div>
+                ))}
+              </div>
+              <div class="vale-overlay"></div>
+              <div class="vale-pw-box">
+                <div class="vale-pw-title">Altri consigli riservati agli Unmarked Pro</div>
+                <div class="vale-pw-sub">Dove dormire davvero, dove mangiare senza finire in trappola turistica e cosa non perdere per nessun motivo.</div>
+                <button class="vale-pw-btn-sub" data-checkout="subscription">Unmarked Pro — €29/mese</button>
+                <button class="vale-pw-btn-single" data-checkout="single">Acquista questo itinerario — €{data.price}</button>
+                <div class="vale-pw-login">Hai già un account? <a href="/sign-in">Accedi</a></div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      ))}
     </div>
   )}
 
@@ -607,6 +613,21 @@ const gallery = data.gallery || [];
       window.addEventListener('scroll', onScroll, { passive: true });
     })();
   </script>
+
+  <script is:inline>
+    (function() {
+      var tabs = document.querySelectorAll('.vale-tab');
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          tabs.forEach(function(t) { t.classList.remove('active'); });
+          document.querySelectorAll('.vale-panel').forEach(function(p) { p.classList.remove('active'); });
+          tab.classList.add('active');
+          var target = document.getElementById(tab.dataset.target);
+          if (target) target.classList.add('active');
+        });
+      });
+    })();
+  </script>
 </BaseLayout>
 
 <style>
@@ -718,26 +739,32 @@ const gallery = data.gallery || [];
   .info-label { font-weight: 300; color: var(--muted); }
   .info-val { font-weight: 500; color: var(--dark); }
 
-  /* VALE IL VIAGGIO (Step B) */
+  /* VALE IL VIAGGIO (Step B) — tab layout */
   .vale { padding: 60px 40px 0; }
-  .vale-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 36px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .vale-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
   .vale-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
   .vale-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
-  .vale-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
-  .vale-col-label { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-  .vale-col-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--terra); }
-  .vale-item { padding: 18px 0; border-bottom: 1px solid var(--light-border); }
+
+  .vale-tabs { display: flex; border-bottom: 1px solid var(--light-border); margin-bottom: 0; }
+  .vale-tab { padding: 14px 28px; font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; border: none; border-bottom: 2px solid transparent; background: none; cursor: pointer; color: var(--muted); margin-bottom: -1px; transition: color 0.2s, border-color 0.2s; }
+  .vale-tab:hover { color: var(--dark); }
+  .vale-tab.active { color: var(--dark); border-bottom-color: var(--terra); }
+
+  .vale-panel { display: none; }
+  .vale-panel.active { display: block; }
+
+  .vale-item { padding: 28px 0; border-bottom: 1px solid var(--light-border); }
   .vale-item:last-child { border-bottom: none; }
-  .vale-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dark); line-height: 1.2; }
-  .vale-item-badge { font-size: 8px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+  .vale-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 10px; }
+  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--dark); line-height: 1.2; margin-bottom: 3px; }
+  .vale-item-badge { font-size: 8px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; flex-shrink: 0; margin-top: 4px; white-space: nowrap; }
   .badge-must { background: #FDF0E8; color: var(--terra); }
   .badge-good { background: var(--beige); color: var(--muted); }
   .badge-hidden { background: #EAF0EA; color: var(--sage); }
-  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; color: var(--sand); margin-bottom: 6px; }
-  .vale-item-desc { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.68; }
-  .vale-item-tip { margin-top: 10px; padding: 8px 12px; background: var(--cream); border-left: 2px solid var(--terra); font-size: 11px; font-weight: 300; color: var(--dark); line-height: 1.6; font-style: italic; }
-  .vale-item-price { margin-top: 8px; font-size: 10px; font-weight: 300; color: var(--muted); }
+  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sand); }
+  .vale-item-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.75; max-width: 680px; }
+  .vale-item-tip { margin-top: 14px; padding: 10px 14px; background: var(--cream); border-left: 2px solid var(--terra); font-size: 12px; font-weight: 300; color: var(--dark); line-height: 1.65; font-style: italic; max-width: 560px; }
+  .vale-item-price { margin-top: 10px; font-size: 11px; font-weight: 300; color: var(--muted); }
   .vale-item-price strong { font-weight: 500; color: var(--dark); }
 
   .vale-paywall-wrap { position: relative; margin-top: 0; }
@@ -746,8 +773,8 @@ const gallery = data.gallery || [];
   .vale-pw-box { position: relative; text-align: center; padding: 32px 16px 52px; }
   .vale-pw-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--dark); margin-bottom: 7px; }
   .vale-pw-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 22px; max-width: 400px; margin-left: auto; margin-right: auto; }
-  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; margin-right: 8px; }
-  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; }
+  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; margin-right: 8px; border: none; cursor: pointer; }
+  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; cursor: pointer; }
   .vale-pw-login { font-size: 10px; font-weight: 300; color: var(--sand); margin-top: 12px; }
   .vale-pw-login span { color: var(--terra); cursor: pointer; }
 
@@ -868,7 +895,9 @@ const gallery = data.gallery || [];
     .pw-options { flex-direction: column; align-items: stretch; }
     .pw-opt { max-width: 100%; }
     .consulenza-strip { flex-direction: column; align-items: flex-start; }
-    .vale-grid { grid-template-columns: 1fr; gap: 8px; }
+    .vale-tab { padding: 12px 16px; font-size: 8px; }
+    .vale-item { padding: 20px 0; }
+    .vale-item-name { font-size: 19px; }
     .vale { padding: 48px 24px 0; }
     .ms { padding: 48px 24px 0; }
     .ms-item-grid { grid-template-columns: 1fr; gap: 8px; }
