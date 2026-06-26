@@ -3,8 +3,8 @@ title: Chang Mai Elephants
 country: Thailandia
 continent: Asia
 type: Wildlife
-lat: 18.64396
-lng: 19.8694116
+lat: 18.644065
+lng: 98.693146
 publishDate: 2026-06-26
 status: published
 preview: false
