@@ -26,6 +26,7 @@ checklist:
 equipment:
   - Grandangolo
   - Tele
-images: []
+images:
+  - src: /spotsbook/italy-sequoia-longarone.jpg
 ---
 Un angolo di california in veneto
