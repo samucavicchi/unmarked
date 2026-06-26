@@ -739,44 +739,46 @@ const gallery = data.gallery || [];
   .info-label { font-weight: 300; color: var(--muted); }
   .info-val { font-weight: 500; color: var(--dark); }
 
-  /* VALE IL VIAGGIO (Step B) — tab layout */
-  .vale { padding: 80px 40px 80px; border-top: 1px solid var(--light-border); }
-  .vale-head { border-bottom: 1px solid var(--light-border); padding-bottom: 16px; margin-bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-  .vale-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--dark); }
-  .vale-sub { font-size: 11px; font-weight: 300; color: var(--muted); }
+  /* VALE IL VIAGGIO (Step B) — dark strip */
+  .vale { background: var(--dark); padding: 56px 40px 64px; }
+  .vale-head { border-bottom: 1px solid rgba(201,185,154,0.12); padding-bottom: 16px; margin-bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .vale-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #FAFAF8; }
+  .vale-sub { font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.38); }
 
-  .vale-tabs { display: flex; border-bottom: 1px solid var(--light-border); margin-bottom: 0; }
-  .vale-tab { padding: 14px 28px; font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; border: none; border-bottom: 2px solid transparent; background: none; cursor: pointer; color: var(--muted); margin-bottom: -1px; transition: color 0.2s, border-color 0.2s; }
-  .vale-tab:hover { color: var(--dark); }
-  .vale-tab.active { color: var(--dark); border-bottom-color: var(--terra); }
+  .vale-tabs { display: flex; gap: 8px; border-bottom: none; margin-bottom: 36px; padding-top: 24px; flex-wrap: wrap; }
+  .vale-tab { padding: 10px 24px; font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid rgba(201,185,154,0.25); background: none; cursor: pointer; color: rgba(250,250,248,0.45); transition: color 0.2s, border-color 0.2s; }
+  .vale-tab:hover { color: rgba(250,250,248,0.85); border-color: rgba(201,185,154,0.5); }
+  .vale-tab.active { color: #FAFAF8; border-color: var(--terra); }
 
   .vale-panel { display: none; }
   .vale-panel.active { display: block; }
 
-  .vale-item { padding: 28px 0; border-bottom: 1px solid var(--light-border); }
+  .vale-item { padding: 28px 0; border-bottom: 1px solid rgba(201,185,154,0.1); }
   .vale-item:last-child { border-bottom: none; }
   .vale-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 10px; }
-  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--dark); line-height: 1.2; margin-bottom: 3px; }
+  .vale-item-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: #FAFAF8; line-height: 1.2; margin-bottom: 3px; }
   .vale-item-badge { font-size: 8px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; flex-shrink: 0; margin-top: 4px; white-space: nowrap; }
-  .badge-must { background: #FDF0E8; color: var(--terra); }
-  .badge-good { background: var(--beige); color: var(--muted); }
-  .badge-hidden { background: #EAF0EA; color: var(--sage); }
-  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sand); }
-  .vale-item-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.75; max-width: 680px; }
-  .vale-item-tip { margin-top: 14px; padding: 10px 14px; background: var(--cream); border-left: 2px solid var(--terra); font-size: 12px; font-weight: 300; color: var(--dark); line-height: 1.65; font-style: italic; max-width: 560px; }
-  .vale-item-price { margin-top: 10px; font-size: 11px; font-weight: 300; color: var(--muted); }
-  .vale-item-price strong { font-weight: 500; color: var(--dark); }
+  .badge-must { background: rgba(196,133,90,0.18); color: var(--terra); }
+  .badge-good { background: rgba(201,185,154,0.12); color: rgba(201,185,154,0.75); }
+  .badge-hidden { background: rgba(100,140,100,0.18); color: #8aab8a; }
+  .vale-item-loc { font-size: 10px; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(250,250,248,0.3); }
+  .vale-item-desc { font-size: 13px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.75; max-width: 680px; }
+  .vale-item-tip { margin-top: 14px; padding: 10px 14px; background: rgba(255,255,255,0.05); border-left: 2px solid var(--terra); font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.65); line-height: 1.65; font-style: italic; max-width: 560px; }
+  .vale-item-price { margin-top: 10px; font-size: 11px; font-weight: 300; color: rgba(250,250,248,0.38); }
+  .vale-item-price strong { font-weight: 500; color: rgba(250,250,248,0.75); }
 
   .vale-paywall-wrap { position: relative; margin-top: 0; }
-  .vale-blur { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
-  .vale-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(250,250,248,0) 0%, rgba(250,250,248,0.96) 30%, rgba(250,250,248,1) 100%); }
-  .vale-pw-box { position: relative; text-align: center; padding: 32px 16px 52px; }
-  .vale-pw-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--dark); margin-bottom: 7px; }
-  .vale-pw-sub { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 22px; max-width: 400px; margin-left: auto; margin-right: auto; }
-  .vale-pw-btn-sub { display: inline-block; background: var(--dark); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; margin-right: 8px; border: none; cursor: pointer; }
-  .vale-pw-btn-single { display: inline-block; background: var(--cream); color: var(--dark); border: 1px solid var(--dark); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 2px; text-decoration: none; cursor: pointer; }
-  .vale-pw-login { font-size: 10px; font-weight: 300; color: var(--sand); margin-top: 12px; }
-  .vale-pw-login span { color: var(--terra); cursor: pointer; }
+  .vale-blur { filter: blur(4px); opacity: 0.25; pointer-events: none; user-select: none; }
+  .vale-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(26,24,20,0) 0%, rgba(26,24,20,0.96) 35%, rgba(26,24,20,1) 100%); }
+  .vale-pw-box { position: relative; text-align: center; padding: 32px 16px 16px; }
+  .vale-pw-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: #FAFAF8; margin-bottom: 7px; }
+  .vale-pw-sub { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.45); line-height: 1.7; margin-bottom: 22px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .vale-pw-btn-sub { display: inline-block; background: var(--terra); color: #FAFAF8; padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; margin-right: 8px; border: none; cursor: pointer; transition: opacity 0.2s; }
+  .vale-pw-btn-sub:hover { opacity: 0.88; }
+  .vale-pw-btn-single { display: inline-block; background: none; color: rgba(250,250,248,0.6); border: 1px solid rgba(201,185,154,0.3); padding: 12px 28px; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.2s; }
+  .vale-pw-btn-single:hover { border-color: rgba(201,185,154,0.6); color: rgba(250,250,248,0.9); }
+  .vale-pw-login { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.28); margin-top: 14px; }
+  .vale-pw-login a, .vale-pw-login span { color: var(--terra); cursor: pointer; text-decoration: none; }
 
   /* MAINSTREAM CHECK (Step B) */
   .ms { padding: 60px 40px 0; }
@@ -895,10 +897,10 @@ const gallery = data.gallery || [];
     .pw-options { flex-direction: column; align-items: stretch; }
     .pw-opt { max-width: 100%; }
     .consulenza-strip { flex-direction: column; align-items: flex-start; }
-    .vale-tab { padding: 12px 16px; font-size: 8px; }
+    .vale-tab { padding: 9px 16px; font-size: 8px; }
     .vale-item { padding: 20px 0; }
     .vale-item-name { font-size: 19px; }
-    .vale { padding: 48px 24px 0; }
+    .vale { padding: 40px 24px 48px; }
     .ms { padding: 48px 24px 0; }
     .ms-item-grid { grid-template-columns: 1fr; gap: 8px; }
     .ms-item-distance { padding-top: 0; }
