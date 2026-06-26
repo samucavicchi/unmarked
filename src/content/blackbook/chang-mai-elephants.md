@@ -25,5 +25,8 @@ equipment:
 personalNote: "Non è il solito santuario di elefanti tailandese, scordatevi le
   cose turistiche tipo cavalcare l'elefante. Qui gli elefanti vivono con la
   comunità. "
+images:
+  - src: /spotsbook/dsc_1830-dimensioni-grandi.jpg
+  - src: /spotsbook/dsc_2307-modifica-dimensioni-grandi.jpg
 ---
 Un luogo dove fotografare gli elefanti asiatici lontano dalle brutalità turistiche degli elephants Sanctuary tipici del sud est asiatico
