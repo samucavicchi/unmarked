@@ -26,6 +26,7 @@ checklist:
 equipment:
   - Grandangolo
   - Tele
+personalNote: Si tratta di un albero così forte che è sopravvissuto al disastro del Vajont
 images:
   - src: /spotsbook/italy-sequoia-longarone.jpg
 ---
