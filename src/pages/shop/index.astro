@@ -5,6 +5,9 @@ import { shopProducts } from '../../data/shop-data';
 const available = shopProducts.filter(p => p.available);
 const digital = available.filter(p => p.type === 'digital');
 const physical = available.filter(p => p.type === 'physical');
+
+const digitalTags = ['preset', 'lut', 'sfx', 'flare'] as const;
+const physicalTags = ['maps', 'prints', 'gear'] as const;
 ---
 
 <BaseLayout
@@ -24,7 +27,7 @@ const physical = available.filter(p => p.type === 'physical');
 
   <!-- DIGITALI -->
   {digital.length > 0 && (
-    <section class="sh-section">
+    <section class="sh-section" data-section="digital">
       <div class="sh-section-head">
         <div class="sh-section-label">Digitale</div>
         <span class="sh-section-count">{digital.length} {digital.length === 1 ? 'prodotto' : 'prodotti'}</span>
@@ -32,9 +35,22 @@ const physical = available.filter(p => p.type === 'physical');
         <span class="sh-section-note">Download immediato</span>
       </div>
 
-      <div class={`sh-grid sh-grid-${digital.length === 1 ? 'single' : 'digital'}`}>
+      <div class="sh-filters" data-filter-group="digital">
+        <button class="sh-filter active" data-filter="all">Tutti</button>
+        {digitalTags.map(tag => {
+          const hasProducts = digital.some(p => p.tag === tag);
+          return (
+            <button
+              class={`sh-filter${!hasProducts ? ' sh-filter-empty' : ''}`}
+              data-filter={tag}
+            >{tag}</button>
+          );
+        })}
+      </div>
+
+      <div class={`sh-grid sh-grid-${digital.length === 1 ? 'single' : 'digital'}`} data-grid="digital">
         {digital.map(product => (
-          <a href={`/shop/${product.id}`} class="sh-card sh-card-digital">
+          <a href={`/shop/${product.id}`} class="sh-card sh-card-digital" data-tag={product.tag}>
             <div class="sh-card-img-wrap">
               <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
               {product.badge && <div class="sh-badge">{product.badge}</div>}
@@ -63,7 +79,7 @@ const physical = available.filter(p => p.type === 'physical');
 
   <!-- FISICI -->
   {physical.length > 0 && (
-    <section class="sh-section">
+    <section class="sh-section" data-section="physical">
       <div class="sh-section-head">
         <div class="sh-section-label">Fisico</div>
         <span class="sh-section-count">{physical.length} {physical.length === 1 ? 'prodotto' : 'prodotti'}</span>
@@ -71,9 +87,22 @@ const physical = available.filter(p => p.type === 'physical');
         <span class="sh-section-note">Spedito in tutta Europa</span>
       </div>
 
-      <div class="sh-grid sh-grid-physical">
+      <div class="sh-filters" data-filter-group="physical">
+        <button class="sh-filter active" data-filter="all">Tutti</button>
+        {physicalTags.map(tag => {
+          const hasProducts = physical.some(p => p.tag === tag);
+          return (
+            <button
+              class={`sh-filter${!hasProducts ? ' sh-filter-empty' : ''}`}
+              data-filter={tag}
+            >{tag}</button>
+          );
+        })}
+      </div>
+
+      <div class="sh-grid sh-grid-physical" data-grid="physical">
         {physical.map(product => (
-          <a href={`/shop/${product.id}`} class="sh-card sh-card-physical">
+          <a href={`/shop/${product.id}`} class="sh-card sh-card-physical" data-tag={product.tag}>
             <div class="sh-card-img-wrap">
               <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
               {product.badge && <div class="sh-badge">{product.badge}</div>}
@@ -117,6 +146,34 @@ const physical = available.filter(p => p.type === 'physical');
       </div>
     </div>
   </section>
+
+<script is:inline>
+  document.querySelectorAll('.sh-filters').forEach(function(filterGroup) {
+    filterGroup.querySelectorAll('.sh-filter').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (btn.classList.contains('sh-filter-empty')) return;
+        var tag = btn.dataset.filter;
+        var grid = filterGroup.nextElementSibling;
+        // aggiorna active
+        filterGroup.querySelectorAll('.sh-filter').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        // mostra/nascondi cards
+        grid.querySelectorAll('.sh-card').forEach(function(card) {
+          if (tag === 'all' || card.dataset.tag === tag) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+        // aggiorna contatore
+        var section = filterGroup.closest('.sh-section');
+        var visible = grid.querySelectorAll('.sh-card:not(.hidden)').length;
+        var counter = section.querySelector('.sh-section-count');
+        if (counter) counter.textContent = visible + (visible === 1 ? ' prodotto' : ' prodotti');
+      });
+    });
+  });
+</script>
 
 </BaseLayout>
 
@@ -212,6 +269,31 @@ const physical = available.filter(p => p.type === 'physical');
     flex-shrink: 0;
     text-transform: uppercase;
   }
+
+  /* FILTRI */
+  .sh-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .sh-filter {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border: 1px solid rgba(201,185,154,0.25);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .sh-filter:hover { border-color: var(--terra); color: var(--dark); }
+  .sh-filter.active { border-color: var(--terra); background: var(--terra); color: #FAFAF8; }
+  .sh-filter-empty { opacity: 0.35; cursor: default; }
+  .sh-filter-empty:hover { border-color: rgba(201,185,154,0.25); color: var(--muted); }
+  .sh-card.hidden { display: none; }
 
   /* GRID */
   .sh-grid { display: grid; gap: 2px; }

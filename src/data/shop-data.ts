@@ -6,11 +6,16 @@
 //   3. Per i digitali: carica il file in public/downloads/ e aggiorna downloadPath
 //   4. Aggiungi l'immagine in public/shop/
 
+export type DigitalTag = 'preset' | 'lut' | 'sfx' | 'flare';
+export type PhysicalTag = 'maps' | 'prints' | 'gear';
+export type ShopTag = DigitalTag | PhysicalTag;
+
 export type ShopProduct = {
   id: string;
   title: string;
   subtitle: string;
   type: 'digital' | 'physical';
+  tag: ShopTag;
   price: number;
   stripePriceId: string;
   image: string;
@@ -33,6 +38,7 @@ export const shopProducts: ShopProduct[] = [
     title: 'Desert Light',
     subtitle: 'Preset Pack — Namibia + Islanda',
     type: 'digital',
+    tag: 'preset',
     price: 29,
     stripePriceId: 'price_1TgRVkLV5vyDSjg1tujK08zU',
     image: '/shop/preset-desert-light.jpg',
@@ -56,6 +62,7 @@ export const shopProducts: ShopProduct[] = [
     title: 'Namibia — Le dune',
     subtitle: 'Fine Art Print · 30×40 cm',
     type: 'physical',
+    tag: 'prints',
     price: 89,
     stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl',
     image: '/shop/print-africa-giraffa.jpg',
@@ -80,6 +87,7 @@ export const shopProducts: ShopProduct[] = [
     title: 'Islanda — Aldeyarfoss',
     subtitle: 'Fine Art Print · 30×40 cm',
     type: 'physical',
+    tag: 'prints',
     price: 89,
     stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq',
     image: '/shop/print-islanda-theedgeoficeland.jpg',
@@ -103,6 +111,7 @@ export const shopProducts: ShopProduct[] = [
     title: 'Unmarked Tote',
     subtitle: 'Canvas naturale 100% cotone',
     type: 'physical',
+    tag: 'gear',
     price: 24,
     stripePriceId: 'price_1TgRkPLV5vyDSjg1msBILyOt',
     image: '/shop/travel-beauty.jpg',
