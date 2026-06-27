@@ -10,7 +10,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sync-images": "node --env-file=.env scripts/sync-product-images.mjs"
   },
   "dependencies": {
     "@astrojs/netlify": "^5.5.4",

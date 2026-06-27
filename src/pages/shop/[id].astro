@@ -1,22 +1,18 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { shopProducts } from '../../data/shop-data';
 import Stripe from 'stripe';
 
-export function getStaticPaths() {
-  return shopProducts
-    .filter(p => p.available)
-    .map(p => ({ params: { id: p.id } }));
-}
-
 const { id } = Astro.params;
 const product = shopProducts.find(p => p.id === id);
-if (!product) return Astro.redirect('/shop');
+if (!product || !product.available) return Astro.redirect('/shop');
 
 const isDigital = product.type === 'digital';
 const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice(0, 3);
 
-// Recupera immagini da Stripe se stripeProductId è configurato
+// Recupera immagini da Stripe a runtime (sempre aggiornate)
 let allImages: string[] = [product.image];
 if (
   product.stripeProductId &&
@@ -31,12 +27,15 @@ if (
     if (stripeProduct.images && stripeProduct.images.length > 0) {
       allImages = stripeProduct.images;
     }
-  } catch (e) {
+  } catch (_) {
     // fallback a immagine locale
   }
 }
 
 const hasGallery = allImages.length > 1;
+
+// Cache 1 ora lato CDN — Netlify rispetta questo header
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
 ---
 
 <BaseLayout
