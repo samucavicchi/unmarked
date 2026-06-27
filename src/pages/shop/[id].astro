@@ -1,41 +1,31 @@
 ---
-export const prerender = false;
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { shopProducts } from '../../data/shop-data';
 import Stripe from 'stripe';
 
-const { id } = Astro.params;
-const product = shopProducts.find(p => p.id === id);
-if (!product || !product.available) return Astro.redirect('/shop');
+export async function getStaticPaths() {
+  const stripe = import.meta.env.STRIPE_SECRET_KEY
+    ? new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, { apiVersion: '2024-11-20.acacia' })
+    : null;
 
-const isDigital = product.type === 'digital';
-const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice(0, 3);
-
-// Recupera immagini da Stripe a runtime (sempre aggiornate)
-let allImages: string[] = [product.image];
-if (
-  product.stripeProductId &&
-  !product.stripeProductId.startsWith('prod_xxx') &&
-  import.meta.env.STRIPE_SECRET_KEY
-) {
-  try {
-    const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
-      apiVersion: '2024-11-20.acacia',
-    });
-    const stripeProduct = await stripe.products.retrieve(product.stripeProductId);
-    if (stripeProduct.images && stripeProduct.images.length > 0) {
-      allImages = stripeProduct.images;
-    }
-  } catch (_) {
-    // fallback a immagine locale
-  }
+  return Promise.all(
+    shopProducts.filter(p => p.available).map(async (p) => {
+      let images: string[] = [p.image];
+      if (stripe && p.stripeProductId && !p.stripeProductId.startsWith('prod_xxx')) {
+        try {
+          const sp = await stripe.products.retrieve(p.stripeProductId);
+          if (sp.images && sp.images.length > 0) images = sp.images;
+        } catch (_) {}
+      }
+      return { params: { id: p.id }, props: { product: p, allImages: images } };
+    })
+  );
 }
 
+const { product, allImages } = Astro.props;
+const isDigital = product.type === 'digital';
+const otherProducts = shopProducts.filter(p => p.available && p.id !== product.id).slice(0, 3);
 const hasGallery = allImages.length > 1;
-
-// Cache 1 ora lato CDN — Netlify rispetta questo header
-Astro.response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
 ---
 
 <BaseLayout
