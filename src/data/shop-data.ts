@@ -135,7 +135,7 @@ export const shopProducts: ShopProduct[] = [
     price: 89,
     stripePriceId: 'price_1TmwgrLV5vyDSjg1TzFOQjbY',
     stripeProductId: 'prod_UmVib6q57lRYtM',
-    image: '/shop/print-islanda-theedgeoficeland.jpg',
+    image: '/shop/iceland-maps/1.jpg',
     description: 'Arte murale ispirata ai paesaggi dell\'Islanda. Stampa fine art su carta Hahnemühle Photo Rag 308g.',
     fullDescription: 'Arte murale ispirata ai paesaggi dell\'Islanda. Stampa fine art su carta Hahnemühle Photo Rag 308g.',
     details: [
@@ -159,7 +159,7 @@ export const shopProducts: ShopProduct[] = [
     price: 89,
     stripePriceId: 'price_1TmwEQLV5vyDSjg1F6bke2L1',
     stripeProductId: 'prod_UmVEDIy5eoWzeI',
-    image: '/shop/print-africa-giraffa.jpg',
+    image: '/shop/africa-maps/1.jpg',
     description: 'Opera d\'arte che ritrae l\'Africa in un manto di giraffa con ombre di acacia. Le texture danno tridimensionalità e portano l\'ambiente in un\'immersione naturale.',
     fullDescription: 'Quest\'opera d\'arte ritrae l\'Africa in un manto di giraffa con ombre di acacia, a simboleggiare la bellezza naturale, la ricchezza culturale e lo spirito selvaggio del continente. Le texture danno tridimensionalità e portano l\'ambiente in un\'immersione naturale.',
     details: [
