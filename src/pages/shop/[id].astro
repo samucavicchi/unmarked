@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { shopProducts } from '../../data/shop-data';
+import Stripe from 'stripe';
 
 export function getStaticPaths() {
   return shopProducts
@@ -14,6 +15,28 @@ if (!product) return Astro.redirect('/shop');
 
 const isDigital = product.type === 'digital';
 const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice(0, 3);
+
+// Recupera immagini da Stripe se stripeProductId è configurato
+let allImages: string[] = [product.image];
+if (
+  product.stripeProductId &&
+  !product.stripeProductId.startsWith('prod_xxx') &&
+  import.meta.env.STRIPE_SECRET_KEY
+) {
+  try {
+    const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
+      apiVersion: '2024-11-20.acacia',
+    });
+    const stripeProduct = await stripe.products.retrieve(product.stripeProductId);
+    if (stripeProduct.images && stripeProduct.images.length > 0) {
+      allImages = stripeProduct.images;
+    }
+  } catch (e) {
+    // fallback a immagine locale
+  }
+}
+
+const hasGallery = allImages.length > 1;
 ---
 
 <BaseLayout
@@ -33,10 +56,25 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
     <!-- PRODOTTO -->
     <div class="pd-main">
 
-      <!-- IMMAGINE -->
-      <div class="pd-img-wrap">
-        <div class="pd-img" style={`background-image: url('${product.image}')`}></div>
-        {product.badge && <div class="pd-badge">{product.badge}</div>}
+      <!-- IMMAGINE + GALLERIA -->
+      <div class="pd-gallery">
+        <div class="pd-img-wrap">
+          <div class="pd-img" id="pd-main-img" style={`background-image: url('${allImages[0]}')`}></div>
+          {product.badge && <div class="pd-badge">{product.badge}</div>}
+        </div>
+        {hasGallery && (
+          <div class="pd-thumbs">
+            {allImages.map((src, i) => (
+              <button
+                class={`pd-thumb${i === 0 ? ' active' : ''}`}
+                data-src={src}
+                aria-label={`Immagine ${i + 1}`}
+              >
+                <div class="pd-thumb-img" style={`background-image: url('${src}')`}></div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <!-- DETTAGLI -->
@@ -138,6 +176,23 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
 </BaseLayout>
 
 <script is:inline>
+  // Galleria immagini
+  document.querySelectorAll('.pd-thumb').forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+      var src = thumb.dataset.src;
+      var main = document.getElementById('pd-main-img');
+      if (main && src) {
+        main.style.opacity = '0';
+        setTimeout(function() {
+          main.style.backgroundImage = "url('" + src + "')";
+          main.style.opacity = '1';
+        }, 180);
+      }
+      document.querySelectorAll('.pd-thumb').forEach(function(t) { t.classList.remove('active'); });
+      thumb.classList.add('active');
+    });
+  });
+
   // Selezione variante (formato stampa)
   document.querySelectorAll('.pd-variant-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -215,7 +270,8 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
     border-bottom: 1px solid rgba(201,185,154,0.15);
   }
 
-  /* IMMAGINE */
+  /* GALLERIA */
+  .pd-gallery { display: flex; flex-direction: column; gap: 8px; }
   .pd-img-wrap {
     position: relative;
     aspect-ratio: 4/3;
@@ -227,6 +283,7 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
     inset: 0;
     background-size: cover;
     background-position: center;
+    transition: opacity 0.18s ease;
   }
   .pd-badge {
     position: absolute;
@@ -239,6 +296,31 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
     background: var(--terra);
     color: #fff;
     padding: 5px 12px;
+    z-index: 1;
+  }
+  .pd-thumbs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pd-thumb {
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+    overflow: hidden;
+  }
+  .pd-thumb:hover { border-color: rgba(201,185,154,0.5); }
+  .pd-thumb.active { border-color: var(--terra); }
+  .pd-thumb-img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
   }
 
   /* INFO */

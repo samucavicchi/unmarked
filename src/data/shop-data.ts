@@ -25,7 +25,8 @@ export type ShopProduct = {
   tag: ShopTag;
   price: number;              // prezzo base / "a partire da" se ci sono varianti
   stripePriceId: string;      // price ID default (o variante base)
-  image: string;
+  image: string;              // immagine principale (card + og) — usata anche come fallback
+  stripeProductId?: string;  // prod_xxx — se presente, le immagini vengono prese da Stripe
   description: string;        // breve — usata nella card
   fullDescription?: string;   // lunga — usata nella pagina prodotto
   details?: string[];         // bullet point — usati nella pagina prodotto
@@ -50,6 +51,7 @@ export const shopProducts: ShopProduct[] = [
     price: 29,
     stripePriceId: 'price_1TgRVkLV5vyDSjg1tujK08zU',
     image: '/shop/preset-desert-light.jpg',
+    stripeProductId: 'prod_xxx_desert_light', // → sostituire con Product ID Stripe (prod_xxx)
     description: '18 preset Lightroom per luce desertica e artica. Calibrati su Sony, Nikon e Canon. Compatibili con Lightroom Classic, CC e mobile.',
     fullDescription: 'Questi preset nascono da anni di riprese nel deserto namibiano e sugli altipiani islandesi. Non sono filtri da applicare e dimenticare — sono punti di partenza calibrati sulla luce reale di quei posti, pensati per chi vuole un risultato che sembri girato sul campo e non su un monitor.',
     details: [
@@ -74,6 +76,7 @@ export const shopProducts: ShopProduct[] = [
     price: 69,                                      // prezzo base (A4)
     stripePriceId: 'price_namibia_a4',              // → sostituire con Price ID Stripe per A4
     image: '/shop/print-africa-giraffa.jpg',
+    stripeProductId: 'prod_xxx_namibia_dune', // → sostituire con Product ID Stripe (prod_xxx)
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
     fullDescription: 'Le dune del Sossusvlei all\'alba, prima che arrivino i pullman. Questa foto è stata scattata dopo due ore di cammino nel buio — il risultato è quella luce radente che colora le creste di rosso e lascia le valli in ombra. Una delle immagini che più mi rappresenta.',
     details: [
@@ -103,6 +106,7 @@ export const shopProducts: ShopProduct[] = [
     price: 69,                                      // prezzo base (A4)
     stripePriceId: 'price_islanda_a4',              // → sostituire con Price ID Stripe per A4
     image: '/shop/print-islanda-theedgeoficeland.jpg',
+    stripeProductId: 'prod_xxx_islanda_aldeyarfoss', // → sostituire con Product ID Stripe (prod_xxx)
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
     fullDescription: 'Aldeyarfoss è una cascata che non trovi sui cartelloni. Ci si arriva su una strada sterrata nel nord dell\'Islanda, e la cosa che colpisce è il contrasto tra il basalto nero delle colonne e il bianco dell\'acqua. Questa foto è stata scattata in una mattina di giugno con luce diffusa — nessun cielo spettacolare, solo forma e materia.',
     details: [
@@ -131,6 +135,7 @@ export const shopProducts: ShopProduct[] = [
     price: 24,
     stripePriceId: 'price_1TgRkPLV5vyDSjg1msBILyOt',
     image: '/shop/travel-beauty.jpg',
+    stripeProductId: 'prod_xxx_tote_bag', // → sostituire con Product ID Stripe (prod_xxx)
     description: 'Tote bag in canvas naturale pesante (400g). Stampa serigrafica in bianco. Manici lunghi. Dimensioni 38×42 cm.',
     fullDescription: 'Una borsa che va in aereo, al mercato e in darkroom. Canvas naturale pesante, stampa serigrafica a mano con inchiostro bianco. Nessun logo urlato — solo "Unmarked" in piccolo sulla tasca frontale.',
     details: [
