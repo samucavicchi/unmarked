@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Pagina non trovata — Unmarked" description="La pagina che cerchi non esiste o è stata spostata.">
+
+  <div class="nf-wrap">
+    <div class="nf-deco" aria-hidden="true">404</div>
+    <div class="nf-inner">
+      <div class="nf-label">Pagina non trovata</div>
+      <h1 class="nf-title">Hai preso<br/>una strada<br/>che non esiste.</h1>
+      <p class="nf-sub">La pagina che cerchi è stata spostata, rimossa o non è mai esistita. Succede anche ai migliori navigatori.</p>
+      <div class="nf-actions">
+        <a href="/" class="nf-btn-primary">Torna alla home →</a>
+        <a href="/itinerari" class="nf-btn-secondary">Esplora gli itinerari</a>
+      </div>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .nf-wrap {
+    position: relative;
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dark);
+    overflow: hidden;
+    padding: 80px 40px;
+  }
+
+  .nf-deco {
+    position: absolute;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(160px, 28vw, 360px);
+    font-weight: 300;
+    color: rgba(201,185,154,0.06);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    user-select: none;
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  .nf-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    text-align: center;
+  }
+
+  .nf-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .nf-label::before,
+  .nf-label::after {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--terra);
+    opacity: 0.5;
+  }
+
+  .nf-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .nf-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.45);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nf-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nf-btn-primary {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #FAFAF8;
+    text-decoration: none;
+    background: var(--terra);
+    padding: 14px 28px;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .nf-btn-primary:hover { opacity: 0.85; }
+
+  .nf-btn-secondary {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.55);
+    text-decoration: none;
+    border: 1px solid rgba(201,185,154,0.25);
+    padding: 14px 28px;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .nf-btn-secondary:hover {
+    border-color: rgba(201,185,154,0.55);
+    color: rgba(250,250,248,0.9);
+  }
+
+  @media (max-width: 600px) {
+    .nf-wrap { padding: 60px 24px; }
+    .nf-actions { flex-direction: column; align-items: center; }
+    .nf-btn-primary,
+    .nf-btn-secondary { width: 100%; text-align: center; box-sizing: border-box; }
+  }
+</style>
