@@ -16,12 +16,13 @@ const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
 export const POST: APIRoute = async ({ request, locals, url }) => {
   try {
     const body = await request.json();
-    const { type, slug, price, title, productId } = body as {
+    const { type, slug, price, title, productId, variantPriceId } = body as {
       type: 'subscription' | 'single' | 'shop';
       slug?: string;
       price?: number;
       title?: string;
       productId?: string;
+      variantPriceId?: string; // Price ID variante (es. formato stampa A4/A3/A2)
     };
 
     // Auth — utente loggato (opzionale: il pagamento funziona anche senza account)
@@ -111,10 +112,13 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
         ? `${origin}/download?session={CHECKOUT_SESSION_ID}`
         : `${origin}/shop/grazie?session={CHECKOUT_SESSION_ID}`;
 
+      // Usa il price ID della variante selezionata (es. A4/A3/A2), altrimenti quello base del prodotto
+      const activePriceId = variantPriceId ?? product.stripePriceId;
+
       session = await stripe.checkout.sessions.create({
         mode: 'payment',
         payment_method_types: ['card'],
-        line_items: [{ price: product.stripePriceId, quantity: 1 }],
+        line_items: [{ price: activePriceId, quantity: 1 }],
         success_url: shopSuccessUrl,
         cancel_url: `${origin}/shop`,
         ...(isDigital ? {} : {

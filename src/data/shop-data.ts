@@ -10,20 +10,28 @@ export type DigitalTag = 'preset' | 'lut' | 'sfx' | 'flare';
 export type PhysicalTag = 'maps' | 'prints' | 'gear';
 export type ShopTag = DigitalTag | PhysicalTag;
 
+export type ProductVariant = {
+  label: string;        // "A4", "A3", "A2"
+  size?: string;        // "21×29 cm"
+  price: number;
+  stripePriceId: string;
+};
+
 export type ShopProduct = {
   id: string;
   title: string;
   subtitle: string;
   type: 'digital' | 'physical';
   tag: ShopTag;
-  price: number;
-  stripePriceId: string;
+  price: number;              // prezzo base / "a partire da" se ci sono varianti
+  stripePriceId: string;      // price ID default (o variante base)
   image: string;
   description: string;        // breve — usata nella card
   fullDescription?: string;   // lunga — usata nella pagina prodotto
   details?: string[];         // bullet point — usati nella pagina prodotto
   badge?: string;
   available: boolean;
+  variants?: ProductVariant[]; // opzioni (taglie, formati…)
   // Solo per digitali
   downloadPath?: string;
   // Solo per fisici
@@ -60,18 +68,17 @@ export const shopProducts: ShopProduct[] = [
   {
     id: 'print-namibia-dune',
     title: 'Namibia — Le dune',
-    subtitle: 'Fine Art Print · 30×40 cm',
+    subtitle: 'Fine Art Print',
     type: 'physical',
     tag: 'prints',
-    price: 89,
-    stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl',
+    price: 69,                                      // prezzo base (A4)
+    stripePriceId: 'price_namibia_a4',              // → sostituire con Price ID Stripe per A4
     image: '/shop/print-africa-giraffa.jpg',
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
     fullDescription: 'Le dune del Sossusvlei all\'alba, prima che arrivino i pullman. Questa foto è stata scattata dopo due ore di cammino nel buio — il risultato è quella luce radente che colora le creste di rosso e lascia le valli in ombra. Una delle immagini che più mi rappresenta.',
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Formato 30×40 cm',
-      'Tiratura limitata: 50 esemplari',
+      'Tiratura limitata: 50 esemplari per formato',
       'Firmata e numerata a mano',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
@@ -81,22 +88,26 @@ export const shopProducts: ShopProduct[] = [
     available: true,
     shipping: true,
     shippingCountries: [],
+    variants: [
+      { label: 'A4', size: '21×29 cm', price: 69,  stripePriceId: 'price_namibia_a4' },
+      { label: 'A3', size: '30×42 cm', price: 89,  stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl' },
+      { label: 'A2', size: '42×59 cm', price: 129, stripePriceId: 'price_namibia_a2' },
+    ],
   },
   {
     id: 'print-islanda-aldeyarfoss',
     title: 'Islanda — Aldeyarfoss',
-    subtitle: 'Fine Art Print · 30×40 cm',
+    subtitle: 'Fine Art Print',
     type: 'physical',
     tag: 'prints',
-    price: 89,
-    stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq',
+    price: 69,                                      // prezzo base (A4)
+    stripePriceId: 'price_islanda_a4',              // → sostituire con Price ID Stripe per A4
     image: '/shop/print-islanda-theedgeoficeland.jpg',
     description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
     fullDescription: 'Aldeyarfoss è una cascata che non trovi sui cartelloni. Ci si arriva su una strada sterrata nel nord dell\'Islanda, e la cosa che colpisce è il contrasto tra il basalto nero delle colonne e il bianco dell\'acqua. Questa foto è stata scattata in una mattina di giugno con luce diffusa — nessun cielo spettacolare, solo forma e materia.',
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Formato 30×40 cm',
-      'Tiratura limitata: 50 esemplari',
+      'Tiratura limitata: 50 esemplari per formato',
       'Firmata e numerata a mano',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
@@ -105,6 +116,11 @@ export const shopProducts: ShopProduct[] = [
     available: true,
     shipping: true,
     shippingCountries: [],
+    variants: [
+      { label: 'A4', size: '21×29 cm', price: 69,  stripePriceId: 'price_islanda_a4' },
+      { label: 'A3', size: '30×42 cm', price: 89,  stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq' },
+      { label: 'A2', size: '42×59 cm', price: 129, stripePriceId: 'price_islanda_a2' },
+    ],
   },
   {
     id: 'tote-bag-unmarked',

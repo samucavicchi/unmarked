@@ -73,9 +73,33 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
           </ul>
         )}
 
+        {product.variants && product.variants.length > 0 && (
+          <div class="pd-variants">
+            <div class="pd-variants-label">Formato</div>
+            <div class="pd-variants-grid">
+              {product.variants.map((v, i) => (
+                <button
+                  class={`pd-variant-btn${i === 0 ? ' active' : ''}`}
+                  data-price={v.price}
+                  data-price-id={v.stripePriceId}
+                >
+                  <span class="pd-variant-label">{v.label}</span>
+                  {v.size && <span class="pd-variant-size">{v.size}</span>}
+                  <span class="pd-variant-price">€{v.price}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div class="pd-buy">
-          <div class="pd-price">€{product.price}</div>
-          <button class="pd-buy-btn" id="buy-btn" data-product-id={product.id}>
+          <div class="pd-price" id="pd-price">€{product.price}</div>
+          <button
+            class="pd-buy-btn"
+            id="buy-btn"
+            data-product-id={product.id}
+            data-price-id={product.variants ? product.variants[0].stripePriceId : product.stripePriceId}
+          >
             {isDigital ? 'Acquista e scarica' : 'Acquista'}
           </button>
         </div>
@@ -113,29 +137,46 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
 
 </BaseLayout>
 
-<script>
-  document.getElementById('buy-btn')?.addEventListener('click', async () => {
-    const btn = document.getElementById('buy-btn') as HTMLButtonElement;
-    const productId = btn.dataset.productId;
+<script is:inline>
+  // Selezione variante (formato stampa)
+  document.querySelectorAll('.pd-variant-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.pd-variant-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var price = btn.dataset.price;
+      var priceId = btn.dataset.priceId;
+      var priceEl = document.getElementById('pd-price');
+      var buyBtn = document.getElementById('buy-btn');
+      if (priceEl && price) priceEl.textContent = '€' + price;
+      if (buyBtn && priceId) buyBtn.dataset.priceId = priceId;
+    });
+  });
+
+  // Checkout
+  document.getElementById('buy-btn')?.addEventListener('click', async function() {
+    var btn = document.getElementById('buy-btn');
+    var productId = btn.dataset.productId;
+    var variantPriceId = btn.dataset.priceId || null;
+    var label = btn.textContent;
     btn.textContent = '...';
     btn.disabled = true;
     try {
-      const res = await fetch('/api/checkout', {
+      var res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'shop', productId }),
+        body: JSON.stringify({ type: 'shop', productId, variantPriceId }),
       });
-      const data = await res.json();
+      var data = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
         alert('Errore durante il checkout. Riprova.');
-        btn.textContent = 'Acquista';
+        btn.textContent = label;
         btn.disabled = false;
       }
-    } catch {
+    } catch(e) {
       alert('Errore di rete. Riprova.');
-      btn.textContent = 'Acquista';
+      btn.textContent = label;
       btn.disabled = false;
     }
   });
@@ -265,6 +306,55 @@ const otherProducts = shopProducts.filter(p => p.available && p.id !== id).slice
     background: var(--terra);
     flex-shrink: 0;
     margin-top: 6px;
+  }
+
+  /* VARIANTI */
+  .pd-variants { margin-bottom: 28px; }
+  .pd-variants-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .pd-variants-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pd-variant-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 14px 20px;
+    border: 1px solid rgba(201,185,154,0.3);
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    min-width: 80px;
+  }
+  .pd-variant-btn:hover { border-color: var(--terra); }
+  .pd-variant-btn.active {
+    border-color: var(--terra);
+    background: rgba(196,133,90,0.06);
+  }
+  .pd-variant-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--dark);
+    line-height: 1;
+  }
+  .pd-variant-size {
+    font-size: 9px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .pd-variant-price {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--terra);
+    margin-top: 4px;
+    letter-spacing: 0.06em;
   }
 
   /* BUY */
