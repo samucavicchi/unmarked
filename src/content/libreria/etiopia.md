@@ -18,7 +18,7 @@ essentialToKnow:
   - title: Altitudine
     description: Addis Abeba è a 2355 metri — possibile mal d'altitudine nei primi giorni. Le highland del nord arrivano a 3000 metri. Il corpo si adatta in 48 ore, ma il primo giorno va preso con calma.
   - title: Cibo
-    description: L'injera — il pane acido fermentato su cui si mangia tutto — divide le opinioni al primo impatto e le conquista al secondo. Il caffè etiopico è la versione originale di tutto quello che bevi altrove. Cerimonia del caffè: non rifiutarla mai.
+    description: "L'injera — il pane acido fermentato su cui si mangia tutto — divide le opinioni al primo impatto e le conquista al secondo. Il caffè etiopico è la versione originale di tutto quello che bevi altrove. Cerimonia del caffè: non rifiutarla mai."
 mapCenter:
   lat: 9.0
   lng: 39.0

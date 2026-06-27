@@ -16,7 +16,7 @@ essentialToKnow:
   - title: Visto
     description: Nessun visto per la maggior parte dei passaporti europei — ingresso libero per un anno. È una delle frontiere più aperte del continente.
   - title: Budget
-    description: Tra i paesi più economici d'Europa. Una bottiglia di vino naturale artigianale costa 5–8 euro al produttore. Un pasto completo con vino in un ristorante di qualità: 15–20 euro a persona.
+    description: "Tra i paesi più economici d'Europa. Una bottiglia di vino naturale artigianale costa 5–8 euro al produttore. Un pasto completo con vino in un ristorante di qualità: 15–20 euro a persona."
   - title: Lingua
     description: Il georgiano ha un alfabeto proprio — uno dei più antichi del mondo. L'inglese funziona bene nelle città, meno in montagna. Il russo è ancora molto parlato dalla generazione over 40.
 mapCenter:
