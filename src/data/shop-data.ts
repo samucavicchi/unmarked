@@ -68,35 +68,7 @@ export const shopProducts: ShopProduct[] = [
 
   // ─── FISICI ──────────────────────────────────────────────────
  
-  {
-    id: 'print-islanda-aldeyarfoss',
-    title: 'Islanda — Aldeyarfoss',
-    subtitle: 'Fine Art Print',
-    type: 'physical',
-    tag: 'prints',
-    price: 69,                                      // prezzo base (A4)
-    stripePriceId: 'price_islanda_a4',              // → sostituire con Price ID Stripe per A4
-    image: '/shop/print-islanda-theedgeoficeland.jpg',
-    stripeProductId: 'prod_xxx_islanda_aldeyarfoss', // → sostituire con Product ID Stripe (prod_xxx)
-    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
-    fullDescription: 'Aldeyarfoss è una cascata che non trovi sui cartelloni. Ci si arriva su una strada sterrata nel nord dell\'Islanda, e la cosa che colpisce è il contrasto tra il basalto nero delle colonne e il bianco dell\'acqua. Questa foto è stata scattata in una mattina di giugno con luce diffusa — nessun cielo spettacolare, solo forma e materia.',
-    details: [
-      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Tiratura limitata: 50 esemplari per formato',
-      'Firmata e numerata a mano',
-      'Consegnata con certificato di autenticità',
-      'Spedita in tubo rigido protettivo',
-      'Prodotta su ordinazione in 5–7 giorni lavorativi',
-    ],
-    available: true,
-    shipping: true,
-    shippingCountries: [],
-    variants: [
-      { label: 'A4', size: '21×29 cm', price: 69,  stripePriceId: 'price_islanda_a4' },
-      { label: 'A3', size: '30×42 cm', price: 89,  stripePriceId: 'price_1TgRgILV5vyDSjg1K5Ur98zq' },
-      { label: 'A2', size: '42×59 cm', price: 129, stripePriceId: 'price_islanda_a2' },
-    ],
-  },
+  
   {
     id: 'iceland-maps',
     title: 'Iceland Maps',
