@@ -39,6 +39,56 @@ function getHoverImage(product: typeof shopProducts[0]): string | undefined {
     <div class="sh-hero-deco" aria-hidden="true">S</div>
   </section>
 
+  <!-- FISICI -->
+  {physical.length > 0 && (
+    <section class="sh-section" data-section="physical">
+      <div class="sh-section-head">
+        <div class="sh-section-label">Fisico</div>
+        <span class="sh-section-count">{physical.length} {physical.length === 1 ? 'prodotto' : 'prodotti'}</span>
+        <div class="sh-section-line"></div>
+        <span class="sh-section-note">Spedito in tutta Europa</span>
+      </div>
+
+      <div class="sh-filters" data-filter-group="physical">
+        <button class="sh-filter active" data-filter="all">Tutti</button>
+        {physicalTags.map(tag => {
+          const hasProducts = physical.some(p => p.tag === tag);
+          return (
+            <button
+              class={`sh-filter${!hasProducts ? ' sh-filter-empty' : ''}`}
+              data-filter={tag}
+            >{tag}</button>
+          );
+        })}
+      </div>
+
+      <div class="sh-grid sh-grid-physical" data-grid="physical">
+        {physical.map(product => (
+          <a href={`/shop/${product.id}`} class="sh-card sh-card-physical" data-tag={product.tag}>
+            <div class="sh-card-img-wrap">
+              <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
+              {getHoverImage(product) && <div class="sh-card-img-hover" style={`background-image: url('${getHoverImage(product)}')`}></div>}
+              {product.badge && <div class="sh-badge">{product.badge}</div>}
+              <div class="sh-card-overlay">
+                <span class="sh-overlay-cta">Scopri →</span>
+              </div>
+            </div>
+            <div class="sh-card-body">
+              <div class="sh-card-top">
+                <div>
+                  <div class="sh-card-sub">{product.subtitle}</div>
+                  <h2 class="sh-card-title">{product.title}</h2>
+                </div>
+                <div class="sh-price">€{product.price}</div>
+              </div>
+              <p class="sh-card-desc">{product.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
   <!-- DIGITALI -->
   {digital.length > 0 && (
     <section class="sh-section" data-section="digital">
@@ -85,56 +135,6 @@ function getHoverImage(product: typeof shopProducts[0]): string | undefined {
               <div class="sh-card-cta">
                 <span class="sh-cta-btn">Scopri il prodotto →</span>
               </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  <!-- FISICI -->
-  {physical.length > 0 && (
-    <section class="sh-section" data-section="physical">
-      <div class="sh-section-head">
-        <div class="sh-section-label">Fisico</div>
-        <span class="sh-section-count">{physical.length} {physical.length === 1 ? 'prodotto' : 'prodotti'}</span>
-        <div class="sh-section-line"></div>
-        <span class="sh-section-note">Spedito in tutta Europa</span>
-      </div>
-
-      <div class="sh-filters" data-filter-group="physical">
-        <button class="sh-filter active" data-filter="all">Tutti</button>
-        {physicalTags.map(tag => {
-          const hasProducts = physical.some(p => p.tag === tag);
-          return (
-            <button
-              class={`sh-filter${!hasProducts ? ' sh-filter-empty' : ''}`}
-              data-filter={tag}
-            >{tag}</button>
-          );
-        })}
-      </div>
-
-      <div class="sh-grid sh-grid-physical" data-grid="physical">
-        {physical.map(product => (
-          <a href={`/shop/${product.id}`} class="sh-card sh-card-physical" data-tag={product.tag}>
-            <div class="sh-card-img-wrap">
-              <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
-              {getHoverImage(product) && <div class="sh-card-img-hover" style={`background-image: url('${getHoverImage(product)}')`}></div>}
-              {product.badge && <div class="sh-badge">{product.badge}</div>}
-              <div class="sh-card-overlay">
-                <span class="sh-overlay-cta">Scopri →</span>
-              </div>
-            </div>
-            <div class="sh-card-body">
-              <div class="sh-card-top">
-                <div>
-                  <div class="sh-card-sub">{product.subtitle}</div>
-                  <h2 class="sh-card-title">{product.title}</h2>
-                </div>
-                <div class="sh-price">€{product.price}</div>
-              </div>
-              <p class="sh-card-desc">{product.description}</p>
             </div>
           </a>
         ))}
