@@ -287,13 +287,26 @@ Quando chiedi a Claude di aggiungere un prodotto, usa questi bullet come base:
 - Spedita in tubo rigido protettivo
 - Prodotta su ordinazione in 5–7 giorni lavorativi
 
-**Stampe (`tag: 'prints'`)**
+**Stampe multi-formato (`tag: 'prints'`) — 3 misure A4 / A3 / A2**
 - Stampa fine art su carta Hahnemühle Photo Rag 308g
 - Tiratura limitata: 50 esemplari per formato
 - Firmata e numerata a mano
 - Consegnata con certificato di autenticità
 - Spedita in tubo rigido protettivo
 - Prodotta su ordinazione in 5–7 giorni lavorativi
+
+Richiedono il campo `variants` con 3 Price ID separati su Stripe (uno per A4, uno per A3, uno per A2).
+
+**Stampe formato unico (`tag: 'prints'`) — dimensione decisa foto per foto**
+- Stampa fine art su carta Hahnemühle Photo Rag 308g
+- Tiratura limitata: [N] esemplari
+- Dimensioni: [es. 60×40 cm] ← da specificare ogni volta
+- Firmata e numerata a mano
+- Consegnata con certificato di autenticità
+- Spedita in tubo rigido protettivo
+- Prodotta su ordinazione in 5–7 giorni lavorativi
+
+Nessun campo `variants` — un solo prezzo e un solo Price ID Stripe.
 
 ---
 
