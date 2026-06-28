@@ -31,7 +31,7 @@ if (!SITE_URL) {
 }
 
 const stripe = new Stripe(STRIPE_KEY, { apiVersion: '2024-11-20.acacia' });
-const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.JPG', '.JPEG', '.PNG', '.WEBP']);
 
 // ─── Legge shop-data.ts per ottenere la mappa id → stripeProductId ───────────
 
