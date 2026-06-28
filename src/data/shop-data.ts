@@ -51,8 +51,8 @@ export const shopProducts: ShopProduct[] = [
     tag: 'preset',
     price: 29,
     stripePriceId: 'price_1TgRVkLV5vyDSjg1tujK08zU',
-    image: '/shop/preset-desert-light.jpg',
-    stripeProductId: 'prod_xxx_desert_light', // → sostituire con Product ID Stripe (prod_xxx)
+    image: '/shop/preset-desert-light/1.jpg',
+    stripeProductId: 'prod_Ufn5TmC33W7uuZ',
     description: '18 preset Lightroom per luce desertica e artica. Calibrati su Sony, Nikon e Canon. Compatibili con Lightroom Classic, CC e mobile.',
     fullDescription: 'Questi preset nascono da anni di riprese nel deserto namibiano e sugli altipiani islandesi. Non sono filtri da applicare e dimenticare — sono punti di partenza calibrati sulla luce reale di quei posti, pensati per chi vuole un risultato che sembri girato sul campo e non su un monitor.',
     details: [
