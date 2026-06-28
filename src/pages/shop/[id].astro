@@ -48,7 +48,7 @@ const hasGallery = allImages.length > 1;
       <!-- IMMAGINE + GALLERIA -->
       <div class="pd-gallery">
         <div class="pd-img-wrap">
-          <div class="pd-img" id="pd-main-img" style={`background-image: url('${allImages[0]}')`}></div>
+          <img class="pd-img" id="pd-main-img" src={allImages[0]} alt={product.title} />
           {product.badge && <div class="pd-badge">{product.badge}</div>}
         </div>
         {hasGallery && (
@@ -59,7 +59,7 @@ const hasGallery = allImages.length > 1;
                 data-src={src}
                 aria-label={`Immagine ${i + 1}`}
               >
-                <div class="pd-thumb-img" style={`background-image: url('${src}')`}></div>
+                <img class="pd-thumb-img" src={src} alt={`${product.title} ${i + 1}`} />
               </button>
             ))}
           </div>
@@ -173,7 +173,7 @@ const hasGallery = allImages.length > 1;
       if (main && src) {
         main.style.opacity = '0';
         setTimeout(function() {
-          main.style.backgroundImage = "url('" + src + "')";
+          main.src = src;
           main.style.opacity = '1';
         }, 180);
       }
@@ -263,15 +263,12 @@ const hasGallery = allImages.length > 1;
   .pd-gallery { display: flex; flex-direction: column; gap: 8px; }
   .pd-img-wrap {
     position: relative;
-    aspect-ratio: 4/3;
-    overflow: hidden;
     background: rgba(201,185,154,0.08);
   }
   .pd-img {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
+    display: block;
+    width: 100%;
+    height: auto;
     transition: opacity 0.18s ease;
   }
   .pd-badge {
@@ -308,8 +305,7 @@ const hasGallery = allImages.length > 1;
   .pd-thumb-img {
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
+    object-fit: cover;
   }
 
   /* INFO */
