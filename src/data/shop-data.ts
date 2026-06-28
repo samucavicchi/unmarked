@@ -25,7 +25,8 @@ export type ShopProduct = {
   tag: ShopTag;
   price: number;              // prezzo base / "a partire da" se ci sono varianti
   stripePriceId: string;      // price ID default (o variante base)
-  image: string;              // immagine principale (card + og) — usata anche come fallback
+  image: string;              // immagine principale (card)
+  hoverImage?: string;        // immagine mostrata al passaggio del mouse sulla card
   stripeProductId?: string;  // prod_xxx — se presente, le immagini vengono prese da Stripe
   description: string;        // breve — usata nella card
   fullDescription?: string;   // lunga — usata nella pagina prodotto

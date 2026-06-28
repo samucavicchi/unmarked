@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { shopProducts } from '../../data/shop-data';
+import fs from 'fs';
+import path from 'path';
 
 const available = shopProducts.filter(p => p.available);
 const digital = available.filter(p => p.type === 'digital');
@@ -8,6 +10,18 @@ const physical = available.filter(p => p.type === 'physical');
 
 const digitalTags = ['preset', 'lut', 'sfx', 'flare'] as const;
 const physicalTags = ['maps', 'prints', 'gear'] as const;
+
+// Ricava automaticamente l'ultima immagine della cartella come hover image
+function getHoverImage(product: typeof shopProducts[0]): string | undefined {
+  if (product.hoverImage) return product.hoverImage; // override manuale
+  const dir = path.join(process.cwd(), 'public', 'shop', product.id);
+  if (!fs.existsSync(dir)) return undefined;
+  const files = fs.readdirSync(dir)
+    .filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f))
+    .sort();
+  if (files.length <= 1) return undefined;
+  return `/shop/${product.id}/${files[files.length - 1]}`;
+}
 ---
 
 <BaseLayout
@@ -53,6 +67,7 @@ const physicalTags = ['maps', 'prints', 'gear'] as const;
           <a href={`/shop/${product.id}`} class="sh-card sh-card-digital" data-tag={product.tag}>
             <div class="sh-card-img-wrap">
               <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
+              {getHoverImage(product) && <div class="sh-card-img-hover" style={`background-image: url('${getHoverImage(product)}')`}></div>}
               {product.badge && <div class="sh-badge">{product.badge}</div>}
               <div class="sh-card-overlay">
                 <span class="sh-overlay-cta">Scopri →</span>
@@ -105,6 +120,7 @@ const physicalTags = ['maps', 'prints', 'gear'] as const;
           <a href={`/shop/${product.id}`} class="sh-card sh-card-physical" data-tag={product.tag}>
             <div class="sh-card-img-wrap">
               <div class="sh-card-img" style={`background-image: url('${product.image}')`}></div>
+              {getHoverImage(product) && <div class="sh-card-img-hover" style={`background-image: url('${getHoverImage(product)}')`}></div>}
               {product.badge && <div class="sh-badge">{product.badge}</div>}
               <div class="sh-card-overlay">
                 <span class="sh-overlay-cta">Scopri →</span>
@@ -322,6 +338,17 @@ const physicalTags = ['maps', 'prints', 'gear'] as const;
   .sh-grid-single .sh-card-img-wrap { aspect-ratio: 16/7; }
   .sh-grid-digital .sh-card-img-wrap { aspect-ratio: 4/3; }
 
+  .sh-card-img-hover {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1;
+  }
+  .sh-card:hover .sh-card-img-hover { opacity: 1; }
+
   .sh-card-img {
     position: absolute;
     inset: 0;
@@ -353,7 +380,7 @@ const physicalTags = ['maps', 'prints', 'gear'] as const;
     align-items: center;
     justify-content: center;
     transition: background 0.3s;
-    z-index: 1;
+    z-index: 2;
   }
   .sh-card:hover .sh-card-overlay { background: rgba(26,24,20,0.35); }
   .sh-overlay-cta {
