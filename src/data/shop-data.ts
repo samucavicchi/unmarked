@@ -67,36 +67,7 @@ export const shopProducts: ShopProduct[] = [
   },
 
   // ─── FISICI ──────────────────────────────────────────────────
-  {
-    id: 'print-namibia-dune',
-    title: 'Namibia — Le dune',
-    subtitle: 'Fine Art Print',
-    type: 'physical',
-    tag: 'prints',
-    price: 69,                                      // prezzo base (A4)
-    stripePriceId: 'price_namibia_a4',              // → sostituire con Price ID Stripe per A4
-    image: '/shop/print-africa-giraffa.jpg',
-    stripeProductId: 'prod_xxx_namibia_dune', // → sostituire con Product ID Stripe (prod_xxx)
-    description: 'Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 50 esemplari. Firmata e numerata.',
-    fullDescription: 'Le dune del Sossusvlei all\'alba, prima che arrivino i pullman. Questa foto è stata scattata dopo due ore di cammino nel buio — il risultato è quella luce radente che colora le creste di rosso e lascia le valli in ombra. Una delle immagini che più mi rappresenta.',
-    details: [
-      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Tiratura limitata: 50 esemplari per formato',
-      'Firmata e numerata a mano',
-      'Consegnata con certificato di autenticità',
-      'Spedita in tubo rigido protettivo',
-      'Prodotta su ordinazione in 5–7 giorni lavorativi',
-    ],
-    badge: 'Edizione limitata',
-    available: true,
-    shipping: true,
-    shippingCountries: [],
-    variants: [
-      { label: 'A4', size: '21×29 cm', price: 69,  stripePriceId: 'price_namibia_a4' },
-      { label: 'A3', size: '30×42 cm', price: 89,  stripePriceId: 'price_1TgReELV5vyDSjg1lGuxtptl' },
-      { label: 'A2', size: '42×59 cm', price: 129, stripePriceId: 'price_namibia_a2' },
-    ],
-  },
+ 
   {
     id: 'print-islanda-aldeyarfoss',
     title: 'Islanda — Aldeyarfoss',
