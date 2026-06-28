@@ -140,7 +140,7 @@ export const shopProducts: ShopProduct[] = [
     fullDescription: 'Arte murale ispirata ai paesaggi dell\'Islanda. Stampa fine art su carta Hahnemühle Photo Rag 308g.',
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Firmata e numerata a mano',
+      'Texture mappa originale Unmarked',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
       'Prodotta su ordinazione in 5–7 giorni lavorativi',
@@ -164,7 +164,7 @@ export const shopProducts: ShopProduct[] = [
     fullDescription: 'Quest\'opera d\'arte ritrae l\'Africa in un manto di giraffa con ombre di acacia, a simboleggiare la bellezza naturale, la ricchezza culturale e lo spirito selvaggio del continente. Le texture danno tridimensionalità e portano l\'ambiente in un\'immersione naturale.',
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
-      'Firmata e numerata a mano',
+      'Texture mappa originale Unmarked',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
       'Prodotta su ordinazione in 5–7 giorni lavorativi',

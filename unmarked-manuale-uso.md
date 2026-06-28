@@ -1,5 +1,5 @@
 # UNMARKED — Manuale d'uso quotidiano
-*Aggiornato al 9 Giugno 2026*
+*Aggiornato al 28 Giugno 2026*
 
 Documento operativo per gestire il sito da solo.
 Per l'architettura tecnica completa, vedi `unmarked-architettura.md`.
@@ -187,60 +187,111 @@ Carica le foto in `public/` e aggiorna i path.
 
 ## 12. Gestire lo Shop
 
-### Struttura
-- `src/data/shop-data.ts` — catalogo prodotti (unico file da modificare per prezzi, testi, immagini)
-- `src/pages/shop.astro` — vetrina pubblica `/shop`
-- `src/pages/download.astro` — pagina download per prodotti digitali `/download?session=...`
-- `src/pages/shop/grazie.astro` — conferma ordine per prodotti fisici `/shop/grazie?session=...`
+### File da conoscere
+- `src/data/shop-data.ts` — catalogo prodotti, **unico file da toccare**
+- `scripts/sync-product-images.mjs` — script che aggiorna le immagini su Stripe
+- `public/shop/[product-id]/` — cartelle immagini per ogni prodotto
 
-### Aggiungere o modificare un prodotto
+---
 
-1. Apri `src/data/shop-data.ts`
-2. Aggiungi un oggetto nell'array `shopProducts` seguendo la struttura esistente
-3. Crea il prodotto su **Stripe Dashboard → Products → Add product**
-   - Aggiungi nome, prezzo fisso in EUR
-   - Copia il **Price ID** (es. `price_1Pxxx...`) e incollalo nel campo `stripePriceId`
-4. Per i **digitali**: carica il file in `public/downloads/` con il nome indicato in `downloadPath`
-5. Carica l'immagine in `public/shop/` con il nome indicato in `image`
-6. Commit + push → Netlify rebuilda
+### Aggiungere un nuovo prodotto (checklist completa)
+
+**1. Crea il prodotto su Stripe**
+- Stripe Dashboard → Products → Add product
+- Inserisci nome e prezzo in EUR
+- Copia il **Price ID** (`price_xxx`) e il **Product ID** (`prod_xxx`) — li trovi nella pagina del prodotto
+
+**2. Aggiungi il prodotto in `src/data/shop-data.ts`**
+
+Copia la struttura da un prodotto esistente e adattala. Campi obbligatori:
+
+| Campo | Cosa mettere |
+|---|---|
+| `id` | Stringa unica senza spazi (es. `africa-maps`) — usata nell'URL `/shop/africa-maps` |
+| `title` | Nome del prodotto |
+| `subtitle` | Sottotitolo breve |
+| `type` | `'digital'` o `'physical'` |
+| `tag` | Digitali: `'preset'` `'lut'` `'sfx'` `'flare'` — Fisici: `'maps'` `'prints'` `'gear'` |
+| `price` | Prezzo base in euro (numero) |
+| `stripePriceId` | Il Price ID copiato da Stripe (`price_xxx`) |
+| `stripeProductId` | Il Product ID copiato da Stripe (`prod_xxx`) — serve per la galleria immagini |
+| `image` | `/shop/[product-id]/1.jpg` — immagine principale della card |
+| `available` | `true` per renderlo visibile |
+
+**3. Prepara le immagini**
+- Crea la cartella `public/shop/[product-id]/`
+- Metti dentro le foto rinominate `1.jpg`, `2.jpg`, `3.jpg`… (l'ordine è alfabetico)
+- La `1.jpg` è anche quella della card nella vetrina
+
+**4. Sincronizza le immagini su Stripe (prima del deploy)**
+
+Dal terminale, nella cartella del progetto:
+```
+npm run sync-images
+```
+Lo script legge le foto dalla cartella e aggiorna Stripe con gli URL pubblici.
+
+**5. Commit + push → deploy automatico**
+
+Netlify builda, fetcha le immagini da Stripe e le bake nelle pagine. Fatto.
+
+---
+
+### Aggiornare le immagini di un prodotto esistente
+
+1. Sostituisci o aggiungi foto in `public/shop/[product-id]/`
+2. Da terminale: `npm run sync-images`
+3. Commit + push → nuovo deploy
+
+---
+
+### Prodotti con varianti di formato (es. stampe A4 / A3 / A2)
+
+Aggiungi il campo `variants` in `shop-data.ts`:
+
+```ts
+variants: [
+  { label: 'A4', size: '21×29 cm', price: 69, stripePriceId: 'price_xxx_a4' },
+  { label: 'A3', size: '30×42 cm', price: 89, stripePriceId: 'price_xxx_a3' },
+  { label: 'A2', size: '42×59 cm', price: 129, stripePriceId: 'price_xxx_a2' },
+],
+```
+
+Ogni variante ha il suo Price ID separato su Stripe. Il campo `price` del prodotto diventa il prezzo base (A4).
+
+---
 
 ### Tipi di prodotto
 
-| Campo `type` | Comportamento checkout |
-|---|---|
-| `digital` | Stripe senza raccolta indirizzo → redirect a `/download?session=...` |
-| `physical` | Stripe con raccolta indirizzo spedizione → redirect a `/shop/grazie?session=...` |
-
-### Come funziona il download (digitali)
-
-1. Utente paga → Stripe redirect a `/download?session={id}`
-2. La pagina chiama Stripe per verificare `payment_status === 'paid'`
-3. Se ok: mostra il pulsante di download diretto al file in `public/downloads/`
-4. Se ko: mostra messaggio di errore con email supporto
-
-Il link non ha scadenza — l'utente può salvare la pagina o usare il link nell'email di conferma Stripe.
+| `type` | Checkout | Dopo il pagamento |
+|---|---|---|
+| `digital` | Senza raccolta indirizzo | Redirect a `/download?session=...` → download immediato |
+| `physical` | Con raccolta indirizzo spedizione | Redirect a `/shop/grazie?session=...` |
 
 ### Ordini fisici
 
-Gli ordini fisici non richiedono nessuna azione tecnica dal sito. Dopo il pagamento:
-1. Stripe ti invia email di conferma con indirizzo di spedizione
-2. Trovi tutti gli ordini su **Stripe Dashboard → Payments**
-3. Spedisci manualmente e segna come spedito (opzionale: usa Stripe Shipping nel dashboard)
+Nessuna azione tecnica richiesta dal sito. Dopo il pagamento:
+1. Stripe ti invia email con indirizzo di spedizione
+2. Tutti gli ordini sono su **Stripe Dashboard → Payments**
+3. Spedisci e segna come completato
 
-### Campi di shop-data.ts
+### Immagine su Stripe dashboard
 
-| Campo | Note |
-|---|---|
-| `id` | Stringa unica (es. `preset-desert-light`) — usata come chiave nel checkout |
-| `type` | `'digital'` o `'physical'` |
-| `price` | Solo per display — il prezzo reale è quello definito su Stripe |
-| `stripePriceId` | **Obbligatorio** — copiare da Stripe Dashboard |
-| `image` | Path relativo a `public/` (es. `/shop/preset.jpg`) |
-| `downloadPath` | Solo digitali — path al file in `public/downloads/` |
-| `shipping` | Solo fisici — `true` per abilitare raccolta indirizzo |
-| `shippingCountries` | Array ISO 3166-1 alpha-2 — vuoto `[]` = lista default (IT, DE, FR, GB, US...) |
-| `available` | `false` = prodotto nascosto dalla vetrina |
-| `badge` | Etichetta opzionale (es. "Bestseller", "Edizione limitata") |
+**Non serve impostarla.** Il sistema usa solo le immagini caricate tramite `npm run sync-images`. L'immagine singola nel pannello Stripe viene ignorata.
+
+---
+
+### Aggiungere un prodotto con Claude
+
+Se hai già la cartella immagini pronta in `public/shop/[product-id]/`, puoi delegare tutto a Claude. Digli:
+
+1. **Nome del prodotto** e se è digitale o fisico
+2. **Price ID** (`price_xxx`) e **Product ID** (`prod_xxx`) da Stripe
+3. **Tag** (`preset` / `lut` / `maps` / `prints` / `gear`…)
+4. **Descrizione** (anche due righe informali, la sistemo lui)
+5. Se ha **varianti** di formato (es. A4/A3/A2 con prezzi e Price ID diversi)
+
+Claude aggiorna `shop-data.ts`, esegue `sync-images` e ti dice quando fare commit + push.
 
 ---
 
@@ -255,4 +306,4 @@ Per cambiarlo: `/admin` → Black Book → location → toggle **"Anteprima pubb
 
 ---
 
-*Fine manuale v9 — 9 Giugno 2026.*
+*Fine manuale v10 — 28 Giugno 2026.*
