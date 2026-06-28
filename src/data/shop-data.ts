@@ -95,6 +95,33 @@ export const shopProducts: ShopProduct[] = [
   },
 
   {
+    id: 'eye-of-earth',
+    title: 'Eye of Earth',
+    subtitle: 'Fine Art Print',
+    type: 'physical',
+    tag: 'prints',
+    price: 799,
+    stripePriceId: 'price_1TnIECLV5vyDSjg1gjCmYAJI',
+    stripeProductId: 'prod_UmrydEUUs6Cn6D',
+    image: '/shop/eye-of-earth/1.jpg',
+    description: 'Una fessura lavica della penisola di Reykjanes ripresa dall\'alto. Lo sguardo del pianeta. Tiratura limitata 15 esemplari.',
+    fullDescription: 'La terra ci parla e ci guarda, uno dei posti migliori per poter sentire la sua presenza è l\'Islanda. Una delle fessure laviche della penisola Reykjanes, ripresa dall\'alto, ci mostra lo sguardo del nostro pianeta.',
+    details: [
+      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
+      'Tiratura limitata: 15 esemplari',
+      'Dimensioni: 70×100 cm',
+      'Firmata e numerata a mano',
+      'Consegnata con certificato di autenticità',
+      'Spedita in tubo rigido protettivo',
+      'Prodotta su ordinazione in 5–7 giorni lavorativi',
+    ],
+    badge: 'Edizione limitata',
+    available: true,
+    shipping: true,
+    shippingCountries: [],
+  },
+
+  {
     id: 'mirror-of-iceland',
     title: 'Mirror of Iceland',
     subtitle: 'Fine Art Print',
