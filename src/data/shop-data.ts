@@ -152,6 +152,33 @@ export const shopProducts: ShopProduct[] = [
   },
 
   {
+    id: 'mirror-of-iceland',
+    title: 'Mirror of Iceland',
+    subtitle: 'Fine Art Print',
+    type: 'physical',
+    tag: 'prints',
+    price: 599,
+    stripePriceId: 'price_1TnFxYLV5vyDSjg1XgzfJzIB',
+    stripeProductId: 'prod_UmpcTsHpf6z9gm',
+    image: '/shop/mirror-of-iceland/1.jpg',
+    description: 'Il Kirkjufell riflesso nel silenzio invernale islandese. Stampa fine art su carta Hahnemühle Photo Rag 308g. Tiratura limitata 20 esemplari.',
+    fullDescription: 'Una montagna sospesa tra cielo e acqua, riflessa nel silenzio di un paesaggio islandese invernale. Il Kirkjufell in una luce morbida dove neve, nuvole e riflessi si fondono in un\'atmosfera quasi irreale. Una stampa pensata per ambienti moderni, minimalisti e raffinati, capace di portare nello spazio la quiete potente dell\'Islanda.',
+    details: [
+      'Stampa fine art su carta Hahnemühle Photo Rag 308g',
+      'Tiratura limitata: 20 esemplari',
+      'Dimensioni: 100×70 cm',
+      'Firmata e numerata a mano',
+      'Consegnata con certificato di autenticità',
+      'Spedita in tubo rigido protettivo',
+      'Prodotta su ordinazione in 5–7 giorni lavorativi',
+    ],
+    badge: 'Edizione limitata',
+    available: true,
+    shipping: true,
+    shippingCountries: [],
+  },
+
+  {
     id: 'africa-maps',
     title: 'Africa Maps',
     subtitle: 'Arte murale',
