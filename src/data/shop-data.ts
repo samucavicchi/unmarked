@@ -141,6 +141,7 @@ export const shopProducts: ShopProduct[] = [
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
       'Texture mappa originale Unmarked',
+      'Dimensioni: 70×50 cm',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
       'Prodotta su ordinazione in 5–7 giorni lavorativi',
@@ -165,6 +166,7 @@ export const shopProducts: ShopProduct[] = [
     details: [
       'Stampa fine art su carta Hahnemühle Photo Rag 308g',
       'Texture mappa originale Unmarked',
+      'Dimensioni: 70×50 cm',
       'Consegnata con certificato di autenticità',
       'Spedita in tubo rigido protettivo',
       'Prodotta su ordinazione in 5–7 giorni lavorativi',

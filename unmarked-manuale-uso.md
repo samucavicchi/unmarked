@@ -275,6 +275,28 @@ Nessuna azione tecnica richiesta dal sito. Dopo il pagamento:
 2. Tutti gli ordini sono su **Stripe Dashboard → Payments**
 3. Spedisci e segna come completato
 
+### Template details per tipo prodotto
+
+Quando chiedi a Claude di aggiungere un prodotto, usa questi bullet come base:
+
+**Mappe (`tag: 'maps'`)**
+- Stampa fine art su carta Hahnemühle Photo Rag 308g
+- Texture mappa originale Unmarked
+- Dimensioni: 70×50 cm
+- Consegnata con certificato di autenticità
+- Spedita in tubo rigido protettivo
+- Prodotta su ordinazione in 5–7 giorni lavorativi
+
+**Stampe (`tag: 'prints'`)**
+- Stampa fine art su carta Hahnemühle Photo Rag 308g
+- Tiratura limitata: 50 esemplari per formato
+- Firmata e numerata a mano
+- Consegnata con certificato di autenticità
+- Spedita in tubo rigido protettivo
+- Prodotta su ordinazione in 5–7 giorni lavorativi
+
+---
+
 ### Immagine su Stripe dashboard
 
 **Non serve impostarla.** Il sistema usa solo le immagini caricate tramite `npm run sync-images`. L'immagine singola nel pannello Stripe viene ignorata.
