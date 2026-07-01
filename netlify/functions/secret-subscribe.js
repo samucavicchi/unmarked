@@ -2,9 +2,18 @@
 //
 // Aggiunge l'email a Brevo (lista 6) e manda una mail di risposta con la location segreta.
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' };
+  }
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { statusCode: 405, headers: CORS_HEADERS, body: 'Method Not Allowed' };
   }
 
   const { email } = JSON.parse(event.body || '{}');
@@ -12,6 +21,7 @@ exports.handler = async (event) => {
   if (!email || !email.includes('@')) {
     return {
       statusCode: 400,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: 'Email non valida' }),
     };
   }
@@ -40,6 +50,7 @@ exports.handler = async (event) => {
       const data = await contactRes.json();
       return {
         statusCode: 400,
+        headers: CORS_HEADERS,
         body: JSON.stringify({ error: data.message || 'Errore Brevo (contatto)' }),
       };
     }
@@ -150,12 +161,14 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ success: true }),
     };
 
   } catch (err) {
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: 'Errore server' }),
     };
   }
