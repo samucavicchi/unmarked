@@ -138,9 +138,6 @@ exports.handler = async (event) => {
               <p style="margin:0 0 8px;font-size:11px;font-weight:300;color:rgba(250,250,248,0.35);line-height:1.7;font-family:Arial,sans-serif;">
                 Tienila per te — o condividila solo con chi se lo merita.
               </p>
-              <p style="margin:0;font-size:10px;font-weight:300;color:rgba(250,250,248,0.2);font-family:Arial,sans-serif;">
-                Unmarked · <a href="https://unmarked.it" style="color:rgba(201,185,154,0.5);text-decoration:none;">unmarked.it</a>
-              </p>
             </td>
           </tr>
 
