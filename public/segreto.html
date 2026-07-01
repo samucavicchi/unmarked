@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una location segreta nelle Dolomiti — Unmarked</title>
+  <meta name="description" content="C'è un posto nelle Dolomiti che sembra l'Islanda. Lascia la tua email e te lo mandiamo subito.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:  #1A1814;
+      --terra: #C9B99A;
+      --cream: #F5F0E8;
+      --muted: rgba(250,250,248,0.42);
+      --sand:  rgba(201,185,154,0.6);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--dark);
+      color: #FAFAF8;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── LATO SINISTRO — immagine ── */
+    .left {
+      position: relative;
+      background: #0e0d0b;
+      overflow: hidden;
+    }
+    .left-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(26,24,20,0) 60%, rgba(26,24,20,0.95) 100%),
+        linear-gradient(to bottom, rgba(26,24,20,0.3) 0%, rgba(26,24,20,0) 40%);
+      z-index: 1;
+    }
+    /* Testo sovrapposto all'immagine */
+    .left-content {
+      position: absolute;
+      bottom: 48px;
+      left: 48px;
+      z-index: 2;
+      max-width: 340px;
+    }
+    .left-tag {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--terra);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-family: Arial, sans-serif;
+    }
+    .left-tag::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--terra);
+      display: block;
+    }
+    .left-quote {
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(250,250,248,0.7);
+      line-height: 1.6;
+    }
+
+    /* Placeholder grafico quando non c'è foto */
+    .left-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #1e1b16 0%, #111009 100%);
+    }
+    .left-placeholder-letter {
+      font-size: 320px;
+      font-weight: 300;
+      color: rgba(201,185,154,0.04);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ── LATO DESTRO — form ── */
+    .right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px;
+      border-left: 1px solid rgba(201,185,154,0.08);
+    }
+
+    .logo {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 64px;
+      font-family: Arial, sans-serif;
+    }
+
+    .eyebrow {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--sand);
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: #FAFAF8;
+      margin-bottom: 28px;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--terra);
+    }
+
+    .desc {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.85;
+      max-width: 380px;
+      margin-bottom: 48px;
+    }
+
+    /* Form */
+    .form-label {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sand);
+      display: block;
+      margin-bottom: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .form-row {
+      display: flex;
+      gap: 0;
+      max-width: 400px;
+    }
+    .form-input {
+      flex: 1;
+      background: rgba(201,185,154,0.06);
+      border: 1px solid rgba(201,185,154,0.2);
+      border-right: none;
+      color: #FAFAF8;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input::placeholder { color: rgba(250,250,248,0.25); }
+    .form-input:focus { border-color: rgba(201,185,154,0.5); }
+
+    .form-btn {
+      background: var(--terra);
+      border: 1px solid var(--terra);
+      color: #1A1814;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .form-btn:hover { background: #d4c4a8; }
+    .form-btn:disabled { opacity: 0.5; cursor: default; }
+
+    .form-note {
+      margin-top: 14px;
+      font-size: 10px;
+      font-weight: 300;
+      color: rgba(250,250,248,0.2);
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* Messaggio di successo */
+    .success {
+      display: none;
+      max-width: 400px;
+    }
+    .success-icon {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--terra);
+      margin-bottom: 20px;
+    }
+    .success h2 {
+      font-size: 30px;
+      font-weight: 300;
+      color: #FAFAF8;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .success p {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* Errore */
+    .form-error {
+      display: none;
+      margin-top: 12px;
+      font-size: 11px;
+      color: #e07070;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: auto;
+      padding-top: 48px;
+      border-top: 1px solid rgba(201,185,154,0.1);
+    }
+    .footer a {
+      font-size: 10px;
+      font-weight: 300;
+      color: rgba(201,185,154,0.35);
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      letter-spacing: 0.1em;
+    }
+    .footer a:hover { color: var(--terra); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      .page { grid-template-columns: 1fr; }
+      .left { display: none; }
+      .right { padding: 56px 28px; justify-content: flex-start; }
+      h1 { font-size: 40px; }
+      .logo { margin-bottom: 40px; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 34px; }
+      .form-row { flex-direction: column; }
+      .form-input { border-right: 1px solid rgba(201,185,154,0.2); border-bottom: none; }
+      .form-btn { width: 100%; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- SINISTRA -->
+  <div class="left">
+    <div class="left-placeholder">
+      <span class="left-placeholder-letter">U</span>
+    </div>
+    <div class="left-bg"></div>
+    <div class="left-content">
+      <div class="left-tag">Dolomiti · Italia</div>
+      <p class="left-quote">"Un angolo d'Italia che sembra l'Islanda."</p>
+    </div>
+  </div>
+
+  <!-- DESTRA -->
+  <div class="right">
+
+    <div class="logo">Unmarked</div>
+
+    <!-- Form view -->
+    <div id="form-view">
+      <div class="eyebrow">Location segreta</div>
+      <h1>C'è un posto<br>nelle Dolomiti<br>che <em>devi</em> vedere.</h1>
+      <p class="desc">
+        Una cascata di colonne basaltiche dove salta acqua cristallina. Un sentiero nel bosco, 10 minuti di cammino. Nessuna folla. Solo paesaggio puro.
+      </p>
+
+      <label class="form-label" for="email">La tua email</label>
+      <div class="form-row">
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          placeholder="nome@email.com"
+          autocomplete="email"
+          required
+        >
+        <button class="form-btn" id="submit-btn" type="button">
+          Ricevi la location →
+        </button>
+      </div>
+      <div class="form-error" id="form-error"></div>
+      <p class="form-note">
+        Ti mandiamo la location via mail — coordinate GPS incluse.<br>
+        Niente spam. Puoi cancellarti quando vuoi.
+      </p>
+    </div>
+
+    <!-- Success view -->
+    <div class="success" id="success-view">
+      <div class="success-icon">✓</div>
+      <h2>Controlla la tua email.</h2>
+      <p>Ti abbiamo mandato le coordinate e le istruzioni per raggiungere la cascata. A volte finisce nello spam — dai un'occhiata anche lì.</p>
+    </div>
+
+    <div class="footer">
+      <a href="https://unmarked.it">← Torna su unmarked.it</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const btn   = document.getElementById('submit-btn');
+  const input = document.getElementById('email');
+  const err   = document.getElementById('form-error');
+
+  btn.addEventListener('click', async () => {
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      showError('Inserisci un indirizzo email valido.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '...';
+    err.style.display = 'none';
+
+    try {
+      const res = await fetch('/.netlify/functions/secret-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      } else {
+        const data = await res.json();
+        showError(data.error || 'Qualcosa è andato storto. Riprova.');
+        btn.disabled = false;
+        btn.textContent = 'Ricevi la location →';
+      }
+    } catch (e) {
+      showError('Errore di connessione. Riprova.');
+      btn.disabled = false;
+      btn.textContent = 'Ricevi la location →';
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') btn.click();
+  });
+
+  function showError(msg) {
+    err.textContent = msg;
+    err.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
