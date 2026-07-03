@@ -1,29 +1,34 @@
 ---
-title: Capo Caccia
+title: Il Gladiatore point -  Campi Elisi
 country: Italia
-region: Sardegna
+region: Toscana
 continent: Europa
 type: Paesaggio
-lat: 40.561
-lng: 8.162
+lat: 43.0733
+lng: 11.6833
 publishDate: 2026-07-03
 status: published
-preview: false
-bestTime: Tramonto
-bestSeason: "Sempre "
-focalLength: Grandangolo per landscape, tele (70-200) per comprimere e rendere
-  lo scatto piu drammatico
-isoRange: Linee delle falesie come diagonale, mare a sinistra, roccia in primo
-  piano e promontorio sullo sfondo. Evita di mettere l’orizzonte al centro.
-access: Parcheggio piccolo, ma comodo sulla strada a pochi passi dai punti panoramici
-antiMainstream: Scatta dal basso o laterale usando la scalinata dell’Escala del
-  Cabirol come elemento grafico, oppure fai una lunga esposizione blu-hour con
-  il faro e il mare mosso.
-difficulty: Media
+preview: true
+bestTime: Tramonto/Alba
+bestSeason: Maggio-giugno per grano verde/dorato
+focalLength: Tele 70-200 mm per comprimere colline, cipressi e strada;
+  grandangolo solo se hai un primo piano forte.
+isoRange: Usa la strada bianca come linea guida a S, cipressi come verticali e
+  colline stratificate sullo sfondo.
+access: Da Pienza, vai verso sud lungo la Strada di Terrapille; la zona è circa
+  3 km dal centro. Meglio lasciare l’auto nei parcheggi pubblici di Pienza e
+  proseguire a piedi, rispettando campi e proprietà private.
+antiMainstream: "Evita la classica inquadratura “cartolina”: scatta molto basso
+  tra il grano, con solo la strada sfocata e i cipressi lontani, mood più
+  cinematografico."
+difficulty: Bassa
 avvicinamento: Bassa
-personalNote: Sempre bellissimo, ma in autunno inverno ha con mare mosso ha un
-  aspetto più drammatico e eviti i turisti
+equipment:
+  - Grandangolo
+  - Tele
+personalNote: "Non entrare nei campi coltivati: lavora dai margini della strada
+  e porta un tele, perché la foto migliore spesso si fa da lontano."
 images:
-  - src: /spotsbook/italia-sardegna-capocaccia.jpg
+  - src: /spotsbook/italia-toscana-valdorcia.png
 ---
-Capo Caccia è una lama di calcare che cade verticale nel mare della Sardegna nord-occidentale. Al tramonto le pareti si accendono di oro e rosa, mentre il blu profondo del Mediterraneo crea uno dei contrasti più forti della costa di Alghero.
+Una strada bianca che attraversa le colline morbide della Val d’Orcia, tra campi di grano e cipressi solitari. Qui il paesaggio sembra sospeso, quasi irreale, reso iconico dalla scena dei Campi Elisi de *Il Gladiatore*.
