@@ -33,7 +33,7 @@ personalNote: "Non andarci nelle ore centrali: luce durissima, zero ombre e
   caldo forte. Porta acqua, scarpe serie e controlla il meteo: con pioggia le
   piste argillose possono diventare complicate."
 images:
-  - src: /spotsbook/chatgpt-image-9-lug-2026-10_58_38-1-.png
   - src: /spotsbook/chatgpt-image-9-lug-2026-10_58_38-2-.png
+  - src: /spotsbook/gorafe-granada.jpeg
 ---
 Il Desierto de Gorafe è uno dei paesaggi più surreali dell’Andalusia: canyon, calanchi e pareti sedimentarie scolpite dall’erosione, con colori che cambiano dal grigio al bianco, dall’ocra al rosso intenso. Los Coloraos è il punto più cinematografico, quasi da southwest americano.
