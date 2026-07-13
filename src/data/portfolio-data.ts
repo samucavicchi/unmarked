@@ -1,20 +1,16 @@
 // PORTFOLIO DATA — file condiviso IT + EN
 // Modifica qui → si aggiorna su entrambe le pagine
 //
-// COME AGGIUNGERE UNA FOTO:
-//   src: '/portfolio/nome-file.jpg'  ← metti l'immagine in public/portfolio/
-//   hint: lascialo come nota interna (non appare se src è presente)
-//
-// COME AGGIUNGERE UN VIDEO:
-//   youtubeId: 'dQw4w9WgXcQ'  ← solo l'ID, non l'URL completo
+// FOTO: src: '/portfolio/nome-file.jpg'  ← file in public/portfolio/
+// VIDEO YT: youtubeId: 'ID'
+// VIDEO MP4: videoSrc: '/portfolio/video.mp4' + thumb: '/portfolio/cover.jpg' (opzionale)
+// TARIFFE: modifica i campi price, itemsIt, itemsEn
 
 export const portfolioData = {
 
   contactEmail: 'samu.cavicchi@gmail.com',
 
   // ── FOTOGRAFIA ──────────────────────────────────────────────
-  // Ogni gruppo = un brand. Ogni foto ha src (path immagine) e hint (nota placeholder).
-  // Quando metti l'src, il placeholder scompare automaticamente.
 
   photoGroups: [
     {
@@ -56,10 +52,9 @@ export const portfolioData = {
   ],
 
   // ── VIDEO ────────────────────────────────────────────────────
-  // youtubeId: 'ID'          → embed YouTube
-  // videoSrc: '/portfolio/video.mp4'  → video MP4 diretto (metti il file in public/portfolio/)
-  // Lascia entrambi vuoti per mostrare il placeholder
-  // descIt / descEn: sottotitolo sotto il video
+  // youtubeId → thumbnail auto da YouTube + overlay player
+  // videoSrc  → MP4 diretto; aggiungi thumb: '/portfolio/cover.jpg' per la card
+  // Entrambi vuoti = placeholder
 
   videos: [
     {
@@ -67,6 +62,7 @@ export const portfolioData = {
       title: 'The Hidden Path',
       youtubeId: 'G1LZG6bczmw',
       videoSrc: '',
+      thumb: '',
       descIt: 'Short film · Dolomiti → Carpazi · 8 min',
       descEn: 'Short film · Dolomites → Carpathians · 8 min',
     },
@@ -75,6 +71,7 @@ export const portfolioData = {
       title: 'Arctic Experts',
       youtubeId: 'QbsTXmn1Fx8',
       videoSrc: '',
+      thumb: '',
       descIt: 'Commercial · Svalbard · 40 sec',
       descEn: 'Commercial · Svalbard · 40 sec',
     },
@@ -83,6 +80,7 @@ export const portfolioData = {
       title: 'The Wind of Gorafe',
       youtubeId: '',
       videoSrc: '/portfolio/mazda-video-1.mp4',
+      thumb: '',  // ← opzionale: '/portfolio/gorafe-cover.jpg'
       descIt: 'Commercial · Gorafe · 40 sec',
       descEn: 'Commercial · Gorafe · 40 sec',
     },
@@ -91,16 +89,44 @@ export const portfolioData = {
       title: 'Oltre i confini',
       youtubeId: '',
       videoSrc: '/portfolio/namibia-video-1.mp4',
+      thumb: '',  // ← opzionale: '/portfolio/namibia-cover.jpg'
       descIt: 'Experience · Namibia · 30 sec',
       descEn: 'Experience · Namibia · 30 sec',
     },
   ],
 
+  // ── TARIFFE ──────────────────────────────────────────────────
+  // Modifica price e items per aggiornare entrambe le lingue
+
+  tariffe: [
+    {
+      id: 'social-media',
+      nameIt: 'Foto & Video Social Media',
+      nameEn: 'Photo & Video Social Media',
+      price: '2.500',
+      itemsIt: ['30 fotografie', '3 video reel'],
+      itemsEn: ['30 photographs', '3 video reels'],
+    },
+    {
+      id: 'commercial',
+      nameIt: 'Pacchetto Commercial',
+      nameEn: 'Commercial Package',
+      price: '3.999',
+      itemsIt: ['40 foto taglio commerciale', '10 clip video', '1 video commercial'],
+      itemsEn: ['40 commercial-cut photos', '10 video clips', '1 commercial video'],
+    },
+    {
+      id: 'social',
+      nameIt: 'Pacchetto Social',
+      nameEn: 'Social Package',
+      price: '1.999',
+      itemsIt: ['5 Instagram stories', '1 carosello', '2 reel condivisi'],
+      itemsEn: ['5 Instagram stories', '1 carousel', '2 shared reels'],
+    },
+  ],
+
   // ── CAMPAGNE ─────────────────────────────────────────────────
-  // tags/tagsEn: etichette tipo progetto
-  // descIt / descEn: descrizione estesa nel pannello aperto
-  // photos[]: array di src immagini (lascia '' per placeholder)
-  // youtubeId: '' = nessun video; metti l'ID per mostrare l'embed
+  // In pausa — da completare
 
   campaigns: [
     {

@@ -31,7 +31,7 @@ import { portfolioData as d } from '../data/portfolio-data';
             <span class="pf-photo-group-year">{group.year}</span>
           </div>
           <div class="pf-photo-grid">
-            {group.photos.map((photo, i) => (
+            {group.photos.map((photo) => (
               <div
                 class="pf-photo-item"
                 data-src={photo.src}
@@ -66,38 +66,75 @@ import { portfolioData as d } from '../data/portfolio-data';
       <div class="pf-label pf-label-light">Video</div>
 
       <div class="pf-video-grid">
-        {d.videos.map(video => (
-          <div class="pf-video-item">
-            <div class="pf-video-embed">
-              {video.youtubeId
-                ? <iframe src={`https://www.youtube.com/embed/${video.youtubeId}`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                : video.videoSrc
-                  ? <video src={video.videoSrc} controls playsinline preload="metadata"></video>
-                  : <div class="pf-video-placeholder">
-                      <div class="pf-play-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      </div>
-                      <span class="pf-placeholder-hint">{video.title}</span>
+        {d.videos.map(video => {
+          const thumb = video.youtubeId
+            ? `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`
+            : video.thumb || '';
+          const hasVideo = !!(video.youtubeId || video.videoSrc);
+          return (
+            <div
+              class={`pf-video-card${hasVideo ? ' is-clickable' : ''}`}
+              data-yt={video.youtubeId}
+              data-src={video.videoSrc}
+            >
+              <div class="pf-video-thumb" style={thumb ? `background-image:url('${thumb}')` : ''}>
+                {hasVideo && (
+                  <div class="pf-video-card-overlay">
+                    <div class="pf-play-btn">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     </div>
-              }
+                  </div>
+                )}
+                {!hasVideo && (
+                  <div class="pf-video-ph-inner">
+                    <div class="pf-play-btn pf-play-btn-muted">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div class="pf-video-meta">
+                {video.brand && <div class="pf-video-brand">{video.brand}</div>}
+                <div class="pf-video-title">{video.title}</div>
+                <div class="pf-video-desc">{video.descIt}</div>
+              </div>
             </div>
-            <div class="pf-video-meta">
-              {video.brand && <div class="pf-video-brand">{video.brand}</div>}
-              <div class="pf-video-title">{video.title}</div>
-              <div class="pf-video-desc">{video.descIt}</div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
     </div>
   </section>
 
-  <!-- ── CAMPAGNE ── -->
-  <section class="pf-section" id="campagne">
+  <!-- ── TARIFFE ── -->
+  <section class="pf-section" id="tariffe">
+    <div class="pf-inner">
+      <div class="pf-label">Tariffe</div>
+      <p class="pf-tariffe-intro">Pacchetti base — ogni progetto può essere personalizzato su misura.</p>
+
+      <div class="pf-tariffe-grid">
+        {d.tariffe.map((t, i) => (
+          <div class="pf-tariffa">
+            <div class="pf-tariffa-num">0{i + 1}</div>
+            <div class="pf-tariffa-name">{t.nameIt}</div>
+            <div class="pf-tariffa-price">€ {t.price}</div>
+            <ul class="pf-tariffa-items">
+              {t.itemsIt.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="pf-tariffe-note">
+        Tutti i prezzi sono IVA esclusa. Per progetti su misura o pacchetti combinati scrivici.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CAMPAGNE (in pausa) ── -->
+  <!-- <section class="pf-section" id="campagne">
     <div class="pf-inner">
       <div class="pf-label">Campagne</div>
-
       <div class="pf-cases">
         {d.campaigns.map(c => (
           <div class="pf-case" data-case={c.id}>
@@ -110,9 +147,7 @@ import { portfolioData as d } from '../data/portfolio-data';
                 </div>
               </div>
               <div class="pf-case-header-right">
-                <div class="pf-case-tags">
-                  {c.tags.map(tag => <span>{tag}</span>)}
-                </div>
+                <div class="pf-case-tags">{c.tags.map(tag => <span>{tag}</span>)}</div>
                 <div class="pf-case-arrow">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
                 </div>
@@ -123,17 +158,14 @@ import { portfolioData as d } from '../data/portfolio-data';
                 <p class="pf-case-desc">{c.descIt}</p>
                 <div class="pf-case-gallery">
                   {c.photos.map((src, i) => (
-                    <div
-                      class={`pf-case-photo${src ? '' : ' pf-case-photo-ph'}`}
-                      style={src ? `background-image:url('${src}')` : ''}
-                    >
+                    <div class={`pf-case-photo${src ? '' : ' pf-case-photo-ph'}`} style={src ? `background-image:url('${src}')` : ''}>
                       {!src && <span>Foto {i + 1}</span>}
                     </div>
                   ))}
                 </div>
                 {c.youtubeId && (
                   <div class="pf-case-film">
-                    <iframe src={`https://www.youtube.com/embed/${c.youtubeId}`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe src={`https://www.youtube.com/embed/${c.youtubeId}`} frameborder="0" allowfullscreen></iframe>
                   </div>
                 )}
               </div>
@@ -141,11 +173,10 @@ import { portfolioData as d } from '../data/portfolio-data';
           </div>
         ))}
       </div>
-
     </div>
-  </section>
+  </section> -->
 
-  <!-- ── CTA CONTATTO ── -->
+  <!-- ── CTA ── -->
   <section class="pf-section pf-cta-section">
     <div class="pf-inner pf-cta-inner">
       <div class="pf-cta-label">Lavoriamo insieme</div>
@@ -155,7 +186,7 @@ import { portfolioData as d } from '../data/portfolio-data';
     </div>
   </section>
 
-  <!-- LIGHTBOX -->
+  <!-- LIGHTBOX FOTO -->
   <div class="pf-lightbox" id="pf-lightbox" aria-hidden="true">
     <div class="pf-lb-backdrop"></div>
     <button class="pf-lb-close" aria-label="Chiudi">
@@ -170,30 +201,26 @@ import { portfolioData as d } from '../data/portfolio-data';
     </div>
   </div>
 
+  <!-- OVERLAY VIDEO -->
+  <div class="pf-video-lb" id="pf-video-lb" aria-hidden="true">
+    <div class="pf-vlb-backdrop"></div>
+    <button class="pf-vlb-close" aria-label="Chiudi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="pf-vlb-content">
+      <div class="pf-vlb-embed" id="pf-vlb-embed"></div>
+    </div>
+  </div>
+
 </BaseLayout>
 
 <script>
-  // ── ACCORDION ──
-  document.querySelectorAll('.pf-case-header').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      document.querySelectorAll('.pf-case-header').forEach(b => {
-        b.setAttribute('aria-expanded', 'false');
-        b.closest('.pf-case').classList.remove('is-open');
-      });
-      if (!expanded) {
-        btn.setAttribute('aria-expanded', 'true');
-        btn.closest('.pf-case').classList.add('is-open');
-      }
-    });
-  });
-
-  // ── LIGHTBOX ──
+  // ── LIGHTBOX FOTO ──
   const lb = document.getElementById('pf-lightbox');
   const lbImg = lb.querySelector('.pf-lb-img');
   const lbBrand = lb.querySelector('.pf-lb-brand');
 
-  function openLightbox(src, brand) {
+  function openPhoto(src, brand) {
     lbImg.src = src;
     lbImg.alt = brand;
     lbBrand.textContent = brand;
@@ -201,7 +228,7 @@ import { portfolioData as d } from '../data/portfolio-data';
     lb.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
-  function closeLightbox() {
+  function closePhoto() {
     lb.classList.remove('is-open');
     lb.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -210,13 +237,43 @@ import { portfolioData as d } from '../data/portfolio-data';
 
   document.querySelectorAll('.pf-photo-item[data-src]').forEach(item => {
     if (!item.dataset.src) return;
-    item.addEventListener('click', () => openLightbox(item.dataset.src, item.dataset.brand));
-    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(item.dataset.src, item.dataset.brand); });
+    item.addEventListener('click', () => openPhoto(item.dataset.src, item.dataset.brand));
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openPhoto(item.dataset.src, item.dataset.brand); });
   });
+  lb.querySelector('.pf-lb-backdrop').addEventListener('click', closePhoto);
+  lb.querySelector('.pf-lb-close').addEventListener('click', closePhoto);
 
-  lb.querySelector('.pf-lb-backdrop').addEventListener('click', closeLightbox);
-  lb.querySelector('.pf-lb-close').addEventListener('click', closeLightbox);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  // ── OVERLAY VIDEO ──
+  const vlb = document.getElementById('pf-video-lb');
+  const vlbEmbed = document.getElementById('pf-vlb-embed');
+
+  function openVideo(ytId, videoSrc) {
+    if (ytId) {
+      vlbEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" frameborder="0" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (videoSrc) {
+      vlbEmbed.innerHTML = `<video src="${videoSrc}" autoplay controls playsinline></video>`;
+    }
+    vlb.classList.add('is-open');
+    vlb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideo() {
+    vlb.classList.remove('is-open');
+    vlb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { vlbEmbed.innerHTML = ''; }, 300);
+  }
+
+  document.querySelectorAll('.pf-video-card.is-clickable').forEach(card => {
+    card.addEventListener('click', () => openVideo(card.dataset.yt, card.dataset.src));
+  });
+  vlb.querySelector('.pf-vlb-backdrop').addEventListener('click', closeVideo);
+  vlb.querySelector('.pf-vlb-close').addEventListener('click', closeVideo);
+
+  // ── ESC per chiudere tutto ──
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closePhoto(); closeVideo(); }
+  });
 </script>
 
 <style>
@@ -236,45 +293,15 @@ import { portfolioData as d } from '../data/portfolio-data';
     background: linear-gradient(to top, rgba(26,24,20,0.95) 0%, rgba(26,24,20,0.5) 100%);
   }
   .pf-hero-content { position: relative; padding: 56px; max-width: 860px; }
-  .pf-hero-tag {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 20px;
-  }
-  .pf-hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 72px;
-    font-weight: 300;
-    color: #FAFAF8;
-    line-height: 1.05;
-    margin: 0 0 20px;
-  }
-  .pf-hero-sub {
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(250,250,248,0.6);
-    line-height: 1.7;
-    max-width: 500px;
-  }
+  .pf-hero-tag { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); margin-bottom: 20px; }
+  .pf-hero-title { font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 300; color: #FAFAF8; line-height: 1.05; margin: 0 0 20px; }
+  .pf-hero-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.6); line-height: 1.7; max-width: 500px; }
 
   /* ── LAYOUT ── */
   .pf-section { padding: 80px 0; }
   .pf-section-dark { background: var(--dark); }
   .pf-inner { max-width: 1100px; margin: 0 auto; padding: 0 56px; }
-  .pf-label {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 48px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .pf-label { font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 48px; display: flex; align-items: center; gap: 12px; }
   .pf-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--terra); }
   .pf-label-light { color: var(--sand); }
   .pf-label-light::before { background: var(--sand); }
@@ -282,287 +309,98 @@ import { portfolioData as d } from '../data/portfolio-data';
   /* ── FOTOGRAFIA ── */
   .pf-photo-group { margin-bottom: 52px; }
   .pf-photo-group:last-child { margin-bottom: 0; }
-  .pf-photo-group-header {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    padding-bottom: 14px;
-    margin-bottom: 3px;
-    border-bottom: 1px solid var(--light-border);
-  }
-  .pf-photo-group-brand {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--dark);
-  }
-  .pf-photo-group-year {
-    font-size: 9px;
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-  }
+  .pf-photo-group-header { display: flex; align-items: baseline; gap: 16px; padding-bottom: 14px; margin-bottom: 3px; border-bottom: 1px solid var(--light-border); }
+  .pf-photo-group-brand { font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dark); }
+  .pf-photo-group-year { font-size: 9px; font-weight: 300; letter-spacing: 0.12em; color: var(--muted); }
   .pf-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-  .pf-photo-item {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-  }
+  .pf-photo-item { display: flex; flex-direction: column; cursor: pointer; }
   .pf-photo-item[data-src=""] { cursor: default; }
-  .pf-photo-placeholder {
-    aspect-ratio: 4/5;
-    background: var(--beige);
+  .pf-photo-placeholder { aspect-ratio: 4/5; background: var(--beige); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+  .pf-placeholder-hint { font-size: 9px; font-weight: 300; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; text-align: center; padding: 12px; }
+  .pf-photo-overlay { position: absolute; inset: 0; background: rgba(26,24,20,0.72); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; opacity: 0; transition: opacity 0.25s; }
+  .pf-photo-item:hover .pf-photo-overlay { opacity: 1; }
+  .pf-overlay-label { font-size: 8px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); }
+  .pf-overlay-brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: #FAFAF8; letter-spacing: 0.04em; }
+
+  /* ── VIDEO CARDS ── */
+  .pf-video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; }
+  .pf-video-card { display: flex; flex-direction: column; }
+  .pf-video-card.is-clickable { cursor: pointer; }
+  .pf-video-thumb {
+    aspect-ratio: 16/9;
+    background: rgba(250,250,248,0.06);
     background-size: cover;
     background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
   }
-  .pf-placeholder-hint {
-    font-size: 9px;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    text-align: center;
-    padding: 12px;
-  }
-
-  /* Hover overlay */
-  .pf-photo-overlay {
+  .pf-video-card-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(26,24,20,0.72);
+    background: rgba(26,24,20,0.35);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    opacity: 0;
-    transition: opacity 0.25s;
+    transition: background 0.25s;
   }
-  .pf-photo-item:hover .pf-photo-overlay { opacity: 1; }
-  .pf-overlay-label {
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--terra);
-  }
-  .pf-overlay-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 300;
+  .pf-video-card.is-clickable:hover .pf-video-card-overlay { background: rgba(26,24,20,0.55); }
+  .pf-video-ph-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .pf-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(250,250,248,0.15);
+    border: 1px solid rgba(250,250,248,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #FAFAF8;
-    letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.2s;
   }
+  .pf-play-btn svg { width: 22px; height: 22px; margin-left: 3px; }
+  .pf-video-card.is-clickable:hover .pf-play-btn { background: var(--terra); border-color: var(--terra); transform: scale(1.08); }
+  .pf-play-btn-muted { background: rgba(250,250,248,0.06); border-color: rgba(250,250,248,0.12); color: rgba(250,250,248,0.25); }
+  .pf-video-meta { padding: 16px 0 8px; }
+  .pf-video-brand { font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terra); margin-bottom: 5px; }
+  .pf-video-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: #FAFAF8; margin-bottom: 5px; }
+  .pf-video-desc { font-size: 11px; font-weight: 300; letter-spacing: 0.08em; color: rgba(250,250,248,0.35); }
 
-  /* Lightbox */
-  .pf-lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
+  /* ── TARIFFE ── */
+  .pf-tariffe-intro { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 48px; margin-top: -24px; }
+  .pf-tariffe-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--light-border); border: 1px solid var(--light-border); margin-bottom: 28px; }
+  .pf-tariffa { background: var(--cream); padding: 40px 36px; display: flex; flex-direction: column; gap: 16px; }
+  .pf-tariffa-num { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; color: var(--muted); letter-spacing: 0.06em; }
+  .pf-tariffa-name { font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dark); line-height: 1.5; }
+  .pf-tariffa-price { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: var(--terra); line-height: 1; margin: 4px 0; }
+  .pf-tariffa-items { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .pf-tariffa-items li { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.5; padding-left: 14px; position: relative; }
+  .pf-tariffa-items li::before { content: '—'; position: absolute; left: 0; color: var(--sand); font-size: 11px; }
+  .pf-tariffe-note { font-size: 11px; font-weight: 300; color: var(--muted); letter-spacing: 0.04em; line-height: 1.7; }
+
+  /* ── LIGHTBOX FOTO ── */
+  .pf-lightbox { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .pf-lightbox.is-open { opacity: 1; pointer-events: all; }
-  .pf-lb-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(26,24,20,0.94);
-  }
-  .pf-lb-close {
-    position: absolute;
-    top: 24px;
-    right: 28px;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: rgba(250,250,248,0.6);
-    z-index: 1;
-    transition: color 0.2s;
-  }
+  .pf-lb-backdrop { position: absolute; inset: 0; background: rgba(26,24,20,0.94); }
+  .pf-lb-close { position: absolute; top: 24px; right: 28px; width: 40px; height: 40px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.6); z-index: 1; transition: color 0.2s; }
   .pf-lb-close:hover { color: #FAFAF8; }
   .pf-lb-close svg { width: 24px; height: 24px; }
-  .pf-lb-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 90vw;
-    max-height: 90vh;
-  }
-  .pf-lb-img {
-    max-width: 90vw;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 2px;
-  }
-  .pf-lb-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .pf-lb-label {
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--terra);
-  }
-  .pf-lb-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 300;
-    color: rgba(250,250,248,0.7);
-  }
+  .pf-lb-content { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .pf-lb-img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: 2px; }
+  .pf-lb-meta { display: flex; align-items: center; gap: 12px; }
+  .pf-lb-label { font-size: 8px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); }
+  .pf-lb-brand { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: rgba(250,250,248,0.7); }
 
-  /* ── VIDEO ── */
-  .pf-video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
-  .pf-video-item { display: flex; flex-direction: column; gap: 16px; }
-  .pf-video-embed {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: rgba(250,250,248,0.05);
-    border: 1px solid rgba(201,185,154,0.12);
-    overflow: hidden;
-  }
-  .pf-video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-  .pf-video-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-  .pf-play-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,185,154,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(250,250,248,0.4);
-  }
-  .pf-play-icon svg { width: 22px; height: 22px; }
-  .pf-video-brand {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--terra);
-    margin-bottom: 6px;
-  }
-  .pf-video-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: #FAFAF8;
-    margin-bottom: 6px;
-  }
-  .pf-video-desc {
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    color: rgba(250,250,248,0.35);
-  }
-
-  /* ── CAMPAGNE ACCORDION ── */
-  .pf-cases { display: flex; flex-direction: column; }
-  .pf-case { border-top: 1px solid var(--light-border); }
-  .pf-case:last-child { border-bottom: 1px solid var(--light-border); }
-  .pf-case-header {
-    width: 100%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 28px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    text-align: left;
-  }
-  .pf-case-header:hover .pf-case-client { color: var(--terra); }
-  .pf-case-header-left { display: flex; align-items: center; gap: 28px; flex: 1; min-width: 0; }
-  .pf-case-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    flex-shrink: 0;
-    width: 20px;
-  }
-  .pf-case-client {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--dark);
-    margin-bottom: 6px;
-    transition: color 0.2s;
-  }
-  .pf-case-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 300;
-    color: var(--dark);
-    line-height: 1.1;
-  }
-  .pf-case-header-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
-  .pf-case-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
-  .pf-case-tags span {
-    font-size: 9px;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: var(--beige);
-    padding: 4px 10px;
-    border-radius: 2px;
-  }
-  .pf-case-arrow { width: 20px; height: 20px; color: var(--muted); flex-shrink: 0; transition: transform 0.25s; }
-  .pf-case-arrow svg { width: 20px; height: 20px; }
-  .pf-case.is-open .pf-case-arrow { transform: rotate(180deg); }
-  .pf-case-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; overflow: hidden; }
-  .pf-case.is-open .pf-case-body { grid-template-rows: 1fr; }
-  .pf-case-body-inner { overflow: hidden; padding-bottom: 0; }
-  .pf-case.is-open .pf-case-body-inner { padding-bottom: 40px; }
-  .pf-case-desc {
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--muted);
-    line-height: 1.8;
-    max-width: 700px;
-    margin-bottom: 28px;
-  }
-  .pf-case-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 24px; }
-  .pf-case-photo { aspect-ratio: 3/2; background-size: cover; background-position: center; border-radius: 2px; overflow: hidden; }
-  .pf-case-photo-ph { background: var(--beige); display: flex; align-items: center; justify-content: center; }
-  .pf-case-photo-ph span {
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-align: center;
-    padding: 8px;
-  }
-  .pf-case-film { position: relative; aspect-ratio: 16/9; overflow: hidden; border-radius: 2px; max-width: 760px; }
-  .pf-case-film iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+  /* ── OVERLAY VIDEO ── */
+  .pf-video-lb { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .pf-video-lb.is-open { opacity: 1; pointer-events: all; }
+  .pf-vlb-backdrop { position: absolute; inset: 0; background: rgba(26,24,20,0.96); }
+  .pf-vlb-close { position: absolute; top: 24px; right: 28px; width: 40px; height: 40px; background: none; border: none; cursor: pointer; color: rgba(250,250,248,0.6); z-index: 1; transition: color 0.2s; }
+  .pf-vlb-close:hover { color: #FAFAF8; }
+  .pf-vlb-close svg { width: 24px; height: 24px; }
+  .pf-vlb-content { position: relative; width: min(900px, 92vw); }
+  .pf-vlb-embed { position: relative; aspect-ratio: 16/9; }
+  .pf-vlb-embed iframe,
+  .pf-vlb-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: none; border-radius: 2px; background: #000; }
 
   /* ── CTA ── */
   .pf-cta-section { background: var(--dark); padding: 100px 0; }
@@ -570,19 +408,7 @@ import { portfolioData as d } from '../data/portfolio-data';
   .pf-cta-label { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); }
   .pf-cta-title { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #FAFAF8; line-height: 1.1; margin: 0; }
   .pf-cta-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.7; }
-  .pf-cta-btn {
-    margin-top: 12px;
-    display: inline-block;
-    padding: 14px 40px;
-    border: 1px solid rgba(201,185,154,0.4);
-    color: #FAFAF8;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s, border-color 0.2s;
-  }
+  .pf-cta-btn { margin-top: 12px; display: inline-block; padding: 14px 40px; border: 1px solid rgba(201,185,154,0.4); color: #FAFAF8; font-size: 10px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none; transition: background 0.2s, border-color 0.2s; }
   .pf-cta-btn:hover { background: var(--terra); border-color: var(--terra); }
 
   /* ── RESPONSIVE ── */
@@ -592,10 +418,7 @@ import { portfolioData as d } from '../data/portfolio-data';
     .pf-hero-title { font-size: 46px; }
     .pf-photo-grid { grid-template-columns: 1fr 1fr; }
     .pf-video-grid { grid-template-columns: 1fr; }
-    .pf-case-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-    .pf-case-header-right { width: 100%; justify-content: space-between; }
-    .pf-case-tags { justify-content: flex-start; }
-    .pf-case-gallery { grid-template-columns: repeat(2, 1fr); }
+    .pf-tariffe-grid { grid-template-columns: 1fr; }
     .pf-cta-title { font-size: 36px; }
   }
 </style>
