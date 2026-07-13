@@ -31,13 +31,25 @@ import { portfolioData as d } from '../../data/portfolio-data';
             <span class="pf-photo-group-year">{group.year}</span>
           </div>
           <div class="pf-photo-grid">
-            {group.photos.map(photo => (
-              <div class="pf-photo-item">
+            {group.photos.map((photo, i) => (
+              <div
+                class="pf-photo-item"
+                data-src={photo.src}
+                data-brand={group.brand}
+                role={photo.src ? 'button' : undefined}
+                tabindex={photo.src ? '0' : undefined}
+              >
                 <div
                   class="pf-photo-placeholder"
                   style={photo.src ? `background-image:url('${photo.src}')` : ''}
                 >
                   {!photo.src && <span class="pf-placeholder-hint">{photo.hint}</span>}
+                  {photo.src && (
+                    <div class="pf-photo-overlay">
+                      <span class="pf-overlay-label">Client</span>
+                      <span class="pf-overlay-brand">{group.brand}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -141,9 +153,25 @@ import { portfolioData as d } from '../../data/portfolio-data';
     </div>
   </section>
 
+  <!-- LIGHTBOX -->
+  <div class="pf-lightbox" id="pf-lightbox" aria-hidden="true">
+    <div class="pf-lb-backdrop"></div>
+    <button class="pf-lb-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="pf-lb-content">
+      <img class="pf-lb-img" src="" alt="" />
+      <div class="pf-lb-meta">
+        <span class="pf-lb-label">Client</span>
+        <span class="pf-lb-brand"></span>
+      </div>
+    </div>
+  </div>
+
 </BaseLayout>
 
 <script>
+  // ── ACCORDION ──
   document.querySelectorAll('.pf-case-header').forEach(btn => {
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
@@ -157,6 +185,36 @@ import { portfolioData as d } from '../../data/portfolio-data';
       }
     });
   });
+
+  // ── LIGHTBOX ──
+  const lb = document.getElementById('pf-lightbox');
+  const lbImg = lb.querySelector('.pf-lb-img');
+  const lbBrand = lb.querySelector('.pf-lb-brand');
+
+  function openLightbox(src, brand) {
+    lbImg.src = src;
+    lbImg.alt = brand;
+    lbBrand.textContent = brand;
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    setTimeout(() => { lbImg.src = ''; }, 300);
+  }
+
+  document.querySelectorAll('.pf-photo-item[data-src]').forEach(item => {
+    if (!item.dataset.src) return;
+    item.addEventListener('click', () => openLightbox(item.dataset.src, item.dataset.brand));
+    item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(item.dataset.src, item.dataset.brand); });
+  });
+
+  lb.querySelector('.pf-lb-backdrop').addEventListener('click', closeLightbox);
+  lb.querySelector('.pf-lb-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 
 <style>
@@ -244,9 +302,14 @@ import { portfolioData as d } from '../../data/portfolio-data';
     color: var(--muted);
   }
   .pf-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-  .pf-photo-item { display: flex; flex-direction: column; }
+  .pf-photo-item {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .pf-photo-item[data-src=""] { cursor: default; }
   .pf-photo-placeholder {
-    aspect-ratio: 4/3;
+    aspect-ratio: 4/5;
     background: var(--beige);
     background-size: cover;
     background-position: center;
@@ -254,6 +317,7 @@ import { portfolioData as d } from '../../data/portfolio-data';
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
   }
   .pf-placeholder-hint {
     font-size: 9px;
@@ -264,6 +328,74 @@ import { portfolioData as d } from '../../data/portfolio-data';
     text-align: center;
     padding: 12px;
   }
+  .pf-photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26,24,20,0.72);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .pf-photo-item:hover .pf-photo-overlay { opacity: 1; }
+  .pf-overlay-label {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .pf-overlay-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: #FAFAF8;
+    letter-spacing: 0.04em;
+  }
+  .pf-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .pf-lightbox.is-open { opacity: 1; pointer-events: all; }
+  .pf-lb-backdrop { position: absolute; inset: 0; background: rgba(26,24,20,0.94); }
+  .pf-lb-close {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(250,250,248,0.6);
+    z-index: 1;
+    transition: color 0.2s;
+  }
+  .pf-lb-close:hover { color: #FAFAF8; }
+  .pf-lb-close svg { width: 24px; height: 24px; }
+  .pf-lb-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  .pf-lb-img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: 2px; }
+  .pf-lb-meta { display: flex; align-items: center; gap: 12px; }
+  .pf-lb-label { font-size: 8px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); }
+  .pf-lb-brand { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: rgba(250,250,248,0.7); }
 
   /* ── VIDEO ── */
   .pf-video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
