@@ -68,9 +68,9 @@ export const portfolioData = {
       descEn: 'Short film · Dolomites → Carpathians · 8 min',
     },
     {
-      brand: '',
+      brand: 'Basecamp Explorer',
       title: 'Titolo progetto',
-      youtubeId: '',
+      youtubeId: 'QbsTXmn1Fx8',
       descIt: 'Tipo video · Luogo · Durata',
       descEn: 'Video type · Location · Duration',
     },
