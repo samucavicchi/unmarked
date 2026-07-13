@@ -26,6 +26,7 @@ export const portfolioData = {
         { src: '/portfolio/mazda-3.jpg', hint: '' },
         { src: '/portfolio/mazda-4.jpg', hint: '' },
         { src: '/portfolio/mazda-5.jpg', hint: '' },
+        { src: '/portfolio/mazda-6.jpg', hint: '' },
       ],
     },
     {
@@ -49,6 +50,7 @@ export const portfolioData = {
         { src: '/portfolio/hellyhansen-3.jpg', hint: '' },
         { src: '/portfolio/hellyhansen-4.jpg', hint: '' },
         { src: '/portfolio/hellyhansen-5.jpg', hint: '' },
+        { src: '/portfolio/hellyhansen.6.jpg', hint: '' },
       ],
     },
   ],
