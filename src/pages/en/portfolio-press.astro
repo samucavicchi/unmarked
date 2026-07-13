@@ -1,11 +1,11 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { portfolioData as d } from '../data/portfolio-data';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { portfolioData as d } from '../../data/portfolio-data';
 ---
 
 <BaseLayout
   title="Portfolio — Unmarked"
-  description="Portfolio lavori Unmarked — fotografia, video e campagne."
+  description="Unmarked portfolio — photography, video and brand campaigns."
 >
 
   <!-- HERO -->
@@ -14,15 +14,15 @@ import { portfolioData as d } from '../data/portfolio-data';
     <div class="pf-hero-overlay"></div>
     <div class="pf-hero-content">
       <div class="pf-hero-tag">Portfolio · 2024–2025</div>
-      <h1 class="pf-hero-title">Il nostro lavoro.</h1>
-      <p class="pf-hero-sub">Fotografia, video e campagne realizzate con i brand che hanno scelto Unmarked.</p>
+      <h1 class="pf-hero-title">Our work.</h1>
+      <p class="pf-hero-sub">Photography, video and campaigns made with the brands that chose Unmarked.</p>
     </div>
   </section>
 
-  <!-- ── FOTOGRAFIA ── -->
-  <section class="pf-section" id="fotografia">
+  <!-- ── PHOTOGRAPHY ── -->
+  <section class="pf-section" id="photography">
     <div class="pf-inner">
-      <div class="pf-label">Fotografia</div>
+      <div class="pf-label">Photography</div>
 
       {d.photoGroups.map(group => (
         <div class="pf-photo-group">
@@ -70,7 +70,7 @@ import { portfolioData as d } from '../data/portfolio-data';
             <div class="pf-video-meta">
               {video.brand && <div class="pf-video-brand">{video.brand}</div>}
               <div class="pf-video-title">{video.title}</div>
-              <div class="pf-video-desc">{video.descIt}</div>
+              <div class="pf-video-desc">{video.descEn}</div>
             </div>
           </div>
         ))}
@@ -79,10 +79,10 @@ import { portfolioData as d } from '../data/portfolio-data';
     </div>
   </section>
 
-  <!-- ── CAMPAGNE ── -->
-  <section class="pf-section" id="campagne">
+  <!-- ── CAMPAIGNS ── -->
+  <section class="pf-section" id="campaigns">
     <div class="pf-inner">
-      <div class="pf-label">Campagne</div>
+      <div class="pf-label">Campaigns</div>
 
       <div class="pf-cases">
         {d.campaigns.map(c => (
@@ -97,7 +97,7 @@ import { portfolioData as d } from '../data/portfolio-data';
               </div>
               <div class="pf-case-header-right">
                 <div class="pf-case-tags">
-                  {c.tags.map(tag => <span>{tag}</span>)}
+                  {c.tagsEn.map(tag => <span>{tag}</span>)}
                 </div>
                 <div class="pf-case-arrow">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
@@ -106,14 +106,14 @@ import { portfolioData as d } from '../data/portfolio-data';
             </button>
             <div class="pf-case-body" id={`pf-case-${c.id}`}>
               <div class="pf-case-body-inner">
-                <p class="pf-case-desc">{c.descIt}</p>
+                <p class="pf-case-desc">{c.descEn}</p>
                 <div class="pf-case-gallery">
                   {c.photos.map((src, i) => (
                     <div
                       class={`pf-case-photo${src ? '' : ' pf-case-photo-ph'}`}
                       style={src ? `background-image:url('${src}')` : ''}
                     >
-                      {!src && <span>Foto {i + 1}</span>}
+                      {!src && <span>Photo {i + 1}</span>}
                     </div>
                   ))}
                 </div>
@@ -131,19 +131,18 @@ import { portfolioData as d } from '../data/portfolio-data';
     </div>
   </section>
 
-  <!-- ── CTA CONTATTO ── -->
+  <!-- ── CTA ── -->
   <section class="pf-section pf-cta-section">
     <div class="pf-inner pf-cta-inner">
-      <div class="pf-cta-label">Lavoriamo insieme</div>
-      <h2 class="pf-cta-title">Hai un progetto in mente?</h2>
-      <p class="pf-cta-sub">Raccontaci l'obiettivo — costruiamo insieme il formato giusto.</p>
-      <a href={`mailto:${d.contactEmail}`} class="pf-cta-btn">Scrivici</a>
+      <div class="pf-cta-label">Let's work together</div>
+      <h2 class="pf-cta-title">Have a project in mind?</h2>
+      <p class="pf-cta-sub">Tell us your goal — we'll build the right format together.</p>
+      <a href={`mailto:${d.contactEmail}`} class="pf-cta-btn">Get in touch</a>
     </div>
   </section>
 
 </BaseLayout>
 
-<!-- ── ACCORDION JS ── -->
 <script>
   document.querySelectorAll('.pf-case-header').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -220,7 +219,7 @@ import { portfolioData as d } from '../data/portfolio-data';
   .pf-label-light { color: var(--sand); }
   .pf-label-light::before { background: var(--sand); }
 
-  /* ── FOTOGRAFIA ── */
+  /* ── PHOTOGRAPHY ── */
   .pf-photo-group { margin-bottom: 52px; }
   .pf-photo-group:last-child { margin-bottom: 0; }
   .pf-photo-group-header {
@@ -319,7 +318,7 @@ import { portfolioData as d } from '../data/portfolio-data';
     color: rgba(250,250,248,0.35);
   }
 
-  /* ── CAMPAGNE ACCORDION ── */
+  /* ── CAMPAIGNS ACCORDION ── */
   .pf-cases { display: flex; flex-direction: column; }
   .pf-case { border-top: 1px solid var(--light-border); }
   .pf-case:last-child { border-bottom: 1px solid var(--light-border); }
