@@ -71,12 +71,14 @@ import { portfolioData as d } from '../../data/portfolio-data';
             <div class="pf-video-embed">
               {video.youtubeId
                 ? <iframe src={`https://www.youtube.com/embed/${video.youtubeId}`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                : <div class="pf-video-placeholder">
-                    <div class="pf-play-icon">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                : video.videoSrc
+                  ? <video src={video.videoSrc} controls playsinline preload="metadata"></video>
+                  : <div class="pf-video-placeholder">
+                      <div class="pf-play-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
+                      <span class="pf-placeholder-hint">{video.title}</span>
                     </div>
-                    <span class="pf-placeholder-hint">{video.title}</span>
-                  </div>
               }
             </div>
             <div class="pf-video-meta">

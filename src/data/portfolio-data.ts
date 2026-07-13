@@ -56,37 +56,43 @@ export const portfolioData = {
   ],
 
   // ── VIDEO ────────────────────────────────────────────────────
-  // youtubeId: '' = placeholder, metti l'ID per attivare l'embed
-  // descIt / descEn: sottotitolo sotto il video (tipo · luogo · durata)
+  // youtubeId: 'ID'          → embed YouTube
+  // videoSrc: '/portfolio/video.mp4'  → video MP4 diretto (metti il file in public/portfolio/)
+  // Lascia entrambi vuoti per mostrare il placeholder
+  // descIt / descEn: sottotitolo sotto il video
 
   videos: [
     {
       brand: 'Mazda Europe',
       title: 'The Hidden Path',
       youtubeId: 'G1LZG6bczmw',
+      videoSrc: '',
       descIt: 'Short film · Dolomiti → Carpazi · 8 min',
       descEn: 'Short film · Dolomites → Carpathians · 8 min',
     },
     {
       brand: 'Basecamp Explorer',
-      title: 'Titolo progetto',
+      title: 'Arctic Experts',
       youtubeId: 'QbsTXmn1Fx8',
-      descIt: 'Tipo video · Luogo · Durata',
-      descEn: 'Video type · Location · Duration',
+      videoSrc: '',
+      descIt: 'Commercial · Svalbard · 40 sec',
+      descEn: 'Commercial · Svalbard · 40 sec',
     },
     {
-      brand: '',
-      title: 'Titolo progetto',
+      brand: 'Mazda Europe',
+      title: 'The Wind of Gorafe',
       youtubeId: '',
-      descIt: 'Tipo video · Luogo · Durata',
-      descEn: 'Video type · Location · Duration',
+      videoSrc: '/portfolio/mazda-video-1.mp4',
+      descIt: 'Commercial · Gorafe · 40 sec',
+      descEn: 'Commercial · Gorafe · 40 sec',
     },
     {
-      brand: '',
-      title: 'Titolo progetto',
+      brand: 'Nikon Travel',
+      title: 'Oltre i confini',
       youtubeId: '',
-      descIt: 'Tipo video · Luogo · Durata',
-      descEn: 'Video type · Location · Duration',
+      videoSrc: '/portfolio/namibia-video-1.mp4',
+      descIt: 'Experience · Namibia · 30 sec',
+      descEn: 'Experience · Namibia · 30 sec',
     },
   ],
 
