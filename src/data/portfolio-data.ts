@@ -80,7 +80,7 @@ export const portfolioData = {
       title: 'The Wind of Gorafe',
       youtubeId: '',
       videoSrc: '/portfolio/mazda-video-1.mp4',
-      thumb: '',  // ← opzionale: '/portfolio/gorafe-cover.jpg'
+      thumb: '/portfolio/gorafe-cover.jpg',
       descIt: 'Commercial · Gorafe · 40 sec',
       descEn: 'Commercial · Gorafe · 40 sec',
     },
@@ -89,7 +89,7 @@ export const portfolioData = {
       title: 'Oltre i confini',
       youtubeId: '',
       videoSrc: '/portfolio/namibia-video-1.mp4',
-      thumb: '',  // ← opzionale: '/portfolio/namibia-cover.jpg'
+      thumb: '/portfolio/namibia-cover.jpg',
       descIt: 'Experience · Namibia · 30 sec',
       descEn: 'Experience · Namibia · 30 sec',
     },
