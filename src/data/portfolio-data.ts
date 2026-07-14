@@ -120,8 +120,8 @@ export const portfolioData = {
       nameIt: 'Pacchetto Social',
       nameEn: 'Social Package',
       price: '1.999',
-      itemsIt: ['5 Instagram stories', '1 carosello', '2 reel condivisi'],
-      itemsEn: ['5 Instagram stories', '1 carousel', '2 shared reels'],
+      itemsIt: ['5 Instagram stories per profilo', '1 carosello per profilo', '2 reel condivisi'],
+      itemsEn: ['5 Instagram stories per profile', '1 carousel per profile', '2 shared reels'],
     },
   ],
 
