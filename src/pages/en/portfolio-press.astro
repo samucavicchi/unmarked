@@ -198,11 +198,21 @@ import { portfolioData as d } from '../../data/portfolio-data';
   const vlb = document.getElementById('pf-video-lb');
   const vlbEmbed = document.getElementById('pf-vlb-embed');
 
+  function calcVideoDims() {
+    const maxW = Math.min(900, window.innerWidth * 0.88);
+    const maxH = window.innerHeight * 0.82;
+    let w = maxW;
+    let h = Math.round(w * 9 / 16);
+    if (h > maxH) { h = Math.round(maxH); w = Math.round(h * 16 / 9); }
+    return { w, h };
+  }
+
   function openVideo(ytId, videoSrc) {
+    const { w, h } = calcVideoDims();
     if (ytId) {
-      vlbEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" frameborder="0" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      vlbEmbed.innerHTML = `<iframe width="${w}" height="${h}" src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" frameborder="0" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
     } else if (videoSrc) {
-      vlbEmbed.innerHTML = `<video src="${videoSrc}" autoplay controls playsinline></video>`;
+      vlbEmbed.innerHTML = `<video width="${w}" height="${h}" src="${videoSrc}" autoplay controls playsinline style="display:block;object-fit:contain;background:#000"></video>`;
     }
     vlb.classList.add('is-open'); vlb.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -327,28 +337,17 @@ import { portfolioData as d } from '../../data/portfolio-data';
   .pf-vlb-content {
     position: relative;
     z-index: 1;
-    width: min(900px, 88vw);
   }
   .pf-vlb-embed {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    max-height: 82vh;
+    display: block;
     background: #000;
     border-radius: 2px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    line-height: 0;
   }
   .pf-vlb-embed iframe,
   .pf-vlb-embed video {
     display: block;
-    width: 100%;
-    height: 100%;
     border: none;
-    object-fit: contain;
-    background: #000;
-    flex-shrink: 0;
   }
 
   .pf-cta-section { background: var(--dark); padding: 100px 0; }
