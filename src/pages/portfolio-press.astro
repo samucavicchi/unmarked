@@ -10,7 +10,7 @@ import { portfolioData as d } from '../data/portfolio-data';
 
   <!-- HERO -->
   <section class="pf-hero">
-    <div class="pf-hero-bg"></div>
+    <div class="pf-hero-bg" style="background-image:url('/portfolio/hero.jpg')"></div>
     <div class="pf-hero-overlay"></div>
     <div class="pf-hero-content">
       <div class="pf-hero-tag">Portfolio · 2024–2025</div>
@@ -177,7 +177,7 @@ import { portfolioData as d } from '../data/portfolio-data';
   </section> -->
 
   <!-- ── CTA ── -->
-  <section class="pf-section pf-cta-section">
+  <section class="pf-section pf-cta-section" style="background-image:url('/portfolio/cta.jpg')">
     <div class="pf-inner pf-cta-inner">
       <div class="pf-cta-label">Lavoriamo insieme</div>
       <h2 class="pf-cta-title">Hai un progetto in mente?</h2>
@@ -447,8 +447,9 @@ import { portfolioData as d } from '../data/portfolio-data';
   }
 
   /* ── CTA ── */
-  .pf-cta-section { background: var(--dark); padding: 100px 0; }
-  .pf-cta-inner { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .pf-cta-section { position: relative; background: var(--dark); background-size: cover; background-position: center; padding: 100px 0; }
+  .pf-cta-section::before { content: ''; position: absolute; inset: 0; background: rgba(26,24,20,0.75); }
+  .pf-cta-inner { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; }
   .pf-cta-label { font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); }
   .pf-cta-title { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #FAFAF8; line-height: 1.1; margin: 0; }
   .pf-cta-sub { font-size: 15px; font-weight: 300; color: rgba(250,250,248,0.5); line-height: 1.7; }
