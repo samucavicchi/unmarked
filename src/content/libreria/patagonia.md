@@ -2,7 +2,7 @@
 category: Destinazione
 title: Patagonia
 subtitle: Dove finisce la mappa
-country: Argentina / Cile
+country: Patagonia
 continent: Americhe
 coverImage: ../../assets/articoli/wild-3.jpg
 coverImageAlt: Paesaggio selvaggio della Patagonia, vento e silenzio
