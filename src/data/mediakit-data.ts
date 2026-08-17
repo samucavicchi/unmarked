@@ -52,11 +52,11 @@ export const mediakitData = {
 
   // REEL
   reels: [
-    { url: 'https://www.instagram.com/reel/DWbEpc3AAMP/', cover: '/reel-covers/mazda-1.jpg',  brand: 'Mazda Europe',  handle: '@mazdaeurope' },
     { url: 'https://www.instagram.com/reel/C66WnGVokcN/', cover: '/reel-covers/mazda-2.jpg',  brand: 'Mazda Europe',  handle: '@mazdaeurope' },
     { url: 'https://www.instagram.com/reel/DYe4siMEfjt/', cover: '/reel-covers/nikon.jpg',    brand: 'Nikon Europe',  handle: '@nikoneurope' },
-    { url: 'https://www.instagram.com/reel/DL4odqiIgFd/', cover: '/reel-covers/asus.jpg',     brand: 'ASUS Italia',   handle: '@asusitalia' },
     { url: 'https://www.instagram.com/reel/DMQWifqo-t2/', cover: '/reel-covers/lexar.jpg',    brand: 'Lexar',         handle: '@lexarmemory' },
+    { url: 'https://www.instagram.com/reel/DcIgsCOttmf/', cover: '/loghi/evolveback.png',     brand: 'Evolve Back',   handle: '@evolveback' },
+    { url: 'https://www.instagram.com/reel/Dbx-mWNKrJy/', cover: '/loghi/Mogotlhlo.png',      brand: 'Mogotlhlo',     handle: '@mogotlhlo' },
   ],
 
   // PREZZI
