@@ -1,35 +1,44 @@
 # UNMARKED — Architettura del progetto
-*Documento di lavoro v9 · 4 Giugno 2026*
+*Documento di lavoro v10 · 4 Ottobre 2026*
 
-Questo documento è la **memoria esterna** del progetto. Se la chat viene compattata o ricominciata, leggere QUESTO doc + `unmarked-manuale-uso.md` + il codice su GitHub basta per riprendere il lavoro senza perdere niente.
+Questo documento è la **memoria esterna** del progetto. Se la chat viene compattata o ricominciata, leggere QUESTO doc + `unmarked-manuale-uso.md` + il codice (cartella `~/Desktop/unmarked`, repo GitHub) basta per riprendere il lavoro senza perdere niente.
+
+> **Cosa è cambiato dalla v9 (giugno)**: "Destinazioni" è diventata **Libreria** (con categorie), nuovi **Shop** (digitale + fisico via Stripe), **Unmarked Pro** (`/pro`), **Portfolio/Press** IT+EN, export **KML** degli itinerari, landing **segreto.html** (lead magnet Dolomiti), **sync automatico podcast** da RSS via GitHub Action, popup Spotsbook, campo `preview` nello Spotsbook, `localContacts` negli itinerari.
 
 ---
 
-## Stato attuale al 1 Giugno 2026
+## Stato attuale al 4 Ottobre 2026
 
 **URL e accessi**
 - Sito live: https://unmarked.it
-- Repo GitHub: github.com/samucavicchi/unmarked (main branch)
+- Repo GitHub: github.com/samucavicchi/unmarked (branch `main`)
+- Cartella locale: `/Users/samuelecavicchi/Desktop/unmarked`
 - CMS: https://unmarked.it/admin (login con Netlify Identity — samu.cavicchi@gmail.com)
 - Netlify dashboard: app.netlify.com/projects/unmarked-staging
 - Netlify project ID: `62f5c91a-a4d5-4490-bf2a-d08592e0a3c2`
-- Clerk dashboard: dashboard.clerk.com
-- Stripe dashboard: dashboard.stripe.com
-- Brevo dashboard: app.brevo.com
+- Clerk: dashboard.clerk.com · Stripe: dashboard.stripe.com · Brevo: app.brevo.com
+- Feed podcast: https://anchor.fm/s/112725408/podcast/rss
 
-**Stack tecnico attuale**
+**Ultimi lavori (git)**
+- 17 Ago 2026 — cambio logo, loghi brand media kit, cover, update `patagonia.md`, `mediakit-data.ts`
+- 23 Lug 2026 — nuovi episodi podcast (bot RSS)
+- 20 Lug 2026 — Libreria
+- 14 Lug 2026 — hero, `portfolio-data.ts`
+
+**Stack tecnico**
 | Componente | Tecnologia |
 |---|---|
-| Framework | Astro v4 (SSR hybrid mode) |
-| Hosting | Netlify (piano Personal $9/mese) |
+| Framework | Astro v4.16 (`output: 'hybrid'`, adapter `@astrojs/netlify`) |
+| Hosting | Netlify (piano Personal $9/mese), Node 20 |
 | CMS | Decap CMS (Netlify Identity + Git Gateway) |
-| Auth utenti | **Clerk** (`@clerk/astro`) |
-| Pagamenti | **Stripe** (abbonamento + acquisto singolo) |
-| Newsletter | **Brevo** (API v3, lista ID 6 "Unmarked Newsletter") |
+| Auth utenti | Clerk (`@clerk/astro`) |
+| Pagamenti | Stripe (`stripe` v16, API `2024-11-20.acacia`) — itinerari, abbonamento, shop |
+| Newsletter | Brevo (API v3, lista ID 6 "Unmarked Newsletter") |
+| Markdown extra | `marked` (per campi testo come `bodyText2`) |
 | Dominio | unmarked.it (DNS A record → 75.2.60.5 Netlify) |
-| Repo | github.com/samucavicchi/unmarked |
+| Automazioni | GitHub Actions (sync podcast giornaliero) |
 
-**Nota**: il progetto è partito con Netlify Identity + Supabase + Lemon Squeezy, poi migrato a **Clerk + Stripe** prima del lancio. Decap CMS continua ad usare Netlify Identity solo per il login al CMS `/admin` — gli utenti del sito usano Clerk.
+**Nota storica**: partito con Netlify Identity + Supabase + Lemon Squeezy, migrato a Clerk + Stripe prima del lancio. Decap CMS usa ancora Netlify Identity solo per `/admin`. Nello schema itinerari e nel CMS restano i campi legacy `lemonSqueezyProductId` / `lemonSqueezyCheckoutUrl` (non usati).
 
 ---
 
@@ -37,66 +46,69 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
 
 | Tema | Scelta |
 |---|---|
-| Stack | Astro v4 SSR hybrid + Decap CMS su Netlify |
-| Auth utenti | Clerk (`@clerk/astro`) |
-| Pagamenti | Stripe (singolo + abbonamento €29/mese) |
+| Stack | Astro v4 hybrid + Decap CMS su Netlify |
+| Auth utenti | Clerk |
+| Pagamenti | Stripe (itinerario singolo + abbonamento Pro €29/mese + shop) |
+| Abbonamento | **Unmarked Pro** — itinerari completi + Spotsbook |
 | Newsletter | Brevo (API v3) |
 | Voce editoriale | Unica "Unmarked", nessuna firma autore |
-| Lingua | Italiano |
-| Tassonomia | Geografica pura: paese + continente |
-| Modello vendita | Acquisto singolo per itinerario + abbonamento mensile €29/mese |
-| Hosting | Netlify |
-| Hosting immagini | Asset processing nativo Astro (`src/assets/articoli/`) |
-| Podcast audio | RSS Anchor/Spotify for Creators (URL diretto MP3) |
+| Lingua | Italiano (solo Media Kit e Portfolio anche in inglese) |
+| Tassonomia | Geografica: paese + continente (5: Europa, Asia, Africa, Americhe, Oceania) + categoria per la Libreria |
+| Immagini articoli | Asset processing Astro (`src/assets/articoli/`) |
+| Immagini statiche | `public/` (shop, portfolio, spotsbook, loghi, reel-covers…) |
+| Podcast audio | RSS Anchor/Spotify for Creators, sync automatico |
 
 ---
 
 ## 2. STRUTTURA URL
 
 ### Pagine pubbliche
-- `/` — Homepage (hero + destinazioni + mappa + itinerari + film + podcast + shop + newsletter)
-- `/destinazioni` — Archivio destinazioni con filtri
-- `/destinazioni/[slug]` — Pagina singola destinazione
-- `/destinazioni/paese/[paese]` — Filtro per paese
-- `/destinazioni/continente/[continente]` — Filtro per continente
-- `/itinerari` — Archivio itinerari
-- `/itinerari/[slug]` — Pagina singola itinerario (free + paywall)
-- `/itinerari/paese/[paese]` — Filtro per paese
-- `/itinerari/continente/[continente]` — Filtro per continente
-- `/film` — Sezione film
-- `/film/[slug]` — Film singolo
-- `/podcast` — Sezione podcast
-- `/podcast/[slug]` — Episodio singolo
-- `/mappa` — Mappa interattiva mondiale Leaflet con tutti i pin
-- `/consulenze` — Pagina consulenze
-- `/chi-siamo` — About page (storia di Alice e Samuele, manifesto, team, cosa facciamo)
-- `/mediakit` — Media Kit in italiano
-- `/en/mediakit` — Media Kit in inglese
-- `/spotsbook` — Spotsbook (teaser pubblico + mappa con location per abbonati)
+| URL | File | Render |
+|---|---|---|
+| `/` | `index.astro` | statico |
+| `/libreria` | `libreria/index.astro` | statico |
+| `/libreria/[slug]` | `libreria/[slug].astro` | statico |
+| `/libreria/paese/[paese]`, `/libreria/continente/[continente]` | | statico |
+| `/destinazioni/**` | `destinazioni/*` | **redirect legacy** → `/libreria/**` |
+| `/itinerari` (+ `/paese/`, `/continente/`) | `itinerari/*` | statico |
+| `/itinerari/[slug]` | `itinerari/[slug].astro` | **SSR** (paywall) |
+| `/itinerari/[slug].kml` | `itinerari/[slug].kml.ts` | statico — export KML per Google Earth/Maps |
+| `/film`, `/film/[slug]` | `film/*` | statico |
+| `/podcast`, `/podcast/[slug]` | `podcast/*` | statico |
+| `/mappa` | `mappa.astro` | statico — Leaflet, libreria + itinerari |
+| `/spotsbook` | `spotsbook.astro` | **SSR** |
+| `/pro` | `pro.astro` | **SSR** — landing abbonamento Unmarked Pro |
+| `/shop` | `shop/index.astro` | statico |
+| `/shop/[id]` | `shop/[id].astro` | statico (al build legge immagini prodotto da Stripe) |
+| `/shop/grazie` | `shop/grazie.astro` | **SSR** — conferma ordine fisico |
+| `/download` | `download.astro` | **SSR** — download prodotto digitale dopo pagamento |
+| `/consulenze` | `consulenze/index.astro` | statico |
+| `/chi-siamo` | `chi-siamo.astro` | statico |
+| `/mediakit`, `/en/mediakit` | | statico |
+| `/portfolio-press`, `/en/portfolio-press` | | statico |
+| `/segreto.html` | `public/segreto.html` | HTML puro, `noindex` — lead magnet "location segreta nelle Dolomiti" |
+| 404 | `404.astro` | statico |
 
 ### Area utente (Clerk)
-- `/sign-in` — Login (Clerk `<SignIn />`, SSR)
-- `/sign-up` — Registrazione (Clerk `<SignUp />`, SSR)
-- `/account` — Dashboard utente: abbonamento, itinerari acquistati, logout (SSR, redirect se non loggato)
+- `/sign-in`, `/sign-up` — SSR, componenti Clerk
+- `/account` — dashboard: abbonamento, itinerari acquistati, logout
 
 ### Backend
-- `/admin` — Decap CMS (login con Netlify Identity)
-- `/.netlify/functions/create-checkout-session` — Stripe checkout (abbonamento o singolo)
-- `/.netlify/functions/stripe-webhook` — Webhook Stripe → aggiorna `publicMetadata` Clerk
-- `/.netlify/functions/newsletter-subscribe` — Iscrizione newsletter → Brevo API
+- `/admin` — Decap CMS
+- `POST /api/checkout` — endpoint Astro SSR (`src/pages/api/checkout.ts`), crea la Checkout Session Stripe
+- `/.netlify/functions/stripe-webhook` — webhook Stripe → aggiorna Clerk
+- `/.netlify/functions/newsletter-subscribe` — iscrizione newsletter → Brevo
+- `/.netlify/functions/secret-subscribe` — iscrizione da `segreto.html` → Brevo lista 6 + email transazionale con la location
+
+**Navbar**: Libreria · Itinerari · Film · Podcast · Shop · Consulenze · Chi siamo + icone cerca / mappa / account (Accedi se non loggato).
 
 ---
 
 ## 3. AUTENTICAZIONE E PAGAMENTI
 
 ### Clerk
-- Installato con `@clerk/astro`
-- Variabili env: `CLERK_SECRET_KEY`, `PUBLIC_CLERK_PUBLISHABLE_KEY`
-- `astro.config.mjs`: integrazione clerk con `signInUrl: '/sign-in', signUpUrl: '/sign-up'`
-- Middleware: `src/middleware.ts` con `clerkMiddleware()`
-- Pagine SSR (`export const prerender = false`): `/account`, `/sign-in`, `/sign-up`, `/itinerari/[slug]`
-- `Astro.locals.currentUser()` per lato server
-- Componenti: `<SignedIn>`, `<SignedOut>`, `<SignOutButton>`
+- `astro.config.mjs`: integrazione con `signInUrl: '/sign-in', signUpUrl: '/sign-up'`
+- `src/middleware.ts`: `clerkMiddleware()` avvolto in try/catch (se le env sono errate il sito non va in 500, semplicemente niente auth). Lascia passare tutto: il controllo premium avviene nelle pagine SSR con `Astro.locals.currentUser()`.
 
 ### Dati utente in Clerk `publicMetadata`
 ```json
@@ -104,240 +116,297 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
   "isPremium": true,
   "plan": "subscription",
   "purchasedItinerari": ["slug-1", "slug-2"],
-  "stripeCustomerId": "cus_xxx"
+  "stripeCustomerId": "cus_xxx",
+  "stripeSubscriptionId": "sub_xxx"
 }
 ```
 
-### Stripe
-- Variabili env: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUBSCRIPTION_PRICE_ID`
-- Due modalità: `mode: 'subscription'` o `mode: 'payment'`
-- Il checkout passa `userId` (Clerk) nei `metadata`
-- Il webhook ascolta `checkout.session.completed` → aggiorna `publicMetadata` Clerk
-- **Attualmente in modalità TEST** — da switchare a live prima del lancio
-- Se utente non loggato clicca "Acquista": redirect a `/sign-in?redirect_url=...`
+### Checkout — `POST /api/checkout`
+Body: `{ type, slug?, price?, title?, productId?, variantPriceId? }`
+| `type` | Stripe mode | Prezzo | Success URL |
+|---|---|---|---|
+| `subscription` | subscription | `STRIPE_SUBSCRIPTION_PRICE_ID` (€29/mese) | `/itinerari/[slug]?upgraded=1` o `/?upgraded=1` |
+| `single` | payment | `price_data` dinamico dal campo `price` dell'itinerario | `/itinerari/[slug]?upgraded=1` |
+| `shop` | payment | `stripePriceId` del prodotto o della variante | digitale → `/download?session=…` · fisico → `/shop/grazie?session=…` |
+
+- L'utente loggato viene passato come `client_reference_id` + `metadata.userId`. Il checkout funziona anche senza login.
+- Prodotti fisici: raccolta indirizzo di spedizione (default IT, AT, BE, CH, DE, ES, FR, GB, NL, PT, SE, US, CA, AU, oppure `shippingCountries` del prodotto).
+- Codici promo abilitati su abbonamento e singolo.
+
+### Webhook — `netlify/functions/stripe-webhook.ts`
+Configurato su Stripe → Developers → Webhooks, URL `https://unmarked.it/.netlify/functions/stripe-webhook`, eventi:
+- `checkout.session.completed` → `subscription`: `isPremium: true` · `single`: aggiunge lo slug a `purchasedItinerari`
+- `customer.subscription.deleted` → `isPremium: false`
+- Acquisti shop: il webhook non fa nulla (la consegna è gestita da `/download` e `/shop/grazie` leggendo la sessione Stripe).
+
+### Paywall itinerari
+In `itinerari/[slug].astro`: accesso completo se `isPremium` oppure lo slug è in `purchasedItinerari`. Altrimenti si vedono solo i giorni con `isPremium: false` (badge "Anteprima gratuita") e i marker mappa dei giorni premium vengono nascosti.
+
+**⚠ Stripe è ancora in modalità TEST** — vedi checklist.
 
 ---
 
 ## 4. NEWSLETTER — BREVO
 
-- Lista: "Unmarked Newsletter" — **ID 6**
-- API key: `BREVO_API_KEY` in `.env` locale e su Netlify env vars (**mai su GitHub**)
-- Endpoint: `/.netlify/functions/newsletter-subscribe`
-- Due form: `Newsletter.astro` (home) e `NewsletterPopup.astro` (popup slide-up basso-sinistra)
-- `.env` è in `.gitignore`
+- Lista "Unmarked Newsletter" — **ID 6**
+- `BREVO_API_KEY` in `.env` locale e su Netlify env (**mai su GitHub**; `.env` è in `.gitignore`)
+- Form: `Newsletter.astro` (home), `NewsletterPopup.astro` (slide-up basso-sinistra dopo 15s), `segreto.html` (→ `secret-subscribe`)
+- `secret-subscribe` invia anche una mail transazionale da `SENDER_EMAIL` (default `adventures@unmarked.it`) — il mittente deve essere verificato in Brevo
 
 ---
 
-## 5. SCHEMA CONTENT COLLECTIONS (`src/content/config.ts`)
+## 5. CONTENT COLLECTIONS (`src/content/config.ts`)
 
-### Destinazioni
-`title, subtitle?, country, continent(enum 5), region?, coverImage, coverImageAlt, excerpt, publishDate, featured, seoMetaDescription?, interludeImage?, interludeCaption?, pullQuote?, mapCenter?{lat,lng,zoom}, mapMarkers[]{lat,lng,label}, relatedItinerary?(string)`
+Collezioni: `libreria`, `itinerari`, `film`, `podcast`, `blackbook`. Le immagini caricate dal CMS vanno in `src/assets/articoli/` (path nel frontmatter: `../../assets/articoli/...`).
 
-**Nota `relatedItinerary`**: campo CMS `select` con opzioni manuali (titoli itinerari). Nel codice si usa `getCollection('itinerari').find()` per titolo (case-insensitive), NON `getEntry` per slug.
+### Libreria (ex Destinazioni)
+`title, subtitle?, category, country?, continent?, region?, coverImage, coverImageAlt, excerpt, publishDate, featured, seoMetaDescription?`
+- `category`: `Destinazione` (default) · `Attrezzatura` · `Consigli di viaggio` · `Cosa portare` · `Ispirazione` — per le categorie non geografiche `country`/`continent` sono opzionali
+- "Wow pack" opzionale: `interludeImage?, interludeCaption?, pullQuote?, bodyText2?` (secondo blocco testo), `gallery2?[]{image, caption?}`, `essentialToKnow?[]{title, description}`, `schede?[]{label, text}` (blocchi stile Spotsbook)
+- Mappa: `mapCenter?{lat,lng,zoom}`, `mapMarkers[]{lat,lng,label}`
+- `relatedItinerary?` — select CMS con opzioni manuali in `public/admin/config.yml` (oggi solo "Namibia"); nel codice si cerca l'itinerario per titolo (case-insensitive)
+
+Articoli attuali: etiopia, georgia, giordania, islanda, islanda-inverno, isole-faroe, kirghizistan, namibia, oman, patagonia, svalbard, tutti-ci-passano-accanto-nessuno-la-vede, un-viaggio-un-solo-obbiettivo-fotografico, `aaaa` ("Cosa mettere nello zaino" — slug da sistemare).
 
 ### Itinerari
-`title, subtitle?, country, continent, coverImage, coverImageAlt, excerpt, publishDate, featured, duration, budget(Economico/Medio/Alto), difficulty(Facile/Medio/Avventura), bestSeason, transport, price, audioUrl?(string)`
+`title, subtitle?, country, continent, coverImage, coverImageAlt, excerpt, publishDate, featured, duration, budget(Economico/Medio/Alto), difficulty(Facile/Medio/Avventura), bestSeason, transport, price`
+- Strutturati: `vale?{intro?, dormire?[], mangiare?[], tappe?[]}` (item: `name, badge(must/good/hidden), location?, description, tip?, price?`), `mainstream?{intro?, items[]}` (item: `name, type?, rating 1-5, verdict, alternative?{name,reason}, distance?`)
+- Legacy fallback: `valeIlViaggio?`, `mainstreamCheck?` (testo libero)
+- `gallery?[]{image, caption?, wide}`
+- `days[]{dayNumber, title, description, kmTotali?, dislivello?, dormire?, mangiare?, isPremium, gallery?[]}`
+- `mapCenter?`, `mapMarkers[]{lat,lng,label,dayNumber?}`
+- `localContacts[]{name, role, contact, notes?}`
 
-Strutturati opzionali: `vale?{intro?, dormire?[], mangiare?[], tappe?[]}, mainstream?{intro?, items[]}, gallery?[]`
-
-Giorni: `days[]{dayNumber, title, description, kmTotali?, dislivello?, dormire?, mangiare?, isPremium, gallery?[]}`
-
-Mappe: `mapCenter?{lat,lng,zoom}, mapMarkers[]{lat,lng,label,dayNumber?}`
+Contenuti: `marocco-7-giorni`, `isalnda` + test `isalnda-1`, `isalnda-2`.
 
 ### Film
-`title, subtitle?, country, continent, coverImage, coverImageAlt, excerpt, publishDate, featured, youtubeId, duration, type(enum 5)`
+`title, subtitle?, country, continent, coverImage, coverImageAlt, excerpt, publishDate, featured, youtubeId, duration, type(Documentario/Cortometraggio/Reportage/Essay/Trailer)`
+Contenuti: the-dragon-blood-way, the-eyes-of-africa, the-hidden-path.
 
 ### Podcast
-`title, subtitle?, coverImage?, coverImageAlt?, excerpt, publishDate, featured, spotifyEpisodeId, audioUrl?(string), episodeNumber, duration, topic(enum 5), guests?`
+`title, subtitle?, coverImage?, coverImageAlt?, excerpt, publishDate, featured, spotifyEpisodeId?, audioUrl?, anchorEmbedUrl?, youtubeId?, episodeNumber, duration, topic(Destinazioni/Pratiche/Fotografia/Storie/Interviste), guests?`
+Episodi 1–7 + `unmarked-podcast.md`.
+
+### Black Book / Spotsbook
+Vedi §11.
 
 ---
 
-## 6. COMPONENTI GLOBALI
+## 6. COMPONENTI E LAYOUT
 
 | Componente | Funzione |
 |---|---|
-| `Navbar.astro` | Logo, link, hamburger mobile, icone (cerca/pin/utente) |
-| `SearchOverlay.astro` | Ricerca full-text su destinazioni + itinerari |
-| `NewsletterPopup.astro` | Popup slide-up dopo 15s, basso-sinistra, z-index 1100 |
+| `Navbar.astro` | Logo, link, hamburger mobile, icone cerca/mappa/account |
+| `Footer.astro` | Link sezioni, logo footer (`public/loghi/logo-footer.png`) |
+| `Hero.astro` | Hero homepage |
+| `SearchOverlay.astro` | Ricerca full-text |
+| `NewsletterPopup.astro` | Popup slide-up dopo 15s, z-index 1100 |
+| `Newsletter.astro` | Form newsletter in home |
+| `SpotsbookPopup.astro` | Modal dopo 50% di scroll, mostrato una volta sola (localStorage) → CTA `/spotsbook` e `/pro` |
 | `PodcastMiniPlayer.astro` | Player audio nativo con `transition:persist` |
-| `BaseLayout.astro` | Include tutti i precedenti + ViewTransitions |
+| `DestinazioneCard`, `DestinazioniArchive` | Card/archivio articoli Libreria |
+| `ItinerarioCard`, `ItinerariArchive` | Card/archivio itinerari |
+| `FilmCard`, `PodcastCard` | Card |
+| `BaseLayout.astro` | Layout principale + `<ViewTransitions />` |
+| `Layout.astro` | Layout legacy (verificare se ancora usato) |
+
+### Homepage — ordine sezioni
+Hero → Libreria → Mappa → Itinerari → Spotsbook teaser → Film (uno featured a tutta larghezza) → Podcast → Shop → Newsletter
 
 ### ViewTransitions
-Attive in `BaseLayout.astro` (`<ViewTransitions />`). Necessarie per `transition:persist` del mini player podcast. Permettono navigazione client-side senza full reload.
+Attive in `BaseLayout.astro`, servono al `transition:persist` del mini player. Gli script di pagina devono gestire `astro:page-load`.
 
 ---
 
 ## 7. MAPPA INTERATTIVA
 
-### `/mappa`
-Leaflet.js con tiles CartoDB Light, pin per destinazioni (terra) e itinerari (scuro), filtri, popup con foto.
+### Tiles
+- Dal 2026 CARTO richiede una API key (formato: `basemaps.cartocdn.com/rastertiles/<stile>/{z}/{x}/{y}.png?key=...`) (gratuita fino a 1M richieste/mese per uso commerciale): https://carto.com/basemaps/apikey
+- URL centralizzati in `BaseLayout.astro` → `window.UNMARKED_TILES.dark` / `.light`, con `?key=` da `PUBLIC_CARTO_KEY`
+- Usati da: Spotsbook (teaser + mappa abbonati), teaser Spotsbook in home, mappa articolo Libreria, mappa itinerario
+- Home (mappa principale) e `/mappa` usano Esri NatGeo, che non richiede chiave
 
-### Sezione mappa in Homepage
-- Mappa statica embedded (no scroll/drag)
-- Click pin → popup; click sfondo → naviga a `/mappa`
-- Fade su 4 lati con div overlay (`isolation: isolate` sul wrapper per contenere z-index)
-- Coordinate fallback per paese in `countryCoords` (stesso oggetto in `/mappa` e `index.astro`)
+### `/mappa`
+Leaflet, tiles CartoDB Light, pin Libreria (terra) e Itinerari (scuro), filtri, popup con foto.
+
+### Mappa in homepage
+- Statica (no scroll/drag); click pin → popup, click sfondo → `/mappa`
+- Fade sui 4 lati con overlay (`isolation: isolate` sul wrapper)
+- Coordinate fallback per paese in `countryCoords` (stesso oggetto in `mappa.astro` e `index.astro` — aggiornarli entrambi)
 
 ---
 
 ## 8. RESPONSIVE / MOBILE
 
-Breakpoint: 768px in `global.css`.
-
-Mobile:
-- Navbar con hamburger menu
-- Griglie a colonna singola (destinazioni, film, podcast)
-- Itinerari featured: sfondo terra + testo bianco
-- Desktop featured: span 2 colonne, immagine 320px
-- Newsletter impilata, form in colonna
+Breakpoint 768px in `src/styles/global.css`. Mobile: hamburger, griglie a colonna singola, itinerari featured su sfondo terra + testo bianco, newsletter impilata. Desktop featured: span 2 colonne, immagine 320px. Spotsbook mobile: preview a scheda dal basso (`bb-mobile-preview`).
 
 ---
 
 ## 9. VARIABILI D'AMBIENTE
 
-| Variabile | Note |
-|---|---|
-| `CLERK_SECRET_KEY` | Backend Clerk |
-| `PUBLIC_CLERK_PUBLISHABLE_KEY` | Frontend Clerk |
-| `STRIPE_SECRET_KEY` | Backend Stripe |
-| `STRIPE_WEBHOOK_SECRET` | Verifica firma webhook |
-| `STRIPE_SUBSCRIPTION_PRICE_ID` | ID piano abbonamento |
-| `BREVO_API_KEY` | Newsletter Brevo — MAI su GitHub |
+| Variabile | Dove | Note |
+|---|---|---|
+| `CLERK_SECRET_KEY` | Netlify | Backend Clerk + webhook |
+| `PUBLIC_CLERK_PUBLISHABLE_KEY` | Netlify | Frontend Clerk |
+| `STRIPE_SECRET_KEY` | Netlify + `.env` | Checkout, webhook, download, shop build, script immagini |
+| `STRIPE_WEBHOOK_SECRET` | Netlify | Firma webhook |
+| `STRIPE_SUBSCRIPTION_PRICE_ID` | Netlify | Prezzo Pro €29/mese |
+| `BREVO_API_KEY` | Netlify + `.env` | MAI su GitHub |
+| `SENDER_EMAIL` | Netlify (opzionale) | Mittente mail `secret-subscribe`, default adventures@unmarked.it |
+| `SITE_URL` | `.env` | Solo per `npm run sync-images` |
+| `PUBLIC_CARTO_KEY` | Netlify + `.env` | API key tiles CARTO (pubblica, limitata per dominio). Senza chiave le mappe mostrano la filigrana "API KEY REQUIRED" |
+
+Il `.env` locale contiene solo `BREVO_API_KEY`, `SITE_URL`, `STRIPE_SECRET_KEY`. Al passaggio a Stripe LIVE vanno cambiate **tutte** le chiavi/ID Stripe (secret, webhook secret, subscription price, e i `stripePriceId`/`stripeProductId` in `shop-data.ts`).
 
 ---
 
-## 10. MEDIA KIT
+## 10. MEDIA KIT E PORTFOLIO
 
-### Struttura
-- `src/pages/mediakit.astro` — versione italiana (`/mediakit`)
-- `src/pages/en/mediakit.astro` — versione inglese (`/en/mediakit`)
-- `src/data/mediakit-data.ts` — **file dati condiviso**: numeri, foto, reel, prezzi, email
+### Media Kit
+- `src/pages/mediakit.astro` (IT) e `src/pages/en/mediakit.astro` (EN)
+- Dati condivisi in `src/data/mediakit-data.ts`: `reach`, `samuele`, `alice`, `pricing`, `reels`, email
+- Testi: da modificare separatamente nei due `.astro`
+- Cover reel: `public/reel-covers/` (mazda-1, mazda-2, nikon, asus, lexar, Mogotlho, Evolveback)
+- Loghi brand: `public/loghi/` (Nikon, DJI, Mazda, Helly Hansen, Hamilton, Suunto, Range Rover, Four Seasons, Nomatic, Basecamp, Evolve Back, Mogotlhlo, Explore Namibia, Ascocar)
+- Case study: foto in `public/mediakit/` (eyes of africa, hidden path); blocco `.mk-case-gallery`
 
-### Come aggiornare
-- **Numeri (follower, views, newsletter)** → modifica `mediakitData.reach`, `mediakitData.samuele`, `mediakitData.alice` in `src/data/mediakit-data.ts`. Si aggiorna su entrambe le lingue.
-- **Prezzi** → modifica `mediakitData.pricing` nello stesso file.
-- **Reel** → aggiungi/rimuovi oggetti nell'array `mediakitData.reels`. Cover in `public/reel-covers/`.
-- **Testi** → vanno modificati separatamente nei due file `.astro` (sono diversi per lingua).
-- **Foto profilo Samuele/Alice** → aggiorna i path in `mediakitData.samuele.photo` e `mediakitData.alice.photo`.
-
-### Case study — aggiungere foto e film
-In `mediakit.astro` e `en/mediakit.astro`, trovare il blocco `.mk-case-gallery`:
-- Sostituire `mk-case-photo-placeholder` con `style="background-image:url('/path/foto.jpg')"` per le foto
-- Per il film: togliere il commento dall'`<iframe>` e inserire l'YouTube ID del video
-
-### Cover reel
-Le immagini vanno in `public/reel-covers/` con i nomi: `mazda-1.jpg`, `mazda-2.jpg`, `nikon.jpg`, `asus.jpg`, `lexar.jpg`
-
----
-
-## 11. CONTENUTI TEST DA RIMUOVERE
-
-- `src/content/itinerari/isalnda-1.md`
-- `src/content/itinerari/isalnda-2.md`
-- `src/content/destinazioni/test-islanda.md`
+### Portfolio / Press
+- `src/pages/portfolio-press.astro` (IT) e `src/pages/en/portfolio-press.astro` (EN)
+- Dati condivisi in `src/data/portfolio-data.ts`: `contactEmail`, `photoGroups[]{brand, year, photos[]}`, video (YouTube `youtubeId` o MP4 `videoSrc` + `thumb`), tariffe (`price`, `itemsIt`, `itemsEn`)
+- File in `public/portfolio/` (Mazda, Basecamp, Helly Hansen, video Namibia e Mazda)
 
 ---
 
 ## 11. BLACK BOOK (SPOTSBOOK)
 
 ### Struttura
-- `src/pages/spotsbook.astro` — pagina SSR (`/spotsbook`)
-- `src/content/blackbook/` — una cartella con un file `.md` per location
-- Schema in `src/content/config.ts` → collection `blackbook`
+- `src/pages/spotsbook.astro` — SSR
+- `src/content/blackbook/` — un `.md` per location (27 attuali)
 - CMS: sezione "Black Book" in `/admin`
+- Immagini: `public/spotsbook/`
 
 ### Logica accesso
-- Non abbonati: vedono hero + teaser con mappa sfumata + CTA abbonamento
-- Abbonati (`isPremium: true` in Clerk `publicMetadata`): vedono la mappa Leaflet completa con pannello laterale + overlay dettaglio
+- Non abbonati: hero + teaser con mappa sfumata + CTA Pro. Le location con `preview: true` sono visibili come anteprima.
+- Abbonati (`isPremium`): mappa Leaflet completa + pannello laterale + overlay dettaglio.
 
-### Aggiungere una location
-1. Vai su `/admin` → Black Book → New
-2. Compila i campi (vedi sotto)
-3. Imposta **Stato**: `published` (pin visibile e cliccabile) o `coming_soon` (pin sfumato, non cliccabile)
-4. Pubblica → Netlify rebuilda
+### Campi
 
-### Campi CMS e schema
-
-| Campo CMS | Nome nel codice | Tipo | Note |
+| Campo CMS | Codice | Tipo | Note |
 |---|---|---|---|
-| Titolo | `title` | string | obbligatorio |
-| Paese | `country` | string | obbligatorio |
-| Regione | `region` | string | opzionale |
-| Continente | `continent` | enum 5 | obbligatorio |
-| Tipo | `type` | enum 6 | Wildlife, Paesaggio, Golden hour, Blue hour, Architettura, Persone |
-| Lat / Lng | `lat`, `lng` | number | coordinate GPS |
-| Stato | `status` | enum | `published` / `coming_soon` |
-| Ora ottimale | `bestTime` | string | es. "06:15 – 07:45" — appare come "Luce ottimale" |
-| Periodo | `bestSeason` | string | es. "Giugno – Settembre" |
-| Tecnica consigliata | `focalLength` | text | campo multiriga, ex "Focale consigliata" |
-| Composizione consigliata | `isoRange` | string | ex "ISO consigliata" — rinominato |
-| Accesso | `access` | string | es. "35 min a piedi" |
-| Difficoltà fotografica | `difficulty` | enum Bassa/Media/Alta | |
-| Avvicinamento | `avvicinamento` | enum Bassa/Media/Alta | difficoltà di avvicinamento |
-| Anti-mainstream | `antiMainstream` | text | consiglio alternativo editoriale |
-| Annotazioni a mano | `handnotes[]` | list string | appaiono con freccia ↳, font Caveat |
-| Checklist pratica | `checklist[]` | list string | consigli logistici con flag |
-| Attrezzatura consigliata | `equipment[]` | multi-select 6 voci | Treppiede, Filtri, Grandangolo, Tele, Lente luminosa, Cover impermeabile |
-| Nota personale | `personalNote` | string | appare con stellina ★ |
-| Coordinate testuali | `coordinates` | string | es. "-1.03, 29.68 · Bwindi NP" — copiabili con click |
-| Immagini overlay | `images[]` | list {src, alt} | upload da admin → `public/spotsbook/`; prima foto = preview nel pannello |
+| Titolo | `title` | string | |
+| Paese / Regione / Continente | `country`, `region?`, `continent` | | |
+| Tipo | `type` | enum | Wildlife, Paesaggio, Golden hour, Blue hour, Architettura, Persone |
+| Lat / Lng | `lat`, `lng` | number | |
+| Data | `publishDate` | date | usata per il pin "nuova" (ultimi 30 gg) |
+| Stato | `status` | enum | `published` / `coming_soon` (pin grigio, non cliccabile) |
+| Anteprima | `preview` | boolean | visibile ai non abbonati |
+| Ora ottimale | `bestTime` | string | → "Luce ottimale" |
+| Periodo | `bestSeason` | string | |
+| Tecnica consigliata | `focalLength` | text | (nome campo storico) |
+| Composizione consigliata | `isoRange` | string | (nome campo storico) |
+| Accesso | `access` | string | |
+| Difficoltà fotografica | `difficulty` | Bassa/Media/Alta | |
+| Avvicinamento | `avvicinamento` | Bassa/Media/Alta | |
+| Anti-mainstream | `antiMainstream` | text | |
+| Annotazioni a mano | `handnotes[]` | list | freccia ↳, font Caveat |
+| Checklist | `checklist[]` | list | |
+| Attrezzatura | `equipment[]` | multi-select | Treppiede, Filtri, Grandangolo, Tele, Lente luminosa, Cover impermeabile |
+| Nota personale | `personalNote` | string | stellina ★ |
+| Coordinate testuali | `coordinates` | string | copiabili con click |
+| Immagini | `images[]{src, alt?}` | list | prima foto = preview pannello |
+
+Il body del `.md` è il testo descrittivo principale.
 
 ### Interfaccia abbonati
-
-**Toolbar**: filtri chip per tipo e continente + chip "Salvati" + campo ricerca (filtra per titolo, paese, regione in tempo reale).
-
-**Mappa Leaflet**: pin colorati su sfondo CartoDB Dark.
-- Terra cotta = disponibile
-- Giallo `#E8C840` = salvata (localStorage)
-- Verde acqua `#6BBFA3` + pallino = nuova (pubblicata negli ultimi 30 giorni)
-- Grigio semitrasparente = coming soon (non cliccabile)
-- Legenda pin in basso a sinistra della mappa
-
-**Pannello laterale** (click su pin): foto preview, paese · continente, titolo, Periodo, Luce ottimale, Difficoltà fotografica (blocco terra cotta), bottoni "Scopri tutto" + salva, link "Apri in Google Maps" in fondo.
-
-**Overlay dettaglio** (click "Scopri tutto"): galleria foto cliccabile → lightbox, blocchi editoriali (Difficoltà fotografica, Tecnica consigliata, Composizione consigliata, Anti-mainstream), griglia Accesso + Difficoltà di avvicinamento, annotazioni a mano, attrezzatura (lista con flag), checklist pratica, nota personale, coordinate copiabili, link Google Maps.
-
-**Lightbox**: click su foto in overlay apre l'immagine grande. Il pannello overlay rimane visibile sulla destra (lightbox limitato a `right: 560px`). Chiudere l'overlay chiude anche il lightbox.
-
-**Salvataggio location**: `localStorage` con chiave `spotsbook_saved`. Quando Clerk sarà integrato, sostituire le 3 funzioni `getSaved()`, `toggleSave()`, `isSaved()` in `spotsbook.astro` con chiamate API Clerk.
-
-### Body del markdown
-Il corpo del file `.md` è il testo descrittivo principale della location (supporta grassetto e corsivo).
+- **Toolbar**: chip tipo/continente, chip "Salvati", ricerca live (titolo, paese, regione)
+- **Pin** (CartoDB Dark): terra cotta = disponibile · giallo `#E8C840` = salvata · verde acqua `#6BBFA3` = nuova · grigio = coming soon. Legenda in basso a sinistra.
+- **Pannello laterale**: foto, paese · continente, titolo, periodo, luce, difficoltà, "Scopri tutto" + salva, link Google Maps
+- **Overlay dettaglio**: galleria → lightbox (limitato a `right: 560px`), blocchi editoriali, accesso/avvicinamento, note, attrezzatura, checklist, nota personale, coordinate, Google Maps
+- **Salvati**: `localStorage` chiave `spotsbook_saved` (funzioni `getSaved()`, `toggleSave()`, `isSaved()` — da migrare su Clerk metadata)
 
 ---
 
-## 12. CHECKLIST PRIMA DEL LANCIO
+## 12. SHOP
 
-- [ ] Eliminare contenuti test
-- [ ] Switchare Stripe da TEST a LIVE
-- [x] Aggiungere foto di Alice e Samuele in `/chi-siamo` (CSS: `.cs-person-img-alice`, `.cs-person-img-samuele`)
-- [ ] `seoMetaDescription` su tutte le destinazioni
-- [ ] `mapCenter` su tutte le destinazioni
-- [ ] Aggiornare opzioni `relatedItinerary` nel CMS per ogni nuovo itinerario
-- [ ] `audioUrl` su ogni nuovo episodio podcast
-- [ ] Testare flusso acquisto Stripe end-to-end in produzione
-- [ ] Testare iscrizione newsletter
+### Catalogo — `src/data/shop-data.ts`
+Tipi: `digital` (tag `preset` / `lut` / `sfx` / `flare`) e `physical` (tag `maps` / `prints` / `gear`).
+Campi prodotto: `id, title, subtitle, type, tag, price, stripePriceId, image, hoverImage?, stripeProductId?, description, fullDescription?, details?[], badge?, available, variants?[]{label, size?, price, stripePriceId}, downloadPath?, shipping?, shippingCountries?`
+
+Prodotti attuali:
+| id | tipo |
+|---|---|
+| `preset-desert-light` | digitale — preset Lightroom €29 |
+| `iceland-maps` | fisico — mappa murale |
+| `eye-of-earth` | fisico |
+| `mirror-of-iceland` | fisico |
+| `africa-maps` | fisico |
+| `tote-bag-unmarked` | fisico |
+
+### Flusso
+1. `/shop` → `/shop/[id]` (pagina prodotto, varianti formato es. A4/A3/A2)
+2. `POST /api/checkout` con `type: 'shop'`, `productId`, `variantPriceId?`
+3. Digitale → `/download?session=…` verifica pagamento su Stripe e mostra il link a `downloadPath`
+4. Fisico → `/shop/grazie?session=…`; spedizione gestita a mano da Stripe Dashboard
+
+### Immagini prodotto
+- File in `public/shop/[product-id]/`
+- `npm run sync-images` (`scripts/sync-product-images.mjs`) carica le immagini sui prodotti Stripe (richiede `STRIPE_SECRET_KEY` + `SITE_URL` in `.env`)
+- Se il prodotto ha `stripeProductId`, `/shop/[id]` al build legge le immagini da Stripe
+
+### Aggiungere un prodotto
+1. Crealo su Stripe Dashboard → copia `prod_…` e `price_…` (uno per variante)
+2. Aggiungi l'oggetto in `shop-data.ts`
+3. Immagini in `public/shop/[id]/`
+4. Digitali: file in `public/downloads/` + `downloadPath`
 
 ---
 
-## 13. NOTE OPERATIVE
+## 13. PODCAST — SYNC AUTOMATICO
+
+- `.github/workflows/sync-podcast.yml`: ogni giorno alle 08:00 UTC (o manuale da GitHub → Actions) esegue `scripts/sync-podcast.js`
+- Lo script legge il feed RSS Anchor e crea un `.md` in `src/content/podcast/` per ogni episodio nuovo (con `audioUrl` dall'`<enclosure>`), poi commit "podcast: nuovi episodi da RSS" come "Unmarked Bot" → Netlify rebuilda
+- Dopo il sync conviene rivedere a mano `topic`, `excerpt`, `featured`, cover
+- ⚠ Il bot pusha su `main`: fare **pull** in GitHub Desktop prima di committare per evitare conflitti
+
+---
+
+## 14. CHECKLIST PRIMA DEL LANCIO
+
+- [ ] Eliminare contenuti test: `itinerari/isalnda-1.md`, `itinerari/isalnda-2.md` (verificare anche `isalnda.md`)
+- [ ] Rinominare `libreria/aaaa.md` con uno slug vero (es. `cosa-mettere-nello-zaino`)
+- [ ] Switchare Stripe da TEST a LIVE (chiavi env + webhook + price ID in `shop-data.ts`)
+- [ ] **Creare `public/downloads/`** e caricare `desert-light-presets.zip` (oggi la cartella non esiste → download rotto). Valutare di non servirlo da `public/` (link indovinabile)
+- [ ] Testare end-to-end: abbonamento, itinerario singolo, prodotto digitale, prodotto fisico
+- [ ] Testare newsletter e `segreto.html` (mittente verificato su Brevo)
+- [ ] `seoMetaDescription` e `mapCenter` su tutti gli articoli Libreria
+- [ ] Aggiornare opzioni `relatedItinerary` nel CMS (oggi solo "Namibia")
+- [x] Foto di Alice e Samuele in `/chi-siamo`
+
+### Debito tecnico / da valutare
+- Webhook `customer.subscription.deleted` cerca l'utente solo tra i primi 10 di Clerk → con più utenti fallisce. Usare `metadata` sulla subscription o una ricerca completa.
+- Pagamenti senza login: il webhook non può associarli a un account (itinerario/abbonamento persi). Forzare il login prima del checkout o gestire via email.
+- `@clerk/backend` è importato dal webhook ma non è in `package.json` (arriva come dipendenza di `@clerk/astro`) — aggiungerlo esplicitamente.
+- Rimuovere i campi Lemon Squeezy da schema e CMS.
+- Verificare se `Layout.astro` è ancora usato.
+- Salvati Spotsbook su Clerk invece che localStorage.
+
+---
+
+## 15. NOTE OPERATIVE
 
 ### Aggiungere un nuovo itinerario
-1. Crearlo dal CMS `/admin`
-2. Aggiungere `audioUrl` nel frontmatter (URL MP3 da RSS Anchor)
-3. Aggiornare opzioni `relatedItinerary` in `public/admin/config.yml`
-4. Aggiungere coordinate paese in `countryCoords` se paese nuovo
+1. Crearlo da `/admin`
+2. Aggiornare le opzioni `relatedItinerary` in `public/admin/config.yml`
+3. Aggiungere le coordinate del paese in `countryCoords` (in `index.astro` e `mappa.astro`) se il paese è nuovo
 
-### Trovare audioUrl di un episodio
-1. Aprire `https://anchor.fm/s/112725408/podcast/rss`
-2. Cercare `<enclosure url="...">` per l'episodio
-3. Copiare l'URL nel campo `audioUrl` del `.md`
+### Nuovo episodio podcast
+Automatico (vedi §13). Per farlo a mano: `audioUrl` dal tag `<enclosure url="...">` del feed RSS.
 
 ### Git e deploy
-- Claude edita file locali → GitHub Desktop (commit + push) → Netlify (autodeploy ~30s)
-- Lock file: `rm /Users/samuelecavicchi/Desktop/unmarked/.git/HEAD.lock` e/o `index.lock`
-- Se GitHub Desktop blocca per "Secret Detected": il `.env` non deve essere su Git
+- Claude edita i file locali → GitHub Desktop (pull, commit, push) → Netlify autodeploy (~30s)
+- Lock file bloccato: `rm /Users/samuelecavicchi/Desktop/unmarked/.git/HEAD.lock` e/o `index.lock`
+- "Secret Detected" in GitHub Desktop: il `.env` non deve finire su Git
 
 ---
 
-*Fine documento v9 — 8 Giugno 2026.*
+*Fine documento v10 — 4 Ottobre 2026.*

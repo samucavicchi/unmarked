@@ -567,7 +567,7 @@ const gallery = data.gallery || [];
           var center = JSON.parse(el.dataset.center);
           var points = JSON.parse(el.dataset.points || '[]');
           var map = L.map('it-map', { center: [center.lat, center.lng], zoom: center.zoom || 9, scrollWheelZoom: false });
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          L.tileLayer(window.UNMARKED_TILES.light, {
             attribution: '© OpenStreetMap contributors © CARTO',
             maxZoom: 18
           }).addTo(map);

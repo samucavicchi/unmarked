@@ -286,7 +286,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
         var center = JSON.parse(mapEl.dataset.center);
         var markers = JSON.parse(mapEl.dataset.markers || '[]');
         var map = L.map('leaflet-map').setView([center.lat, center.lng], center.zoom || 8);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer(window.UNMARKED_TILES.light, {
           attribution: '© OpenStreetMap © CARTO',
           subdomains: 'abcd',
           maxZoom: 14,

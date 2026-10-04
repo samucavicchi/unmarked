@@ -107,7 +107,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       js.onload = () => {
         const map = L.map('bb-teaser-map', { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, keyboard: false, tap: false, touchZoom: false, minZoom: 3 }).setView([20, 20], 3);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer(window.UNMARKED_TILES.dark, {
           subdomains: 'abcd', maxZoom: 19, attribution: ''
         }).addTo(map);
 
@@ -407,7 +407,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
     function initMap() {
       map = L.map('bb-map', { zoomControl: false, scrollWheelZoom: true, tap: false, minZoom: 2 }).setView([20, 20], 2);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer(window.UNMARKED_TILES.dark, {
         attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19, noWrap: true
       }).addTo(map);
       L.control.zoom({ position: 'bottomright' }).addTo(map);
