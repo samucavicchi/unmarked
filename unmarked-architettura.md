@@ -254,7 +254,7 @@ Breakpoint 768px in `src/styles/global.css`. Mobile: hamburger, griglie a colonn
 | `BREVO_API_KEY` | Netlify + `.env` | MAI su GitHub |
 | `SENDER_EMAIL` | Netlify (opzionale) | Mittente mail `secret-subscribe`, default adventures@unmarked.it |
 | `SITE_URL` | `.env` | Solo per `npm run sync-images` |
-| `PUBLIC_CARTO_KEY` | Netlify + `.env` | API key tiles CARTO (pubblica, limitata per dominio). Senza chiave le mappe mostrano la filigrana "API KEY REQUIRED" |
+| `PUBLIC_CARTO_KEY` | Netlify + `.env` (opzionale) | API key tiles CARTO (pubblica, limitata per dominio). Se manca si usa quella di riserva scritta in `BaseLayout.astro`. Senza chiave le mappe mostrano la filigrana "API KEY REQUIRED" |
 
 Il `.env` locale contiene solo `BREVO_API_KEY`, `SITE_URL`, `STRIPE_SECRET_KEY`. Al passaggio a Stripe LIVE vanno cambiate **tutte** le chiavi/ID Stripe (secret, webhook secret, subscription price, e i `stripePriceId`/`stripeProductId` in `shop-data.ts`).
 

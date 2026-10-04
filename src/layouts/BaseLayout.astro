@@ -22,7 +22,7 @@ const {
 
 // Tiles CARTO: dal 2026 richiedono una API key (?key=...). La chiave è pubblica
 // (va nel browser) ed è limitata per dominio dalla dashboard CARTO.
-const cartoKey = import.meta.env.PUBLIC_CARTO_KEY ?? '';
+const cartoKey = import.meta.env.PUBLIC_CARTO_KEY || 'cb1_49s4_1_5a8e2fdf765f4e1f42bbf35f';
 const cartoQs = cartoKey ? `?key=${cartoKey}` : '';
 const mapTiles = {
   dark:  `https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png${cartoQs}`,
