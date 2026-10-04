@@ -376,7 +376,9 @@ Prodotti attuali:
 - [ ] Rinominare `libreria/aaaa.md` con uno slug vero (es. `cosa-mettere-nello-zaino`)
 - [ ] Switchare Stripe da TEST a LIVE (chiavi env + webhook + price ID in `shop-data.ts`)
 - [ ] **Creare `public/downloads/`** e caricare `desert-light-presets.zip` (oggi la cartella non esiste → download rotto). Valutare di non servirlo da `public/` (link indovinabile)
-- [ ] Testare end-to-end: abbonamento, itinerario singolo, prodotto digitale, prodotto fisico
+- [x] Test abbonamento Pro in modalità TEST (4 Ott 2026): checkout → webhook → `isPremium` su Clerk → Spotsbook sbloccato ✓
+- [ ] Testare end-to-end: itinerario singolo, prodotto digitale, prodotto fisico (e ripetere l'abbonamento dopo il passaggio a LIVE)
+- [ ] `/pro`: obbligare il login prima del checkout (oggi un utente sloggato paga ma l'abbonamento non viene associato a nessun account)
 - [ ] Testare newsletter e `segreto.html` (mittente verificato su Brevo)
 - [ ] `seoMetaDescription` e `mapCenter` su tutti gli articoli Libreria
 - [ ] Aggiornare opzioni `relatedItinerary` nel CMS (oggi solo "Namibia")
