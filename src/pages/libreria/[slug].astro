@@ -1,4 +1,5 @@
 ---
+import { features } from '../../data/features';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DestinazioneCard from '../../components/DestinazioneCard.astro';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
@@ -35,7 +36,7 @@ const correlati = tutte
 
 // Itinerario correlato — il CMS salva il titolo, cerchiamo per titolo
 let itinerarioCorrelato: CollectionEntry<'itinerari'> | undefined;
-if (data.relatedItinerary) {
+if (features.itinerari && data.relatedItinerary) {
   const tuttiItinerari = await getCollection('itinerari');
   itinerarioCorrelato = tuttiItinerari.find(
     (it) => it.data.title.toLowerCase() === data.relatedItinerary!.toLowerCase()

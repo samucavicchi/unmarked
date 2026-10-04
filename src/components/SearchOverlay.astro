@@ -1,8 +1,9 @@
 ---
+import { features } from '../data/features';
 import { getCollection } from 'astro:content';
 
 const destinazioni = await getCollection('libreria');
-const itinerari = await getCollection('itinerari');
+const itinerari = features.itinerari ? await getCollection('itinerari') : [];
 
 const searchData = [
   ...destinazioni.map((e) => ({

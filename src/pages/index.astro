@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Newsletter from '../components/Newsletter.astro';
@@ -18,7 +19,7 @@ const countryCoords: Record<string, [number, number]> = {
 };
 
 const tutteLeDestinazioni = await getCollection('libreria');
-const tuttiItinerariPerMappa = await getCollection('itinerari');
+const tuttiItinerariPerMappa = features.itinerari ? await getCollection('itinerari') : [];
 
 const homePins = [
   ...tutteLeDestinazioni.filter(e => e.data.coverImage).map(e => {
@@ -183,7 +184,8 @@ const formatDateShort = (date) =>
     })();
   </script>
 
-  <!-- ITINERARI -->
+  <!-- ITINERARI (nascosto se features.itinerari = false) -->
+  {features.itinerari && (
   <div class="itinerari-block">
     <div>
       <div class="it-label">Itinerari premium</div>
@@ -206,6 +208,7 @@ const formatDateShort = (date) =>
       {itinerariHome.map((entry) => <ItinerarioCard entry={entry} variant="home" />)}
     </div>
   </div>
+  )}
 
   <!-- SPOTSBOOK TEASER -->
   <section class="sb-teaser">
@@ -213,10 +216,10 @@ const formatDateShort = (date) =>
     <div class="sb-teaser-fade-l"></div>
     <div class="sb-teaser-fade-r"></div>
     <div class="sb-teaser-overlay">
-      <div class="sb-teaser-tag">Spotsbook · Unmarked Pro</div>
+      <div class="sb-teaser-tag">{features.pro ? 'Spotsbook · Unmarked Pro' : 'Spotsbook · In arrivo'}</div>
       <h2 class="sb-teaser-title">Location fotografiche segrete.<br/>Coordinate precise. Luce perfetta.</h2>
       <p class="sb-teaser-sub">Quello che abbiamo trovato sul campo e che non mettiamo sulle guide.<br/>{spotsbookCount} location disponibili, +3 ogni mese.</p>
-      <a href="/spotsbook" class="sb-teaser-btn">Sblocca lo Spotsbook</a>
+      <a href="/spotsbook" class="sb-teaser-btn">{features.pro ? 'Sblocca lo Spotsbook' : 'Scopri lo Spotsbook'}</a>
     </div>
   </section>
 

@@ -1,5 +1,6 @@
 ---
 export const prerender = false;
+import { features } from '../data/features';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 let currentUser: Awaited<ReturnType<typeof Astro.locals.currentUser>> = null;
@@ -10,14 +11,14 @@ try {
 const isPremium = !!(currentUser?.publicMetadata?.isPremium);
 ---
 
-<BaseLayout title="Unmarked Pro — Accesso completo" description="Itinerari senza filtri, location segrete, note dal campo. Tutto ciò che non trovi sulle guide.">
+<BaseLayout title="Unmarked Pro — Accesso completo" description={features.itinerari ? "Itinerari senza filtri, location segrete, note dal campo. Tutto ciò che non trovi sulle guide." : "Location fotografiche segrete, coordinate precise, note dal campo. Tutto ciò che non trovi sulle guide."}>
 
   <!-- HERO -->
   <div class="pro-hero">
     <div class="pro-hero-inner">
       <div class="pro-label">Unmarked · Pro</div>
       <h1 class="pro-title">Quello che non<br/>trovi sulle guide.</h1>
-      <p class="pro-sub">Itinerari completi, location fotografiche segrete con coordinate precise, note dal campo. Aggiornato ogni mese.</p>
+      <p class="pro-sub">{features.itinerari ? 'Itinerari completi, location fotografiche segrete con coordinate precise, note dal campo. Aggiornato ogni mese.' : 'Location fotografiche segrete con coordinate precise, ora ottimale e note dal campo. Aggiornato ogni mese.'}</p>
       {isPremium ? (
         <a href="/account" class="pro-cta-btn">Vai al tuo account →</a>
       ) : (
@@ -32,6 +33,7 @@ const isPremium = !!(currentUser?.publicMetadata?.isPremium);
   <div class="pro-features-wrap">
     <div class="pro-features">
 
+      {features.itinerari && (
       <div class="pro-feat">
         <div class="pro-feat-num">01</div>
         <div class="pro-feat-body">
@@ -39,9 +41,10 @@ const isPremium = !!(currentUser?.publicMetadata?.isPremium);
           <div class="pro-feat-desc">Giorni strutturati, mappe, contatti locali, tempi reali e tutto ciò che serve per muoversi senza improvvisare. Niente tappe generiche, solo quello che abbiamo testato sul campo.</div>
         </div>
       </div>
+      )}
 
       <div class="pro-feat">
-        <div class="pro-feat-num">02</div>
+        <div class="pro-feat-num">{features.itinerari ? '02' : '01'}</div>
         <div class="pro-feat-body">
           <div class="pro-feat-title">Spotsbook</div>
           <div class="pro-feat-desc">Location fotografiche che non mettiamo sulle guide. Coordinate precise, ora ottimale, luce, tecnica consigliata e note personali. Aggiornato con nuove location ogni mese.</div>
@@ -49,10 +52,10 @@ const isPremium = !!(currentUser?.publicMetadata?.isPremium);
       </div>
 
       <div class="pro-feat">
-        <div class="pro-feat-num">03</div>
+        <div class="pro-feat-num">{features.itinerari ? '03' : '02'}</div>
         <div class="pro-feat-body">
           <div class="pro-feat-title">Contenuti in anteprima</div>
-          <div class="pro-feat-desc">Ogni nuovo itinerario e ogni nuova location dello Spotsbook disponibili subito per gli Unmarked Pro, prima di chiunque altro.</div>
+          <div class="pro-feat-desc">{features.itinerari ? 'Ogni nuovo itinerario e ogni nuova location dello Spotsbook disponibili subito per gli Unmarked Pro, prima di chiunque altro.' : 'Ogni nuova location dello Spotsbook disponibile subito per gli Unmarked Pro, prima di chiunque altro.'}</div>
         </div>
       </div>
 
@@ -69,10 +72,10 @@ const isPremium = !!(currentUser?.publicMetadata?.isPremium);
       </div>
       <div class="pro-plan-right">
         <ul class="pro-plan-list">
-          <li>Accesso a tutti gli itinerari Unmarked</li>
+          {features.itinerari && <li>Accesso a tutti gli itinerari Unmarked</li>}
           <li>Spotsbook completo — location aggiornate ogni mese</li>
           <li>+3 nuove location al mese</li>
-          <li>Nuovi itinerari in anteprima</li>
+          {features.itinerari && <li>Nuovi itinerari in anteprima</li>}
           <li>Nessun vincolo — disdici in qualsiasi momento</li>
         </ul>
         {isPremium ? (

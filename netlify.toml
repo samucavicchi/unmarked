@@ -13,3 +13,30 @@
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# ── Sezioni nascoste (vedi src/data/features.ts) ──────────────────────────
+# Per riattivare una sezione: cancella il suo blocco qui sotto e metti `true` in features.ts.
+# 302 (temporaneo) così Google non considera la rimozione definitiva.
+[[redirects]]
+  from = "/itinerari"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/itinerari/*"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/consulenze"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/consulenze/*"
+  to = "/"
+  status = 302
+  force = true

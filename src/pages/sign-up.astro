@@ -1,5 +1,6 @@
 ---
 export const prerender = false;
+import { features } from '../data/features';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SignUp } from '@clerk/astro/components';
 ---
@@ -12,13 +13,15 @@ import { SignUp } from '@clerk/astro/components';
       <div class="auth-left-inner">
         <div class="auth-label">Unmarked · Pro</div>
         <h1 class="auth-title">Entra.</h1>
-        <p class="auth-sub">Location segrete, itinerari senza filtri, note dal campo. Quello che non trovi sulle guide.</p>
+        <p class="auth-sub">{features.itinerari ? 'Location segrete, itinerari senza filtri, note dal campo. Quello che non trovi sulle guide.' : 'Location segrete, coordinate precise, note dal campo. Quello che non trovi sulle guide.'}</p>
         <div class="auth-divider"></div>
         <div class="auth-features">
+          {features.itinerari && (
           <div class="auth-feat">
             <span class="auth-feat-dot"></span>
             Itinerari completi con giorni, mappe e contatti locali
           </div>
+          )}
           <div class="auth-feat">
             <span class="auth-feat-dot"></span>
             Spotsbook — location fotografiche segrete con coordinate precise, ora ottimale e tecnica consigliata

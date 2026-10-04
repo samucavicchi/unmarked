@@ -1,5 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { features } from '../data/features';
+
+// Numerazione "Cosa facciamo" che si adatta alle sezioni nascoste
+const _pad = (x: number) => String(x).padStart(2, '0');
+const n = {
+  itinerari: _pad(2),
+  consulenze: _pad(features.itinerari ? 3 : 2),
+  podcast: _pad(2 + (features.itinerari ? 1 : 0) + (features.consulenze ? 1 : 0)),
+};
+const whatCount = 2 + (features.itinerari ? 1 : 0) + (features.consulenze ? 1 : 0);
 ---
 
 <BaseLayout
@@ -102,24 +112,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="cs-inner">
       <div class="cs-label">Cosa facciamo</div>
       <h2 class="cs-title cs-title-center">Non siamo una guida.<br/>Siamo quello che va oltre le cose che le guide non vedono.</h2>
-      <div class="cs-what-grid">
+      <div class="cs-what-grid" style={`--cs-what-cols:${whatCount}`}>
         <div class="cs-what-item">
           <div class="cs-what-icon">01</div>
           <div class="cs-what-name">Reportage fotografici</div>
           <p class="cs-what-desc">Racconti visivi da destinazioni conosciute e sconosciute. Non le foto che hai già visto — quelle che avresti voluto vedere.</p>
         </div>
+        {features.itinerari && (
         <div class="cs-what-item">
-          <div class="cs-what-icon">02</div>
+          <div class="cs-what-icon">{n.itinerari}</div>
           <div class="cs-what-name">Itinerari premium</div>
           <p class="cs-what-desc">Guide giorno per giorno scritte da chi ci è stato davvero. Contatti verificati, budget reali, tutto quello che i blog non dicono mai.</p>
         </div>
+        )}
+        {features.consulenze && (
         <div class="cs-what-item">
-          <div class="cs-what-icon">03</div>
+          <div class="cs-what-icon">{n.consulenze}</div>
           <div class="cs-what-name">Consulenze personali</div>
           <p class="cs-what-desc">Pianifichiamo il tuo viaggio insieme. Nessun pacchetto standard — solo il viaggio che hai in testa, costruito con chi lo conosce.</p>
         </div>
+        )}
         <div class="cs-what-item">
-          <div class="cs-what-icon">04</div>
+          <div class="cs-what-icon">{n.podcast}</div>
           <div class="cs-what-name">Il podcast</div>
           <p class="cs-what-desc">Storie di viaggio raccontate a voce. I posti, le persone, i momenti. Per chi vuole viaggiare anche quando è fermo.</p>
         </div>
@@ -131,10 +145,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="cs-cta">
     <div class="cs-cta-inner">
       <h2 class="cs-cta-title">Pronto a cercare il tuo angolo?</h2>
-      <p class="cs-cta-sub">Inizia da una destinazione, un itinerario, o scrivici direttamente.</p>
+      <p class="cs-cta-sub">{features.itinerari ? 'Inizia da una destinazione, un itinerario, o scrivici direttamente.' : 'Inizia da una destinazione, o scrivici direttamente.'}</p>
       <div class="cs-cta-btns">
         <a href="/libreria" class="cs-btn-primary">Esplora le destinazioni</a>
-        <a href="/consulenze" class="cs-btn-secondary">Parla con noi</a>
+        {features.consulenze && <a href="/consulenze" class="cs-btn-secondary">Parla con noi</a>}
       </div>
     </div>
   </section>
@@ -315,7 +329,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .cs-what { background: #fff; border-top: 1px solid var(--light-border); }
   .cs-what-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--cs-what-cols, 4), 1fr);
     gap: 32px;
   }
   .cs-what-icon {

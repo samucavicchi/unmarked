@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 import { SignedIn, SignedOut } from '@clerk/astro/components';
 ---
 
@@ -7,11 +8,11 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
 
   <ul class="nav-links">
     <li><a href="/libreria">Libreria</a></li>
-    <li><a href="/itinerari">Itinerari</a></li>
+    {features.itinerari && <li><a href="/itinerari">Itinerari</a></li>}
     <li><a href="/film">Film</a></li>
     <li><a href="/podcast">Podcast</a></li>
     <li><a href="/shop">Shop</a></li>
-    <li><a href="/consulenze">Consulenze</a></li>
+    {features.consulenze && <li><a href="/consulenze">Consulenze</a></li>}
     <li><a href="/chi-siamo">Chi siamo</a></li>
   </ul>
 
@@ -36,6 +37,7 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
         <circle cx="10" cy="8" r="2"/>
       </svg>
     </a>
+    {features.account && (<Fragment>
     <SignedOut>
       <a href="/sign-in" class="btn-abbonati">Accedi</a>
     </SignedOut>
@@ -47,6 +49,7 @@ import { SignedIn, SignedOut } from '@clerk/astro/components';
         </svg>
       </a>
     </SignedIn>
+    </Fragment>)}
   </div>
 </nav>
 

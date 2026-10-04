@@ -1,5 +1,5 @@
 # UNMARKED — Architettura del progetto
-*Documento di lavoro v10 · 4 Ottobre 2026*
+*Documento di lavoro v10.2 · 4 Ottobre 2026*
 
 Questo documento è la **memoria esterna** del progetto. Se la chat viene compattata o ricominciata, leggere QUESTO doc + `unmarked-manuale-uso.md` + il codice (cartella `~/Desktop/unmarked`, repo GitHub) basta per riprendere il lavoro senza perdere niente.
 
@@ -39,6 +39,38 @@ Questo documento è la **memoria esterna** del progetto. Se la chat viene compat
 | Automazioni | GitHub Actions (sync podcast giornaliero) |
 
 **Nota storica**: partito con Netlify Identity + Supabase + Lemon Squeezy, migrato a Clerk + Stripe prima del lancio. Decap CMS usa ancora Netlify Identity solo per `/admin`. Nello schema itinerari e nel CMS restano i campi legacy `lemonSqueezyProductId` / `lemonSqueezyCheckoutUrl` (non usati).
+
+---
+
+## 0. SEZIONI NASCOSTE (feature flag) — LANCIO SENZA CONTENUTI A PAGAMENTO
+
+**Dal 4 Ottobre 2026 il sito va online senza nulla a pagamento, eccetto lo Shop.** Itinerari, Consulenze, Unmarked Pro e login sono spenti ma tutto il codice è pronto da riattivare.
+
+Interruttore unico: `src/data/features.ts`
+```ts
+export const features = {
+  itinerari: false,   // Itinerari (archivi, pagine, acquisto singolo)
+  consulenze: false,  // Consulenze
+  pro: false,         // Unmarked Pro: /pro, checkout abbonamento, Spotsbook completo
+  account: false,     // login Clerk: Accedi/account, /sign-in, /sign-up, /account
+};
+```
+
+**Cosa succede con `false`**
+- `itinerari`: spariscono da navbar, footer, hero, home, mappe (pin + filtro + legenda), ricerca, CTA nelle pagine Libreria, 404, Chi siamo, account, `/pro`, login
+- `consulenze`: sparisce da navbar e Chi siamo
+- `pro`: lo **Spotsbook resta visibile come teaser "In arrivo"** — hero, numeri, mappa sfumata, pin in anteprima (`preview: true`) apribili, form "Avvisami" iscrive alla newsletter Brevo (lista 6). Nessuno vede la mappa completa (anche un utente con `isPremium`) e la pagina non interroga Clerk. Teaser in home e popup Spotsbook dicono "In arrivo" e non linkano a `/pro`
+- `account`: niente "Accedi"/icona account in navbar
+- `/api/checkout` risponde **403** per `subscription` (se `pro` è false) e `single` (se `itinerari` è false). Lo **shop funziona normalmente**
+
+**URL bloccati (redirect 302 alla home)**
+- `netlify.toml`: `/itinerari`, `/itinerari/*`, `/consulenze`, `/consulenze/*` (pagine statiche)
+- `src/middleware.ts`: `/itinerari/[slug]`, `/pro`, `/sign-in`, `/sign-up`, `/account` (pagine SSR)
+
+**Per riattivare**
+1. Metti `true` in `features.ts`
+2. Per itinerari/consulenze togli anche il blocco redirect in `netlify.toml`
+3. Pro e account vanno riattivati **insieme** (l'abbonamento richiede login), meglio dopo aver sistemato il login obbligatorio su `/pro` (vedi checklist)
 
 ---
 
@@ -374,7 +406,7 @@ Prodotti attuali:
 
 - [ ] Eliminare contenuti test: `itinerari/isalnda-1.md`, `itinerari/isalnda-2.md` (verificare anche `isalnda.md`)
 - [ ] Rinominare `libreria/aaaa.md` con uno slug vero (es. `cosa-mettere-nello-zaino`)
-- [ ] Switchare Stripe da TEST a LIVE (chiavi env + webhook + price ID in `shop-data.ts`)
+- [ ] Switchare Stripe da TEST a LIVE (chiavi env + webhook + price ID in `shop-data.ts`) — al lancio serve solo per lo **shop**
 - [ ] **Creare `public/downloads/`** e caricare `desert-light-presets.zip` (oggi la cartella non esiste → download rotto). Valutare di non servirlo da `public/` (link indovinabile)
 - [x] Test abbonamento Pro in modalità TEST (4 Ott 2026): checkout → webhook → `isPremium` su Clerk → Spotsbook sbloccato ✓
 - [ ] Testare end-to-end: itinerario singolo, prodotto digitale, prodotto fisico (e ripetere l'abbonamento dopo il passaggio a LIVE)

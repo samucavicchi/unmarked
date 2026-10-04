@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -84,17 +85,17 @@ const initiale = (userName || userEmail)[0].toUpperCase();
       ) : (
         <div class="acc-plan-box acc-plan-inactive">
           <div class="acc-plan-name">Non sei ancora Unmarked Pro</div>
-          <div class="acc-plan-desc">Entra in Unmarked Pro per accedere a tutti gli itinerari senza limiti e allo Spotsbook.</div>
+          <div class="acc-plan-desc">{features.itinerari ? 'Entra in Unmarked Pro per accedere a tutti gli itinerari senza limiti e allo Spotsbook.' : 'Entra in Unmarked Pro per accedere allo Spotsbook completo.'}</div>
           <div class="acc-plan-actions">
             <a href="/spotsbook" class="acc-cta-btn">Scopri lo Spotsbook</a>
-            <a href="/itinerari" class="acc-cta-secondary">Vedi gli itinerari →</a>
+            {features.itinerari && <a href="/itinerari" class="acc-cta-secondary">Vedi gli itinerari →</a>}
           </div>
         </div>
       )}
     </section>
 
     <!-- ITINERARI ACQUISTATI -->
-    {(itinerariAcquistati.length > 0) && (
+    {features.itinerari && (itinerariAcquistati.length > 0) && (
       <section class="acc-section">
         <div class="acc-section-label">Itinerari acquistati</div>
         <div class="acc-it-list">
@@ -123,11 +124,13 @@ const initiale = (userName || userEmail)[0].toUpperCase();
           <span class="acc-link-sub">Location fotografiche segrete</span>
           <span class="acc-link-arrow">→</span>
         </a>
+        {features.itinerari && (
         <a href="/itinerari" class="acc-link-row">
           <span class="acc-link-title">Itinerari</span>
           <span class="acc-link-sub">Tutti i viaggi Unmarked</span>
           <span class="acc-link-arrow">→</span>
         </a>
+        )}
         <a href="/film" class="acc-link-row">
           <span class="acc-link-title">Film</span>
           <span class="acc-link-sub">Documentari e cortometraggi</span>

@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 // Hero della homepage — manifesto editoriale di Unmarked.
 // Senza CTA: la hero è dichiarazione di intenti, non vetrina di sezione.
 // Il CTA naturale è scrollare verso le sezioni sottostanti.
@@ -12,9 +13,9 @@ export interface Props {
 }
 
 const {
-  tag = 'Reportage · Fotografia · Itinerari',
+  tag = features.itinerari ? 'Reportage · Fotografia · Itinerari' : 'Reportage · Fotografia · Film',
   title = 'I luoghi che non trovi<br>sulle guide',
-  subtitle = 'Unmarked racconta i posti che esistono ancora. Reportage fotografici, itinerari scritti da chi ci è stato davvero, storie che non seguono le stagioni turistiche.',
+  subtitle = `Unmarked racconta i posti che esistono ancora. Reportage fotografici, ${features.itinerari ? 'itinerari scritti da chi ci è stato davvero, ' : 'film, podcast, '}storie che non seguono le stagioni turistiche.`,
   ctaLabel,
   ctaHref,
 } = Astro.props;

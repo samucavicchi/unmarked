@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 // Footer del sito.
 const year = new Date().getFullYear();
 ---
@@ -7,7 +8,7 @@ const year = new Date().getFullYear();
   <div class="foot-logo">Unmarked</div>
   <ul class="foot-links">
     <li><a href="/libreria">Libreria</a></li>
-    <li><a href="/itinerari">Itinerari</a></li>
+    {features.itinerari && <li><a href="/itinerari">Itinerari</a></li>}
     <li><a href="/film">Film</a></li>
     <li><a href="/podcast">Podcast</a></li>
     <li><a href="/shop">Shop</a></li>

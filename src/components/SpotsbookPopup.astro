@@ -1,4 +1,5 @@
 ---
+import { features } from '../data/features';
 // Popup Spotsbook — appare dopo 50% di scroll
 // Si mostra una sola volta (home o primo articolo) poi sparisce per sempre (localStorage)
 ---
@@ -9,9 +10,9 @@
     <button class="sbp-close" id="sb-popup-close" aria-label="Chiudi">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
-    <div class="sbp-tag">Spotsbook · Unmarked Pro</div>
+    <div class="sbp-tag">{features.pro ? 'Spotsbook · Unmarked Pro' : 'Spotsbook · In arrivo'}</div>
     <h2 class="sbp-title">Location fotografiche segrete.<br/>Coordinate precise.</h2>
-    <p class="sbp-sub">Quello che abbiamo trovato sul campo e che non mettiamo sulle guide. Riservato agli Unmarked Pro.</p>
+    <p class="sbp-sub">Quello che abbiamo trovato sul campo e che non mettiamo sulle guide. {features.pro ? 'Riservato agli Unmarked Pro.' : 'Presto disponibile: dai un\'occhiata in anteprima.'}</p>
     <div class="sbp-pins" aria-hidden="true">
       <span class="sbp-pin" style="left:12%;top:40%"></span>
       <span class="sbp-pin" style="left:28%;top:60%"></span>
@@ -22,7 +23,7 @@
     </div>
     <div class="sbp-actions">
       <a href="/spotsbook" class="sbp-btn-primary">Scopri lo Spotsbook</a>
-      <a href="/pro" class="sbp-btn-secondary">Entra in Unmarked Pro →</a>
+      {features.pro && <a href="/pro" class="sbp-btn-secondary">Entra in Unmarked Pro →</a>}
     </div>
   </div>
 </div>

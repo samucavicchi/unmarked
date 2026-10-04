@@ -1,9 +1,10 @@
 ---
+import { features } from '../data/features';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const destinazioni = await getCollection('libreria');
-const itinerari = await getCollection('itinerari');
+const itinerari = features.itinerari ? await getCollection('itinerari') : [];
 
 // Coordinate di default per paese (fallback se non c'è mapCenter)
 const countryCoords: Record<string, [number, number]> = {
@@ -67,7 +68,7 @@ const allPins = [...destPins, ...itPins];
     <div class="mp-hero-inner">
       <div class="mp-label">Unmarked · Mappa</div>
       <h1 class="mp-title">Il mondo di Unmarked.</h1>
-      <p class="mp-sub">Destinazioni e itinerari su una mappa interattiva.</p>
+      <p class="mp-sub">{features.itinerari ? 'Destinazioni e itinerari su una mappa interattiva.' : 'Tutte le destinazioni su una mappa interattiva.'}</p>
     </div>
   </section>
 
@@ -79,11 +80,11 @@ const allPins = [...destPins, ...itPins];
       <div class="mp-filters">
         <button class="mappa-filter active" data-filter="tutti">Tutti</button>
         <button class="mappa-filter" data-filter="destinazione">Destinazioni</button>
-        <button class="mappa-filter" data-filter="itinerario">Itinerari</button>
+        {features.itinerari && <button class="mappa-filter" data-filter="itinerario">Itinerari</button>}
       </div>
       <div class="mp-legend">
         <span class="mp-legend-dot mp-legend-dest"></span>Destinazioni
-        <span class="mp-legend-dot mp-legend-it"></span>Itinerari
+        {features.itinerari && <Fragment><span class="mp-legend-dot mp-legend-it"></span>Itinerari</Fragment>}
       </div>
     </div>
     <div class="mp-map-box">

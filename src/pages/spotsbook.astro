@@ -1,10 +1,18 @@
 ---
 export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { features } from '../data/features';
 import { getCollection } from 'astro:content';
 
-const user = await Astro.locals.currentUser();
-const isPremium = user?.publicMetadata?.isPremium === true;
+// Con features.pro = false nessuno vede la mappa completa (solo il teaser "in arrivo")
+// e Clerk non viene interpellato.
+let isPremium = false;
+if (features.pro) {
+  try {
+    const user = await Astro.locals.currentUser();
+    isPremium = user?.publicMetadata?.isPremium === true;
+  } catch (_) {}
+}
 
 const allLocations = await getCollection('blackbook');
 const locations = allLocations.sort((a, b) =>
@@ -21,7 +29,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
 
 <BaseLayout
   title="Spotsbook — Unmarked"
-  description="Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. Riservato agli Unmarked Pro."
+  description={features.pro ? "Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. Riservato agli Unmarked Pro." : "Location fotografiche segrete. Coordinate precise, ora giusta, luce perfetta. In arrivo."}
 >
   <link rel="preconnect" href="https://fonts.googleapis.com" slot="head" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin slot="head" />
@@ -36,7 +44,7 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   <section class="bb-hero">
     <div class="bb-hero-inner">
       <div class="bb-hero-left">
-        <div class="bb-label">Unmarked · Pro</div>
+        <div class="bb-label">{features.pro ? 'Unmarked · Pro' : 'Unmarked · In arrivo'}</div>
         <h1 class="bb-title">Spotsbook</h1>
         <p class="bb-sub">Coordinate precise, ora giusta, luce perfetta. Quello che abbiamo trovato sul campo — e che non mettiamo sulle guide.</p>
         <div class="bb-stats">
@@ -65,17 +73,31 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
       <div class="bb-teaser-map" id="bb-teaser-map">
         <div class="bb-teaser-map-fade"></div>
       </div>
-      <div class="bb-teaser-cta">
-        <div class="bb-label bb-label-light">Spotsbook · Unmarked Pro</div>
+      <div class="bb-teaser-cta" id="bb-coming-soon">
+        <div class="bb-label bb-label-light">{features.pro ? 'Spotsbook · Unmarked Pro' : 'Spotsbook · In arrivo'}</div>
         <h2 class="bb-teaser-title">Location fotografiche segrete.<br/>Coordinate precise.</h2>
-        <p class="bb-teaser-text">{publishedCount} location sul campo con ora giusta, luce perfetta e note che non mettiamo sulle guide. Riservato agli Unmarked Pro.</p>
-        <div class="bb-teaser-actions">
-          <a href="/pro" class="bb-cta-btn">Entra in Unmarked Pro</a>
-          <a href="/sign-in" class="bb-cta-link">Hai già un account? Accedi</a>
-        </div>
+        {features.pro ? (
+          <Fragment>
+            <p class="bb-teaser-text">{publishedCount} location sul campo con ora giusta, luce perfetta e note che non mettiamo sulle guide. Riservato agli Unmarked Pro.</p>
+            <div class="bb-teaser-actions">
+              <a href="/pro" class="bb-cta-btn">Entra in Unmarked Pro</a>
+              <a href="/sign-in" class="bb-cta-link">Hai già un account? Accedi</a>
+            </div>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p class="bb-teaser-text">{publishedCount} location sul campo con ora giusta, luce perfetta e note che non mettiamo sulle guide. Lo Spotsbook apre presto: lasciaci la tua email e ti avvisiamo per primo.</p>
+            <form class="bb-cs-form" id="bb-cs-form">
+              <input class="bb-cs-input" type="email" name="email" placeholder="la tua email" required />
+              <button class="bb-cta-btn bb-cs-btn" type="submit">Avvisami</button>
+            </form>
+            <div class="bb-cs-msg" id="bb-cs-msg" aria-live="polite"></div>
+            <div class="bb-cs-legal">Ti iscrivi alla newsletter Unmarked. Disiscrizione in un click.</div>
+          </Fragment>
+        )}
       </div>
     </section>
-    <script define:vars={{ teaserLocations: locations.map(l => ({
+    <script define:vars={{ proEnabled: features.pro, teaserLocations: locations.map(l => ({
       lat: l.data.lat,
       lng: l.data.lng,
       preview: l.data.preview || false,
@@ -210,8 +232,10 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
         content.innerHTML = `
           <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;text-align:center;gap:16px">
             <svg viewBox="0 0 24 24" fill="none" stroke="rgba(177,113,74,0.6)" stroke-width="1" width="48" height="48"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#FAFAF8;line-height:1.1">Location bloccata</div>
-            <div style="font-size:13px;font-weight:300;color:rgba(250,250,248,0.45);line-height:1.7;max-width:320px">Entra in Unmarked Pro per accedere a questa e a tutte le altre location fotografiche segrete — coordinate precise, tecnica, luce ottimale e note dal campo.</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#FAFAF8;line-height:1.1">${proEnabled ? 'Location bloccata' : 'Disponibile all\'apertura'}</div>
+            <div style="font-size:13px;font-weight:300;color:rgba(250,250,248,0.45);line-height:1.7;max-width:320px">${proEnabled
+              ? 'Entra in Unmarked Pro per accedere a questa e a tutte le altre location fotografiche segrete — coordinate precise, tecnica, luce ottimale e note dal campo.'
+              : 'Questa location sarà visibile quando apre lo Spotsbook — coordinate precise, tecnica, luce ottimale e note dal campo. Lasciaci la tua email e ti avvisiamo.'}</div>
           </div>
         `;
         panel.classList.add('is-open');
@@ -302,12 +326,49 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
     </button>
     <div class="tbp-scroll" id="bb-teaser-panel-content"></div>
     <div class="tbp-footer">
-      <div class="tbp-footer-text">Questa è una sola location. Ce ne sono <strong>{publishedCount}</strong> nel Spotsbook, con nuove aggiunte ogni mese.</div>
-      <a href="/sign-up" class="bb-cta-btn">Sblocca tutto — €29/mese</a>
-      <a href="/sign-in" class="bb-cta-link" style="text-align:center">Hai già un account? Accedi</a>
+      <div class="tbp-footer-text">Questa è una sola location. Ce ne sono <strong>{publishedCount}</strong> nello Spotsbook, con nuove aggiunte ogni mese.</div>
+      {features.pro ? (
+        <Fragment>
+          <a href="/sign-up" class="bb-cta-btn">Sblocca tutto — €29/mese</a>
+          <a href="/sign-in" class="bb-cta-link" style="text-align:center">Hai già un account? Accedi</a>
+        </Fragment>
+      ) : (
+        <a href="#bb-coming-soon" class="bb-cta-btn" onclick="window.closeTeaserPanel()">Avvisami quando apre</a>
+      )}
     </div>
   </div>
 </div>
+
+{!features.pro && (
+  <script is:inline>
+    (function () {
+      function initCsForm() {
+        var form = document.getElementById('bb-cs-form');
+        if (!form || form.dataset.ready) return;
+        form.dataset.ready = '1';
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var btn = form.querySelector('button');
+          var msg = document.getElementById('bb-cs-msg');
+          btn.disabled = true; btn.textContent = '...';
+          try {
+            var res = await fetch('/.netlify/functions/newsletter-subscribe', {
+              method: 'POST',
+              body: JSON.stringify({ email: form.email.value }),
+            });
+            msg.textContent = res.ok ? 'Fatto. Ti scriviamo appena lo Spotsbook apre.' : 'Qualcosa è andato storto. Riprova.';
+            if (res.ok) form.reset();
+          } catch (_) {
+            msg.textContent = 'Errore di connessione. Riprova.';
+          }
+          btn.disabled = false; btn.textContent = 'Avvisami';
+        });
+      }
+      initCsForm();
+      document.addEventListener('astro:page-load', initCsForm);
+    })();
+  </script>
+)}
 
 <!-- LIGHTBOX IMMAGINI -->
 <div id="sb-lightbox" class="sbl-wrap" aria-hidden="true">
@@ -802,6 +863,18 @@ const continents = [...new Set(locations.map(l => l.data.continent))];
   .bb-cta-btn:hover { opacity: 0.85; }
   .bb-cta-link { display: block; font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.35); text-decoration: none; transition: color 0.2s; }
   .bb-cta-link:hover { color: rgba(250,250,248,0.6); }
+  .bb-cs-form { display: flex; gap: 0; margin-top: 8px; max-width: 420px; }
+  .bb-cs-input { flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(201,185,154,0.3); border-right: none; color: #FAFAF8; font-family: inherit; font-size: 13px; font-weight: 300; padding: 0 16px; outline: none; }
+  .bb-cs-input::placeholder { color: rgba(250,250,248,0.35); }
+  .bb-cs-input:focus { border-color: var(--terra); }
+  .bb-cs-btn { border: none; cursor: pointer; padding: 18px 28px; }
+  .bb-cs-btn:disabled { opacity: 0.6; cursor: default; }
+  .bb-cs-msg { min-height: 18px; margin-top: 10px; font-size: 12px; color: var(--terra); }
+  .bb-cs-legal { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.3); margin-top: 4px; }
+  @media (max-width: 480px) {
+    .bb-cs-form { flex-direction: column; }
+    .bb-cs-input { border-right: 1px solid rgba(201,185,154,0.3); border-bottom: none; padding: 16px; }
+  }
 
   /* TOOLBAR */
   .bb-toolbar { background: #1A1814; padding: 0 56px; border-bottom: 1px solid rgba(250,250,248,0.06); display: flex; align-items: center; justify-content: space-between; }

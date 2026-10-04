@@ -8,6 +8,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 import { shopProducts } from '../../data/shop-data';
+import { features } from '../../data/features';
 
 const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-11-20.acacia',
@@ -24,6 +25,13 @@ export const POST: APIRoute = async ({ request, locals, url }) => {
       productId?: string;
       variantPriceId?: string; // Price ID variante (es. formato stampa A4/A3/A2)
     };
+
+    // Sezioni a pagamento disattivate (src/data/features.ts): resta attivo solo lo shop
+    if ((type === 'subscription' && !features.pro) || (type === 'single' && !features.itinerari)) {
+      return new Response(JSON.stringify({ error: 'Non disponibile al momento' }), {
+        status: 403, headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     // Auth — utente loggato (opzionale: il pagamento funziona anche senza account)
     let userId: string | null = null;
