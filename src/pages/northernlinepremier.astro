@@ -65,14 +65,13 @@
     .nlp-hero {
       position: relative;
       width: 100%;
-      height: 100vh;
-      min-height: 560px;
+      aspect-ratio: 16/9;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      padding-bottom: 72px;
+      padding-bottom: 6%;
     }
     .nlp-hero-img {
       position: absolute;
@@ -383,15 +382,19 @@
     }
     .nlp-footer a:hover { color: var(--terra); }
 
-    /* ── POSTER MOBILE (9:16) ── visibile solo su mobile, sostituisce l'hero landscape */
+    /* ── POSTER MOBILE (6.5:9) ── visibile solo su mobile, sostituisce l'hero landscape */
     .nlp-poster-mobile-hero {
       display: none; /* nascosto su desktop */
       width: 100%;
       position: relative;
+      aspect-ratio: 6.5/9;
+      overflow: hidden;
     }
     .nlp-poster-mobile-hero img {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      height: 100svh;
+      height: 100%;
       object-fit: cover;
       object-position: center;
       display: block;
