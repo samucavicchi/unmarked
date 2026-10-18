@@ -347,13 +347,29 @@
 
     /* ── POSTER HERO ── */
     .nlp-poster-wrap {
-      max-width: 480px;
       margin: 0 auto 64px;
       padding: 0 40px;
     }
+    /* Desktop: 16:9, larghezza piena */
+    .nlp-poster-desktop {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .nlp-poster-desktop .nlp-poster {
+      aspect-ratio: 16/9;
+    }
+    /* Mobile: 9:16, più stretto */
+    .nlp-poster-mobile {
+      display: none;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .nlp-poster-mobile .nlp-poster {
+      aspect-ratio: 9/16;
+    }
+
     .nlp-poster {
       width: 100%;
-      aspect-ratio: 2/3;
       background: #1A1814;
       border: 1px solid var(--border);
       display: flex;
@@ -373,6 +389,8 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      position: absolute;
+      inset: 0;
     }
     .nlp-poster-placeholder {
       display: flex;
@@ -481,6 +499,8 @@
       .nlp-header { padding: 20px 24px; }
       .nlp-hero { padding: 64px 24px 60px; }
       .nlp-poster-wrap { padding: 0 24px; margin-bottom: 48px; }
+      .nlp-poster-desktop { display: none; }
+      .nlp-poster-mobile { display: block; }
       .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 64px; }
       .nlp-partners { padding: 28px 24px; margin-bottom: 56px; }
       .nlp-partners-logos { gap: 24px; }
@@ -501,15 +521,21 @@
 
   <!-- POSTER LOCANDINA -->
   <div class="nlp-poster-wrap">
-    <!-- Quando hai la locandina: sostituisci il div placeholder con <img src="/northernline-poster.jpg" alt="Northern Line — locandina" /> -->
-    <div class="nlp-poster">
-      <div class="nlp-poster-placeholder">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-          <rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-        </svg>
-        <span>Locandina</span>
+
+    <!-- DESKTOP: formato 16:9 -->
+    <div class="nlp-poster-desktop">
+      <div class="nlp-poster">
+        <img src="/northernline-poster-landscape.jpg" alt="Northern Line — locandina" />
       </div>
     </div>
+
+    <!-- MOBILE: formato 9:16 -->
+    <div class="nlp-poster-mobile">
+      <div class="nlp-poster">
+        <img src="/northernline-poster-portrait.jpg" alt="Northern Line — locandina" />
+      </div>
+    </div>
+
   </div>
 
   <!-- HERO -->
