@@ -1,0 +1,528 @@
+---
+// Pagina nascosta — non in navigazione, noindex
+// Accessibile solo tramite link diretto: /northernlinepremier
+---
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Northern Line — Première · Unmarked</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark: #0E0C0A;
+      --dark2: #161310;
+      --terra: #C4855A;
+      --cream: #FAFAF8;
+      --muted: rgba(250,250,248,0.45);
+      --border: rgba(201,185,154,0.15);
+    }
+
+    html, body {
+      background: var(--dark);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .nlp-header {
+      padding: 28px 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nlp-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: var(--cream);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nlp-logo-dot {
+      color: var(--terra);
+    }
+    .nlp-header-label {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--terra);
+    }
+
+    /* ── HERO ── */
+    .nlp-hero {
+      padding: 96px 40px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .nlp-eyebrow {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .nlp-eyebrow::before,
+    .nlp-eyebrow::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--terra);
+      opacity: 0.5;
+    }
+    .nlp-film-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 8vw, 88px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.95;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .nlp-film-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 2vw, 18px);
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.35);
+      margin-bottom: 48px;
+    }
+    .nlp-divider {
+      width: 48px;
+      height: 1px;
+      background: var(--terra);
+      opacity: 0.5;
+      margin: 0 auto 48px;
+    }
+    .nlp-invite-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(250,250,248,0.75);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 64px;
+    }
+
+    /* ── EVENT INFO ── */
+    .nlp-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      max-width: 720px;
+      margin: 0 auto 96px;
+    }
+    .nlp-info-cell {
+      background: var(--dark2);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .nlp-info-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 10px;
+    }
+    .nlp-info-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.4;
+    }
+    .nlp-info-small {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+    }
+
+    /* ── PROGRAM ── */
+    .nlp-program {
+      max-width: 560px;
+      margin: 0 auto 96px;
+      border-top: 1px solid var(--border);
+      padding-top: 48px;
+    }
+    .nlp-section-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .nlp-prog-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .nlp-prog-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--terra);
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+    .nlp-prog-event {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--cream);
+    }
+    .nlp-prog-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── FORM ── */
+    .nlp-form-wrap {
+      max-width: 560px;
+      margin: 0 auto 96px;
+      border-top: 1px solid var(--border);
+      padding-top: 48px;
+    }
+    .nlp-form-intro {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .nlp-form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .nlp-form-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .nlp-badge-limited {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dark);
+      background: var(--terra);
+      padding: 4px 10px;
+      margin-bottom: 14px;
+    }
+
+    form .nlp-field {
+      margin-bottom: 20px;
+    }
+    form label {
+      display: block;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.45);
+      margin-bottom: 8px;
+    }
+    form input,
+    form select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(201,185,154,0.25);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 10px 0;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      border-radius: 0;
+    }
+    form input::placeholder { color: rgba(250,250,248,0.2); }
+    form input:focus,
+    form select:focus { border-bottom-color: var(--terra); }
+    form select { cursor: pointer; }
+    form select option { background: #1A1814; color: var(--cream); }
+
+    .nlp-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .nlp-submit {
+      margin-top: 32px;
+      width: 100%;
+      background: var(--terra);
+      color: #fff;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .nlp-submit:hover { opacity: 0.88; }
+    .nlp-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── SUCCESS ── */
+    .nlp-success {
+      display: none;
+      text-align: center;
+      padding: 48px 0;
+    }
+    .nlp-success-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--terra);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--terra);
+    }
+    .nlp-success h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .nlp-success p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* ── FOOTER ── */
+    .nlp-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(250,250,248,0.2);
+      letter-spacing: 0.05em;
+    }
+    .nlp-footer a {
+      color: rgba(250,250,248,0.3);
+      text-decoration: none;
+    }
+    .nlp-footer a:hover { color: var(--terra); }
+
+    @media (max-width: 640px) {
+      .nlp-header { padding: 20px 24px; }
+      .nlp-hero { padding: 64px 24px 60px; }
+      .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 64px; }
+      .nlp-program { margin: 0 24px 64px; }
+      .nlp-form-wrap { margin: 0 24px 64px; }
+      .nlp-field-row { grid-template-columns: 1fr; }
+      .nlp-footer { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="nlp-header">
+    <a href="/" class="nlp-logo">Unmarked<span class="nlp-logo-dot">.</span></a>
+    <span class="nlp-header-label">Première · Su invito</span>
+  </header>
+
+  <!-- HERO -->
+  <section class="nlp-hero">
+    <div class="nlp-eyebrow">Unmarked presenta</div>
+    <h1 class="nlp-film-title">Northern Line</h1>
+    <div class="nlp-film-sub">Un documentario</div>
+    <div class="nlp-divider"></div>
+    <p class="nlp-invite-text">
+      Siamo felici di invitarti alla première di <em>Northern Line</em>,<br/>il nostro documentario.
+    </p>
+
+    <!-- INFO EVENTO -->
+    <div class="nlp-info">
+      <div class="nlp-info-cell">
+        <div class="nlp-info-label">Data</div>
+        <div class="nlp-info-val">17 Dicembre 2026</div>
+        <div class="nlp-info-small">ore 20:00</div>
+      </div>
+      <div class="nlp-info-cell">
+        <div class="nlp-info-label">Luogo</div>
+        <div class="nlp-info-val">Sala Martinovich</div>
+        <div class="nlp-info-small">Bassano del Grappa</div>
+      </div>
+      <div class="nlp-info-cell">
+        <div class="nlp-info-label">Ingresso</div>
+        <div class="nlp-info-val">Libero</div>
+        <div class="nlp-info-small">Prenotazione obbligatoria</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMMA -->
+  <div class="nlp-program">
+    <div class="nlp-section-label">Programma della serata</div>
+    <div class="nlp-prog-row">
+      <div class="nlp-prog-time">20:00</div>
+      <div>
+        <div class="nlp-prog-event">Apertura porte</div>
+      </div>
+    </div>
+    <div class="nlp-prog-row">
+      <div class="nlp-prog-time">20:30</div>
+      <div>
+        <div class="nlp-prog-event">Proiezione — <em>Northern Line</em></div>
+        <div class="nlp-prog-note">Documentario Unmarked</div>
+      </div>
+    </div>
+    <div class="nlp-prog-row">
+      <div class="nlp-prog-time">——</div>
+      <div>
+        <div class="nlp-prog-event">Talk con i realizzatori</div>
+        <div class="nlp-prog-note">Q&amp;A, dietro le quinte, storie dal campo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM REGISTRAZIONE -->
+  <div class="nlp-form-wrap">
+    <div class="nlp-form-intro">
+      <div class="nlp-badge-limited">Posti limitati</div>
+      <div class="nlp-form-title">Prenota il tuo posto</div>
+      <p class="nlp-form-note">
+        Compila il modulo per riservare il tuo ingresso.<br/>
+        Riceverai una conferma via email.
+      </p>
+    </div>
+
+    <!-- Netlify Forms: data-netlify="true" cattura le submission nel dashboard Netlify -->
+    <form
+      id="nlp-reg-form"
+      name="northern-line-premier"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+    >
+      <input type="hidden" name="form-name" value="northern-line-premier" />
+      <p style="display:none"><label>Non compilare: <input name="bot-field" /></label></p>
+
+      <div class="nlp-field-row">
+        <div class="nlp-field">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" name="nome" placeholder="Il tuo nome" required />
+        </div>
+        <div class="nlp-field">
+          <label for="cognome">Cognome</label>
+          <input type="text" id="cognome" name="cognome" placeholder="Il tuo cognome" required />
+        </div>
+      </div>
+
+      <div class="nlp-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="tua@email.com" required />
+      </div>
+
+      <div class="nlp-field">
+        <label for="partecipanti">Numero di partecipanti</label>
+        <select id="partecipanti" name="partecipanti" required>
+          <option value="" disabled selected>Seleziona</option>
+          <option value="1">1 persona</option>
+          <option value="2">2 persone</option>
+          <option value="3">3 persone</option>
+          <option value="4">4 persone</option>
+          <option value="5+">5 o più persone</option>
+        </select>
+      </div>
+
+      <button type="submit" class="nlp-submit" id="nlp-submit-btn">
+        Prenota il mio posto
+      </button>
+    </form>
+
+    <!-- Messaggio di successo -->
+    <div class="nlp-success" id="nlp-success">
+      <div class="nlp-success-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>Posto riservato.</h3>
+      <p>Ti aspettiamo il 17 dicembre alle 20:00<br/>alla Sala Martinovich, Via Ognissanti 2, Bassano del Grappa.<br/><br/>Controlla la tua email per la conferma.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="nlp-footer">
+    <p>Via Ognissanti 2 · Bassano del Grappa &nbsp;·&nbsp; 17 Dicembre 2026 &nbsp;·&nbsp; <a href="/">unmarked.it</a></p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('nlp-reg-form');
+    const success = document.getElementById('nlp-success');
+    const btn = document.getElementById('nlp-submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Invio in corso…';
+
+      const data = new FormData(form);
+
+      try {
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(data).toString(),
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          success.style.display = 'block';
+        } else {
+          throw new Error();
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Prenota il mio posto';
+        alert('Qualcosa è andato storto. Riprova o scrivi a info@unmarked.it');
+      }
+    });
+  </script>
+
+</body>
+</html>
