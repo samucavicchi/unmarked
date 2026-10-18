@@ -67,11 +67,7 @@
       width: 100%;
       aspect-ratio: 16/9;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 6%;
+      display: block;
     }
     .nlp-hero-img {
       position: absolute;
@@ -82,16 +78,15 @@
       object-position: center;
       display: block;
     }
-    /* Gradient: trasparente in alto, nero in basso */
+    /* Gradient: solo fade sul fondo per raccordo con la pagina */
     .nlp-hero-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(14,12,10,0.15) 0%,
-        rgba(14,12,10,0.0) 30%,
-        rgba(14,12,10,0.55) 65%,
-        rgba(14,12,10,0.95) 100%
+        rgba(14,12,10,0.0) 0%,
+        rgba(14,12,10,0.0) 70%,
+        rgba(14,12,10,0.85) 100%
       );
     }
     .nlp-hero-content {
@@ -534,26 +529,16 @@
     <span class="nlp-header-label">Première · Su invito</span>
   </header>
 
-  <!-- HERO DESKTOP — locandina 16:9 full-screen con titolo sovrapposto -->
+  <!-- HERO DESKTOP — locandina 16:9 -->
   <section class="nlp-hero">
     <img class="nlp-hero-img" src="/northernline-poster-landscape.jpg" alt="Northern Line" />
     <div class="nlp-hero-overlay"></div>
-    <div class="nlp-hero-content">
-      <div class="nlp-eyebrow">Unmarked presenta</div>
-      <h1 class="nlp-film-title">Northern Line</h1>
-      <div class="nlp-film-sub">Il documentario</div>
-    </div>
   </section>
 
-  <!-- HERO MOBILE — locandina 9:16 con titolo sovrapposto -->
+  <!-- HERO MOBILE — locandina 6.5:9 -->
   <div class="nlp-poster-mobile-hero">
     <img src="/northernline-poster-portrait.jpg" alt="Northern Line" />
     <div class="nlp-hero-overlay"></div>
-    <div class="nlp-hero-content">
-      <div class="nlp-eyebrow">Unmarked presenta</div>
-      <h1 class="nlp-film-title">Northern Line</h1>
-      <div class="nlp-film-sub">Il documentario</div>
-    </div>
   </div>
 
   <!-- TESTO + INFO EVENTO -->
