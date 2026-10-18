@@ -345,10 +345,89 @@
     }
     .nlp-footer a:hover { color: var(--terra); }
 
+    /* ── POSTER HERO ── */
+    .nlp-poster-wrap {
+      max-width: 480px;
+      margin: 0 auto 64px;
+      padding: 0 40px;
+    }
+    .nlp-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: #1A1814;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(250,250,248,0.2);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+    .nlp-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .nlp-poster-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .nlp-poster-placeholder svg {
+      opacity: 0.2;
+    }
+
+    /* ── PARTNER STRIPE ── */
+    .nlp-partners {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 36px 40px;
+      margin-bottom: 80px;
+      text-align: center;
+    }
+    .nlp-partners-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.25);
+      margin-bottom: 28px;
+    }
+    .nlp-partners-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .nlp-partner-placeholder {
+      width: 96px;
+      height: 32px;
+      border: 1px dashed rgba(201,185,154,0.2);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.18);
+    }
+
     @media (max-width: 640px) {
       .nlp-header { padding: 20px 24px; }
       .nlp-hero { padding: 64px 24px 60px; }
+      .nlp-poster-wrap { padding: 0 24px; margin-bottom: 48px; }
       .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 64px; }
+      .nlp-partners { padding: 28px 24px; margin-bottom: 56px; }
+      .nlp-partners-logos { gap: 24px; }
       .nlp-program { margin: 0 24px 64px; }
       .nlp-form-wrap { margin: 0 24px 64px; }
       .nlp-field-row { grid-template-columns: 1fr; }
@@ -364,11 +443,24 @@
     <span class="nlp-header-label">Première · Su invito</span>
   </header>
 
+  <!-- POSTER LOCANDINA -->
+  <div class="nlp-poster-wrap">
+    <!-- Quando hai la locandina: sostituisci il div placeholder con <img src="/northernline-poster.jpg" alt="Northern Line — locandina" /> -->
+    <div class="nlp-poster">
+      <div class="nlp-poster-placeholder">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Locandina</span>
+      </div>
+    </div>
+  </div>
+
   <!-- HERO -->
   <section class="nlp-hero">
     <div class="nlp-eyebrow">Unmarked presenta</div>
     <h1 class="nlp-film-title">Northern Line</h1>
-    <div class="nlp-film-sub">Un documentario</div>
+    <div class="nlp-film-sub">Il documentario</div>
     <div class="nlp-divider"></div>
     <p class="nlp-invite-text">
       Siamo felici di invitarti alla première di <em>Northern Line</em>,<br/>il nostro documentario.
@@ -389,10 +481,20 @@
       <div class="nlp-info-cell">
         <div class="nlp-info-label">Ingresso</div>
         <div class="nlp-info-val">Libero</div>
-        <div class="nlp-info-small">Prenotazione obbligatoria</div>
+        <div class="nlp-info-small">Prenotazione consigliata</div>
       </div>
     </div>
   </section>
+
+  <!-- PARTNER DELLA SERATA -->
+  <div class="nlp-partners">
+    <div class="nlp-partners-label">Partner della serata</div>
+    <div class="nlp-partners-logos">
+      <div class="nlp-partner-placeholder">Logo</div>
+      <div class="nlp-partner-placeholder">Logo</div>
+      <div class="nlp-partner-placeholder">Logo</div>
+    </div>
+  </div>
 
   <!-- PROGRAMMA -->
   <div class="nlp-program">
@@ -488,7 +590,7 @@
 
   <!-- FOOTER -->
   <footer class="nlp-footer">
-    <p>Via Ognissanti 2 · Bassano del Grappa &nbsp;·&nbsp; 17 Dicembre 2026 &nbsp;·&nbsp; <a href="/">unmarked.it</a></p>
+    <p>Bassano del Grappa &nbsp;·&nbsp; 17 Dicembre 2026 &nbsp;·&nbsp; <a href="/">unmarked.it</a></p>
   </footer>
 
   <script>
