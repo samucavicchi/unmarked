@@ -381,6 +381,51 @@
       gap: 20px;
     }
 
+    .nlp-privacy-field {
+      margin-top: 8px;
+    }
+    .nlp-privacy-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 11px !important;
+      font-weight: 300;
+      color: rgba(250,250,248,0.4);
+      line-height: 1.7;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .nlp-privacy-label input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      min-width: 14px;
+      border: 1px solid rgba(201,185,154,0.3);
+      border-bottom: 1px solid rgba(201,185,154,0.3);
+      background: transparent;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      margin-top: 3px;
+      padding: 0;
+      transition: border-color 0.2s, background 0.2s;
+      border-radius: 0;
+    }
+    .nlp-privacy-label input[type="checkbox"]:checked {
+      background: var(--terra);
+      border-color: var(--terra);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: 10px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .nlp-privacy-label a {
+      color: rgba(250,250,248,0.6);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .nlp-privacy-label a:hover { color: var(--terra); }
+
     .nlp-submit {
       margin-top: 32px;
       width: 100%;
@@ -649,23 +694,14 @@
   <div class="nlp-trailer">
     <div class="nlp-trailer-label">Trailer</div>
     <div class="nlp-trailer-embed">
-      <!--
-        Quando hai il trailer, sostituisci il blocco .nlp-trailer-placeholder con:
-
-        YouTube:
-        <iframe src="https://www.youtube.com/embed/VIDEO_ID?rel=0&modestbranding=1" allowfullscreen></iframe>
-
-        Vimeo:
-        <iframe src="https://player.vimeo.com/video/VIDEO_ID?color=C4855A&title=0&byline=0&portrait=0" allowfullscreen></iframe>
-      -->
-      <div class="nlp-trailer-placeholder">
-        <div class="nlp-trailer-play">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-          </svg>
-        </div>
-        <span>Trailer in arrivo</span>
-      </div>
+      <video
+        controls
+        preload="metadata"
+        poster="/northernline-poster-landscape.jpg"
+        style="position:absolute;inset:0;width:100%;height:100%;display:block;background:#000;"
+      >
+        <source src="/northernline-trailer.mp4" type="video/mp4" />
+      </video>
     </div>
   </div>
 
@@ -752,6 +788,13 @@
           <option value="4">4 persone</option>
           <option value="5+">5 o più persone</option>
         </select>
+      </div>
+
+      <div class="nlp-field nlp-privacy-field">
+        <label class="nlp-privacy-label">
+          <input type="checkbox" name="privacy" required />
+          <span>Ho letto l'<a href="/privacy" target="_blank">Informativa privacy</a> e acconsento al trattamento del mio nome, cognome e indirizzo e-mail per la gestione della mia adesione alla proiezione di "Northern Line" del 17 dicembre 2026 e per l'invio delle relative comunicazioni organizzative.</span>
+        </label>
       </div>
 
       <button type="submit" class="nlp-submit" id="nlp-submit-btn">
