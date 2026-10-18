@@ -61,12 +61,45 @@
       color: var(--terra);
     }
 
-    /* ── HERO ── */
+    /* ── CINEMATIC HERO ── */
     .nlp-hero {
-      padding: 96px 40px 80px;
-      max-width: 900px;
-      margin: 0 auto;
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 560px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 72px;
+    }
+    .nlp-hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    /* Gradient: trasparente in alto, nero in basso */
+    .nlp-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(14,12,10,0.15) 0%,
+        rgba(14,12,10,0.0) 30%,
+        rgba(14,12,10,0.55) 65%,
+        rgba(14,12,10,0.95) 100%
+      );
+    }
+    .nlp-hero-content {
+      position: relative;
+      z-index: 2;
       text-align: center;
+      padding: 0 40px;
     }
     .nlp-eyebrow {
       font-size: 9px;
@@ -74,7 +107,7 @@
       letter-spacing: 0.32em;
       text-transform: uppercase;
       color: var(--terra);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -87,33 +120,40 @@
       width: 32px;
       height: 1px;
       background: var(--terra);
-      opacity: 0.5;
+      opacity: 0.6;
     }
     .nlp-film-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 8vw, 88px);
+      font-size: clamp(64px, 10vw, 120px);
       font-weight: 300;
       font-style: italic;
-      line-height: 0.95;
+      line-height: 0.9;
       color: var(--cream);
       letter-spacing: -0.01em;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.4);
     }
     .nlp-film-sub {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(14px, 2vw, 18px);
+      font-size: clamp(12px, 1.5vw, 16px);
       font-weight: 300;
-      letter-spacing: 0.3em;
+      letter-spacing: 0.36em;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.35);
-      margin-bottom: 48px;
+      color: rgba(250,250,248,0.45);
+    }
+    /* Sezione testo sotto l'hero */
+    .nlp-intro-wrap {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 72px 40px 64px;
+      text-align: center;
     }
     .nlp-divider {
       width: 48px;
       height: 1px;
       background: var(--terra);
       opacity: 0.5;
-      margin: 0 auto 48px;
+      margin: 0 auto 40px;
     }
     .nlp-invite-text {
       font-family: 'Cormorant Garamond', serif;
@@ -121,9 +161,7 @@
       font-weight: 300;
       font-style: italic;
       color: rgba(250,250,248,0.75);
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto 64px;
+      line-height: 1.65;
     }
 
     /* ── EVENT INFO ── */
@@ -134,7 +172,7 @@
       background: var(--border);
       border: 1px solid var(--border);
       max-width: 720px;
-      margin: 0 auto 96px;
+      margin: 0 auto 80px;
     }
     .nlp-info-cell {
       background: var(--dark2);
@@ -345,61 +383,34 @@
     }
     .nlp-footer a:hover { color: var(--terra); }
 
-    /* ── POSTER HERO ── */
-    .nlp-poster-wrap {
-      margin: 0 auto 64px;
-      padding: 0 40px;
-    }
-    /* Desktop: 16:9, larghezza piena */
-    .nlp-poster-desktop {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .nlp-poster-desktop .nlp-poster {
-      aspect-ratio: 16/9;
-    }
-    /* Mobile: 9:16, più stretto */
-    .nlp-poster-mobile {
-      display: none;
-      max-width: 360px;
-      margin: 0 auto;
-    }
-    .nlp-poster-mobile .nlp-poster {
-      aspect-ratio: 9/16;
-    }
-
-    .nlp-poster {
+    /* ── POSTER MOBILE (9:16) ── visibile solo su mobile, sostituisce l'hero landscape */
+    .nlp-poster-mobile-hero {
+      display: none; /* nascosto su desktop */
       width: 100%;
-      background: #1A1814;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      color: rgba(250,250,248,0.2);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
       position: relative;
-      overflow: hidden;
     }
-    .nlp-poster img {
+    .nlp-poster-mobile-hero img {
       width: 100%;
-      height: 100%;
+      height: 100svh;
       object-fit: cover;
+      object-position: center;
       display: block;
+    }
+    .nlp-poster-mobile-hero .nlp-hero-overlay {
       position: absolute;
       inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(14,12,10,0.1) 0%,
+        rgba(14,12,10,0.0) 25%,
+        rgba(14,12,10,0.6) 70%,
+        rgba(14,12,10,0.97) 100%
+      );
     }
-    .nlp-poster-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-    .nlp-poster-placeholder svg {
-      opacity: 0.2;
+    .nlp-poster-mobile-hero .nlp-hero-content {
+      position: absolute;
+      bottom: 64px;
+      left: 0; right: 0;
     }
 
     /* ── TRAILER ── */
@@ -498,9 +509,10 @@
     @media (max-width: 640px) {
       .nlp-header { padding: 20px 24px; }
       .nlp-hero { padding: 64px 24px 60px; }
-      .nlp-poster-wrap { padding: 0 24px; margin-bottom: 48px; }
-      .nlp-poster-desktop { display: none; }
-      .nlp-poster-mobile { display: block; }
+      .nlp-hero { display: none; }
+      .nlp-poster-mobile-hero { display: block; }
+      .nlp-intro-wrap { padding: 56px 24px 48px; }
+      .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 56px; }
       .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 64px; }
       .nlp-partners { padding: 28px 24px; margin-bottom: 56px; }
       .nlp-partners-logos { gap: 24px; }
@@ -519,54 +531,54 @@
     <span class="nlp-header-label">Première · Su invito</span>
   </header>
 
-  <!-- POSTER LOCANDINA -->
-  <div class="nlp-poster-wrap">
-
-    <!-- DESKTOP: formato 16:9 -->
-    <div class="nlp-poster-desktop">
-      <div class="nlp-poster">
-        <img src="/northernline-poster-landscape.jpg" alt="Northern Line — locandina" />
-      </div>
+  <!-- HERO DESKTOP — locandina 16:9 full-screen con titolo sovrapposto -->
+  <section class="nlp-hero">
+    <img class="nlp-hero-img" src="/northernline-poster-landscape.jpg" alt="Northern Line" />
+    <div class="nlp-hero-overlay"></div>
+    <div class="nlp-hero-content">
+      <div class="nlp-eyebrow">Unmarked presenta</div>
+      <h1 class="nlp-film-title">Northern Line</h1>
+      <div class="nlp-film-sub">Il documentario</div>
     </div>
+  </section>
 
-    <!-- MOBILE: formato 9:16 -->
-    <div class="nlp-poster-mobile">
-      <div class="nlp-poster">
-        <img src="/northernline-poster-portrait.jpg" alt="Northern Line — locandina" />
-      </div>
+  <!-- HERO MOBILE — locandina 9:16 con titolo sovrapposto -->
+  <div class="nlp-poster-mobile-hero">
+    <img src="/northernline-poster-portrait.jpg" alt="Northern Line" />
+    <div class="nlp-hero-overlay"></div>
+    <div class="nlp-hero-content">
+      <div class="nlp-eyebrow">Unmarked presenta</div>
+      <h1 class="nlp-film-title">Northern Line</h1>
+      <div class="nlp-film-sub">Il documentario</div>
     </div>
-
   </div>
 
-  <!-- HERO -->
-  <section class="nlp-hero">
-    <div class="nlp-eyebrow">Unmarked presenta</div>
-    <h1 class="nlp-film-title">Northern Line</h1>
-    <div class="nlp-film-sub">Il documentario</div>
+  <!-- TESTO + INFO EVENTO -->
+  <div class="nlp-intro-wrap">
     <div class="nlp-divider"></div>
     <p class="nlp-invite-text">
       Siamo felici di invitarti alla première di <em>Northern Line</em>,<br/>il nostro documentario.
     </p>
+  </div>
 
-    <!-- INFO EVENTO -->
-    <div class="nlp-info">
-      <div class="nlp-info-cell">
-        <div class="nlp-info-label">Data</div>
-        <div class="nlp-info-val">17 Dicembre 2026</div>
-        <div class="nlp-info-small">ore 20:00</div>
-      </div>
-      <div class="nlp-info-cell">
-        <div class="nlp-info-label">Luogo</div>
-        <div class="nlp-info-val">Sala Martinovich</div>
-        <div class="nlp-info-small">Bassano del Grappa</div>
-      </div>
-      <div class="nlp-info-cell">
-        <div class="nlp-info-label">Ingresso</div>
-        <div class="nlp-info-val">Libero</div>
-        <div class="nlp-info-small">Prenotazione consigliata</div>
-      </div>
+  <!-- INFO EVENTO -->
+  <div class="nlp-info">
+    <div class="nlp-info-cell">
+      <div class="nlp-info-label">Data</div>
+      <div class="nlp-info-val">17 Dicembre 2026</div>
+      <div class="nlp-info-small">ore 20:00</div>
     </div>
-  </section>
+    <div class="nlp-info-cell">
+      <div class="nlp-info-label">Luogo</div>
+      <div class="nlp-info-val">Sala Martinovich</div>
+      <div class="nlp-info-small">Bassano del Grappa</div>
+    </div>
+    <div class="nlp-info-cell">
+      <div class="nlp-info-label">Ingresso</div>
+      <div class="nlp-info-val">Libero</div>
+      <div class="nlp-info-small">Prenotazione consigliata</div>
+    </div>
+  </div>
 
   <!-- TRAILER -->
   <div class="nlp-trailer">
