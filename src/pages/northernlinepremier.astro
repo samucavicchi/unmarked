@@ -196,6 +196,70 @@
       font-weight: 300;
     }
 
+    /* ── SINOSSI ── */
+    .nlp-synopsis {
+      max-width: 680px;
+      margin: 0 auto 72px;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .nlp-synopsis-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(17px, 2.2vw, 22px);
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(250,250,248,0.72);
+    }
+    .nlp-synopsis-text em {
+      font-style: italic;
+      color: rgba(250,250,248,0.9);
+    }
+
+    /* ── PREMI ── */
+    .nlp-awards {
+      max-width: 680px;
+      margin: 0 auto 80px;
+      padding: 0 40px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .nlp-award {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .nlp-award-icon {
+      width: 36px;
+      height: 36px;
+      color: rgba(201,185,154,0.6);
+    }
+    .nlp-award-title {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--terra);
+      line-height: 1.5;
+    }
+    .nlp-award-festival {
+      font-size: 10px;
+      font-weight: 300;
+      color: rgba(250,250,248,0.35);
+      letter-spacing: 0.08em;
+      line-height: 1.5;
+    }
+    .nlp-awards-divider {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+      align-self: center;
+    }
+
     /* ── PROGRAM ── */
     .nlp-program {
       max-width: 560px;
@@ -511,6 +575,9 @@
       .nlp-poster-mobile-hero { display: block; }
       .nlp-intro-wrap { padding: 56px 24px 48px; }
       .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 56px; }
+      .nlp-synopsis { padding: 0 24px; margin-bottom: 48px; }
+      .nlp-awards { padding: 0 24px; gap: 24px; }
+      .nlp-awards-divider { display: none; }
       .nlp-info { grid-template-columns: 1fr; max-width: 100%; margin: 0 24px 64px; }
       .nlp-partners { padding: 28px 24px; margin-bottom: 56px; }
       .nlp-partners-logos { gap: 24px; }
@@ -547,6 +614,33 @@
     <p class="nlp-invite-text">
       Siamo felici di invitarti alla première di <em>Northern Line</em>,<br/>il nostro documentario.
     </p>
+  </div>
+
+  <!-- SINOSSI -->
+  <div class="nlp-synopsis">
+    <p class="nlp-synopsis-text">
+      Un viaggio verso nord. <em>L'idea di cercare l'emozione delle condizioni perfette nella tranquillità della Lapponia.</em><br/><br/>
+      Samuele e Alice affrontano un viaggio elettrico, lungo ma pianificato — ma il nord ha altri piani per loro.
+    </p>
+  </div>
+
+  <!-- PREMI -->
+  <div class="nlp-awards">
+    <div class="nlp-award">
+      <svg class="nlp-award-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+      </svg>
+      <div class="nlp-award-title">Best Short Documentary</div>
+      <div class="nlp-award-festival">TMFF · 2026</div>
+    </div>
+    <div class="nlp-awards-divider"></div>
+    <div class="nlp-award">
+      <svg class="nlp-award-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="12" cy="8" r="6"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/>
+      </svg>
+      <div class="nlp-award-title">Award Winner</div>
+      <div class="nlp-award-festival">Veneto International Film Festival<br/>Settembre 2026</div>
+    </div>
   </div>
 
   <!-- INFO EVENTO -->
