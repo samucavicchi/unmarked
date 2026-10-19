@@ -602,19 +602,16 @@
       gap: 48px;
       flex-wrap: wrap;
     }
-    .nlp-partner-placeholder {
-      width: 96px;
-      height: 32px;
-      border: 1px dashed rgba(201,185,154,0.2);
-      border-radius: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(250,250,248,0.18);
+    .nlp-partner-logo {
+      height: 36px;
+      width: auto;
+      max-width: 120px;
+      object-fit: contain;
+      opacity: 0.6;
+      filter: brightness(0) invert(1);
+      transition: opacity 0.2s;
     }
+    .nlp-partner-logo:hover { opacity: 0.9; }
 
     @media (max-width: 640px) {
       .nlp-header { padding: 20px 24px; }
@@ -709,9 +706,10 @@
   <div class="nlp-partners">
     <div class="nlp-partners-label">Partner della serata</div>
     <div class="nlp-partners-logos">
-      <div class="nlp-partner-placeholder">Logo</div>
-      <div class="nlp-partner-placeholder">Logo</div>
-      <div class="nlp-partner-placeholder">Logo</div>
+      <img src="/partners/partner-1.png" alt="Partner" class="nlp-partner-logo" />
+      <img src="/partners/partner-2.png" alt="Partner" class="nlp-partner-logo" />
+      <img src="/partners/partner-3.png" alt="Partner" class="nlp-partner-logo" />
+      <img src="/partners/partner-4.png" alt="Partner" class="nlp-partner-logo" />
     </div>
   </div>
 
