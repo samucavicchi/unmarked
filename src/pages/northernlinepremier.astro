@@ -264,6 +264,22 @@ export const prerender = true;
       align-self: center;
     }
 
+    .nlp-maps-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--terra);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .nlp-maps-btn:hover { opacity: 1; }
+
     /* ── PROGRAM ── */
     .nlp-program {
       max-width: 560px;
@@ -681,6 +697,10 @@ export const prerender = true;
       <div class="nlp-info-label">Luogo</div>
       <div class="nlp-info-val">Sala Martinovich</div>
       <div class="nlp-info-small">Bassano del Grappa</div>
+      <a href="https://maps.google.com/?q=Via+Ognissanti+2,+Bassano+del+Grappa" target="_blank" rel="noopener" class="nlp-maps-btn">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Apri in Google Maps
+      </a>
     </div>
     <div class="nlp-info-cell">
       <div class="nlp-info-label">Ingresso</div>
