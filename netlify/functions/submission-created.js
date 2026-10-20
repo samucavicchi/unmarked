@@ -70,9 +70,16 @@ exports.handler = async (event) => {
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding:18px 0;">
+                  <td style="padding:18px 0;border-bottom:1px solid rgba(201,185,154,0.1);">
                     <span style="font-size:8px;font-weight:500;letter-spacing:0.24em;text-transform:uppercase;color:#C4855A;display:block;margin-bottom:5px;">Partecipanti</span>
                     <span style="font-size:14px;font-weight:300;color:#FAFAF8;">${posti}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:18px 0;">
+                    <a href="https://maps.google.com/?q=Via+Ognissanti+2,+Bassano+del+Grappa" style="display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;color:#C4855A;text-decoration:none;">
+                      &#9679; Apri in Google Maps
+                    </a>
                   </td>
                 </tr>
               </table>
