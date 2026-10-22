@@ -108,7 +108,6 @@ const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : i
                   <div class="nx-card-overlay">
                     <span class="nx-card-overlay-cat">{entry.data.category}</span>
                     <div class="nx-card-overlay-title">{entry.data.title}</div>
-                    <p class="nx-card-overlay-excerpt">{entry.data.excerpt}</p>
                     <span class="nx-card-overlay-cta">Leggi →</span>
                   </div>
                 </a>
@@ -236,10 +235,12 @@ const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : i
    NETFLIX HERO
 ═══════════════════════════════ */
 .nx-hero {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   width: 100%;
-  height: 88vh;
-  min-height: 520px;
+  height: 55vh;
+  min-height: 360px;
   overflow: hidden;
   background: #0E0C0A;
 }
@@ -274,7 +275,7 @@ const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : i
 }
 .nx-hero-content {
   position: absolute;
-  bottom: 100px;
+  bottom: 60px;
   left: 60px;
   z-index: 5;
   max-width: 540px;
@@ -330,6 +331,8 @@ const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : i
 .nx-rows {
   background: #0E0C0A;
   padding: 0 0 80px;
+  position: relative;
+  z-index: 1;
 }
 .nx-row {
   margin-bottom: 48px;
@@ -428,17 +431,6 @@ const gridItems = heroEntry ? items.filter((e) => e.slug !== heroEntry.slug) : i
   color: #FAFAF8;
   line-height: 1.15;
   margin-bottom: 6px;
-}
-.nx-card-overlay-excerpt {
-  font-size: 10px;
-  font-weight: 300;
-  color: rgba(250,250,248,0.55);
-  line-height: 1.55;
-  margin-bottom: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 .nx-card-overlay-cta {
   font-size: 8px;
