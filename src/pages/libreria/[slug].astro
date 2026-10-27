@@ -89,9 +89,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </div>
     </div>
 
-    <!-- BRIDGE: gradiente dark → chiaro -->
-    <div class="article-bridge"></div>
-
     <!-- BODY editoriale con drop cap -->
     <div class="article-body">
       <Content />
@@ -477,12 +474,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   }
   .article-apertura-dot { color: var(--terra); }
 
-  /* BRIDGE dark ↔ chiaro */
-  .article-bridge {
-    width: 100%;
-    height: 80px;
-    background: linear-gradient(to bottom, var(--dark) 0%, #FAFAF8 100%);
-  }
   /* BODY editoriale */
   .article-body {
     max-width: 680px;
