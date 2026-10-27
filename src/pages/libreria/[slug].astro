@@ -201,9 +201,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </section>
     )}
 
-    <!-- BRIDGE: gradiente chiaro → dark -->
-    <div class="article-bridge article-bridge-bottom"></div>
-
     <!-- FINE ARTICOLO -->
     <div class="article-end">
       <div class="article-end-line"></div>
@@ -309,11 +306,13 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
 </BaseLayout>
 
 <style>
-  /* HERO con parallax */
+  /* HERO con parallax — sticky mentre il testo scorre sotto */
   .article-hero {
-    position: relative;
-    min-height: 80vh;
-    height: 720px;
+    position: sticky;
+    top: 60px;
+    z-index: 10;
+    min-height: 60vh;
+    height: 580px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -425,10 +424,6 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     height: 80px;
     background: linear-gradient(to bottom, var(--dark) 0%, #FAFAF8 100%);
   }
-  .article-bridge-bottom {
-    background: linear-gradient(to bottom, #FAFAF8 0%, var(--dark) 100%);
-  }
-
   /* BODY editoriale */
   .article-body {
     max-width: 680px;
@@ -647,13 +642,13 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     padding: 48px 0;
   }
   .article-pullquote blockquote p {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
     font-weight: 300;
-    font-style: italic;
-    line-height: 1.4;
+    font-style: normal;
+    line-height: 1.65;
     color: #FAFAF8;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.04em;
     margin: 0;
   }
 
