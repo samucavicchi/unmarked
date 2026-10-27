@@ -83,6 +83,9 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </div>
     </div>
 
+    <!-- BRIDGE: gradiente dark → chiaro -->
+    <div class="article-bridge"></div>
+
     <!-- BODY editoriale con drop cap -->
     <div class="article-body">
       <Content />
@@ -198,6 +201,9 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
       </section>
     )}
 
+    <!-- BRIDGE: gradiente chiaro → dark -->
+    <div class="article-bridge article-bridge-bottom"></div>
+
     <!-- FINE ARTICOLO -->
     <div class="article-end">
       <div class="article-end-line"></div>
@@ -209,7 +215,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     {correlati.length > 0 && (
       <section class="article-related">
         <div class="related-head">
-          <h2 class="related-title">Reportage correlati</h2>
+          <h2 class="related-title">Continua a leggere</h2>
           <a href="/libreria" class="related-link">Tutta la libreria →</a>
         </div>
         <div class="related-grid">
@@ -413,16 +419,27 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   }
   .article-apertura-dot { color: var(--terra); }
 
+  /* BRIDGE dark ↔ chiaro */
+  .article-bridge {
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--dark) 0%, #FAFAF8 100%);
+  }
+  .article-bridge-bottom {
+    background: linear-gradient(to bottom, #FAFAF8 0%, var(--dark) 100%);
+  }
+
   /* BODY editoriale */
   .article-body {
     max-width: 680px;
     margin: 0 auto;
-    padding: 72px 40px 80px;
+    padding: 48px 40px 80px;
     font-family: 'Cormorant Garamond', serif;
     font-size: 20px;
     font-weight: 400;
     line-height: 1.75;
     color: var(--dark);
+    background: #FAFAF8;
     counter-reset: section;
   }
   .article-body :global(p:first-of-type::first-letter) {
@@ -785,19 +802,20 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     color: var(--terra);
   }
 
-  /* ARTICOLI CORRELATI */
+  /* ARTICOLI CORRELATI — dark */
   .article-related {
-    max-width: 1100px;
-    margin: 0 auto 60px;
-    padding: 0 40px;
+    background: var(--dark);
+    padding: 0 40px 72px;
   }
   .related-head {
+    max-width: 1100px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 48px 0 32px;
+    border-bottom: 1px solid rgba(201,185,154,0.12);
     margin-bottom: 32px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--light-border);
   }
   .related-title {
     font-size: 9px;
@@ -812,31 +830,38 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(26,24,20,0.4);
+    color: rgba(250,250,248,0.3);
     text-decoration: none;
     transition: color 0.2s;
   }
   .related-link:hover { color: var(--terra); }
   .related-grid {
+    max-width: 1100px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
   }
 
   .article-back {
-    max-width: 720px;
-    margin: 0 auto 80px;
-    padding: 0 40px;
+    background: var(--dark);
+    padding: 0 40px 64px;
+  }
+  .article-back a {
+    display: block;
+    max-width: 1100px;
+    margin: 0 auto;
   }
   .back-link {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--terra);
+    color: rgba(250,250,248,0.25);
     text-decoration: none;
+    transition: color 0.2s;
   }
-  .back-link:hover { text-decoration: underline; }
+  .back-link:hover { color: var(--terra); }
 
   /* SCHEDE EDITORIALI */
   .article-schede {
@@ -924,19 +949,20 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
   .gallery-item { background: transparent; }
   .gallery-item img { display: block; }
 
-  /* CHIUSURA ARTICOLO */
+  /* CHIUSURA ARTICOLO — dark */
   .article-end {
     max-width: 680px;
-    margin: 80px auto 72px;
-    padding: 0 40px;
+    margin: 0 auto;
+    padding: 72px 40px;
     display: flex;
     align-items: center;
     gap: 24px;
+    background: var(--dark);
   }
   .article-end-line {
     flex: 1;
     height: 1px;
-    background: rgba(26,24,20,0.12);
+    background: rgba(201,185,154,0.15);
   }
   .article-end-mark {
     font-family: 'Cormorant Garamond', serif;
@@ -944,7 +970,7 @@ const bodyText2Html = data.bodyText2 ? await marked(data.bodyText2) : '';
     font-weight: 300;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: rgba(26,24,20,0.25);
+    color: rgba(250,250,248,0.2);
     flex-shrink: 0;
   }
 
