@@ -15,8 +15,7 @@ featured: true
 seoMetaDescription: Guida ai fiordi occidentali dell'Islanda — itinerario,
   strade, cosa fotografare nei Westfjords.
 interludeImage: ../../assets/articoli/westfjord-iceland-9.jpg
-pullQuote: Guidare nei Westfjords significa accettare che ogni svolta costerà
-  tempo. Ed è esattamente per questo che funziona.
+pullQuote: ""
 bodyText2: >-
   ## Dove trovare la magia
 
@@ -67,6 +66,8 @@ I Westfjords iniziano dove finisce l'entusiasmo dei turisti. È una penisola che
 La cascata più spettacolare dei Westfjords — e tra le più belle dell'intera Islanda — è anche la meno fotografata rispetto al suo peso visivo. Si raggiunge da una piccola deviazione sulla strada principale, si cammina venti minuti su un sentiero che sale lungo una serie di cascate minori, e poi si arriva. L'acqua cade per 100 metri in una forma a ventaglio che si allarga scendendo.
 
 Il momento migliore è tarda sera in estate, quando la luce radente colora l'acqua e le rocce di qualcosa che non ha nome preciso.
+
+![](../../assets/articoli/malarhorn-samuele-e-alice-11.jpg)
 
 ## Látrabjarg
 
