@@ -13,13 +13,13 @@ seoMetaDescription: Le migliori hot spring gratuite in Islanda — dove sono, co
 pullQuote: Le migliori esperienze in Islanda non hanno un prezzo d'ingresso. Hanno solo una strada sterrata e la voglia di percorrerla.
 essentialToKnow:
   - title: Cosa portare
-    description: Costume da bagno e asciugamano sempre nello zaino. Le hot spring spontanee non hanno spogliatoi — ci si cambia sul posto, all'aperto. Una borsa impermeabile per i vestiti bagnati. Ciabatte per camminare sulle rocce.
+    description: "Costume da bagno e asciugamano sempre nello zaino. Le hot spring spontanee non hanno spogliatoi - ci si cambia sul posto, all'aperto. Una borsa impermeabile per i vestiti bagnati. Ciabatte per camminare sulle rocce."
   - title: Temperatura
-    description: Le sorgenti naturali variano molto — da 35°C a oltre 50°C. Testare sempre prima di entrare. Mescolare con acqua fredda del fiume vicino se troppo calda. Alcune variano con le stagioni.
+    description: "Le sorgenti naturali variano molto - da 35°C a oltre 50°C. Testare sempre prima di entrare. Mescolare con acqua fredda del fiume vicino se troppo calda. Alcune variano con le stagioni."
   - title: Rispetto del posto
-    description: Niente sapone, shampoo o creme nell'acqua. Raccogliere i propri rifiuti. Non spostare le rocce che regolano il flusso. Queste sorgenti sono ancora libere perché chi le usa le rispetta — è un equilibrio fragile.
+    description: "Niente sapone, shampoo o creme nell'acqua. Raccogliere i propri rifiuti. Non spostare le rocce che regolano il flusso. Queste sorgenti sono ancora libere perché chi le usa le rispetta - è un equilibrio fragile."
   - title: Coordinate GPS
-    description: Scaricare le mappe offline su Maps.me o Gaia GPS prima di partire. Le sorgenti remote non hanno segnaletica e la connessione dati in Islanda fuori dai centri abitati è intermittente.
+    description: "Scaricare le mappe offline su Maps.me o Gaia GPS prima di partire. Le sorgenti remote non hanno segnaletica e la connessione dati in Islanda fuori dai centri abitati è intermittente."
 mapCenter:
   lat: 65.0
   lng: -19.5

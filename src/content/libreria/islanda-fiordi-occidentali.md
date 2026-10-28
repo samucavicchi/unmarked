@@ -13,13 +13,13 @@ seoMetaDescription: Guida ai fiordi occidentali dell'Islanda — itinerario, str
 pullQuote: Guidare nei Westfjords significa accettare che ogni svolta costerà tempo. Ed è esattamente per questo che funziona.
 essentialToKnow:
   - title: Come arrivare
-    description: Volo per Reykjavík, poi circa 5 ore di guida verso nord-ovest. In alternativa il traghetto Baldur da Stykkishólmur attraversa la penisola Snæfellsnes e attracca a Brjánslækur, nel cuore dei fiordi — consigliato.
+    description: "Volo per Reykjavík, poi circa 5 ore di guida verso nord-ovest. In alternativa il traghetto Baldur da Stykkishólmur attraversa la penisola Snæfellsnes e attracca a Brjánslækur, nel cuore dei fiordi - consigliato."
   - title: Quando andare
-    description: Giugno–agosto è l'unica finestra sicura. Le strade F dei Westfjords aprono tardi e chiudono presto. A luglio si guida con la luce del sole di mezzanotte — un vantaggio enorme per la fotografia.
+    description: "Giugno-agosto è l'unica finestra sicura. Le strade F dei Westfjords aprono tardi e chiudono presto. A luglio si guida con la luce del sole di mezzanotte - un vantaggio enorme per la fotografia."
   - title: Strade
-    description: Molte strade sono sterrate e alcune richiedono guadi. Una normale berlina arriva ovunque d'estate, ma un SUV dà più margine. Controllare sempre le previsioni meteo su vedur.is prima di partire verso zone remote.
+    description: "Molte strade sono sterrate e alcune richiedono guadi. Una normale berlina arriva ovunque d'estate, ma un SUV dà più margine. Controllare sempre le previsioni meteo su vedur.is prima di partire verso zone remote."
   - title: Dove dormire
-    description: I servizi sono scarsi. Hólmavík, Ísafjörður e Patreksfjörður hanno piccoli hotel e guesthouse. Fuori da questi tre centri, camping o niente. Prenotare sempre in anticipo — i posti sono pochissimi.
+    description: "I servizi sono scarsi. Hólmavík, Ísafjörður e Patreksfjörður hanno piccoli hotel e guesthouse. Fuori da questi tre centri, camping o niente. Prenotare sempre in anticipo - i posti sono pochissimi."
 mapCenter:
   lat: 65.9
   lng: -23.0

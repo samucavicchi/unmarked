@@ -13,13 +13,13 @@ seoMetaDescription: Itinerario nel sud della Namibia — Fish River Canyon, Lüd
 pullQuote: Il Namib non ha bisogno di fare niente per impressionarti. Sta lì da 55 milioni di anni. Ha tutto il tempo del mondo.
 essentialToKnow:
   - title: Periodo migliore
-    description: Maggio–settembre è la stagione secca, temperature miti di giorno e fredde di notte. Ottobre–aprile è caldo e umido al nord, ma il sud rimane più secco — le dune di Sossusvlei sono visitabili tutto l'anno.
+    description: "Maggio-settembre è la stagione secca, temperature miti di giorno e fredde di notte. Ottobre-aprile è caldo e umido al nord, ma il sud rimane più secco - le dune di Sossusvlei sono visitabili tutto l'anno."
   - title: Come spostarsi
-    description: Auto a noleggio 4x4 obbligatoria per le strade sterrate. Le distanze sono enormi — da Windhoek a Lüderitz sono quasi 700km. Pianificare le tappe con benzinai segnati sulla mappa: in certi tratti i distributori distano 200km l'uno dall'altro.
+    description: "Auto a noleggio 4x4 obbligatoria per le strade sterrate. Le distanze sono enormi - da Windhoek a Lüderitz sono quasi 700km. Pianificare le tappe con benzinai segnati sulla mappa: in certi tratti i distributori distano 200km l'uno dall'altro."
   - title: Fish River Canyon
-    description: Il secondo canyon più grande del mondo. Il trekking di 5 giorni sul fondo è aperto solo maggio–settembre (il resto dell'anno fa troppo caldo per sopravvivere). L'affaccio dal bordo è accessibile tutto l'anno e vale da solo il viaggio.
+    description: "Il secondo canyon più grande del mondo. Il trekking di 5 giorni sul fondo è aperto solo maggio-settembre (il resto dell'anno fa troppo caldo per sopravvivere). L'affaccio dal bordo è accessibile tutto l'anno e vale da solo il viaggio."
   - title: Sossusvlei
-    description: Le dune più alte del mondo — la Dune 45 si sale in 45 minuti di sforzo vero. Partire prima dell'alba per essere in cima all'alba. Portare più acqua del necessario, sempre.
+    description: "Le dune più alte del mondo - la Dune 45 si sale in 45 minuti di sforzo vero. Partire prima dell'alba per essere in cima all'alba. Portare più acqua del necessario, sempre."
 mapCenter:
   lat: -25.5
   lng: 17.0
