@@ -18,9 +18,10 @@ interludeImage: ../../assets/articoli/westfjord-iceland-9.jpg
 pullQuote: Guidare nei Westfjords significa accettare che ogni svolta costerà
   tempo. Ed è esattamente per questo che funziona.
 bodyText2: >-
-  
+  ## Dove trovare la magia
 
-  Questi sono solo tre punti meravigliosi di una zona magica, ma, la vera magia dei fiordi occidentali non sta in un punto preciso, sta in tutto quello che ti passa davanti agli occhi, nelle strade che si perdono tra fiordi e colline, nel faticare a trovare un ristorante per finire a mangiare tra le persone locali di un piccolo paesino, nel guidare l'auto mentre spuntano code di balena nel mare accanto a te. La magia di questo luogo è qualcosa che vivi, ma che è impossibile spiegare.
+
+  La magia di questa zona sta in tutto quello che ti passa davanti agli occhi, nelle strade che si perdono tra fiordi e colline, nel faticare a trovare un ristorante per finire a mangiare tra le persone locali di un piccolo paesino, nel guidare l'auto mentre spuntano code di balena nel mare accanto a te. La magia di questo luogo è qualcosa che vivi, ma che è impossibile spiegare.
 essentialToKnow:
   - title: Come arrivare
     description: Volo per Reykjavík, poi circa 5 ore di guida verso nord-ovest. In
@@ -74,3 +75,5 @@ Il punto più occidentale d'Europa è una scogliera. Alta 440 metri, lunga 14 ch
 ## Rauðasandur
 
 Una spiaggia di sabbia rossa in un fiordo remoto. Non è una cosa che ti aspetti in Islanda. Ci arrivi dopo chilometri di sterrato e quando la vedi capisci perché i pochi che la conoscono non vogliono che se ne parli.
+
+Questi sono solo tre punti meravigliosi di una zona magica, ma, la vera magia dei fiordi occidentali non sta in un punto preciso,
