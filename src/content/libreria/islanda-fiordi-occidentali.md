@@ -1,28 +1,46 @@
 ---
-category: Destinazione
 title: Islanda, fiordi occidentali
-subtitle: Il confine del mondo accessibile
+subtitle: Dove il turismo non vuole arrivare
+category: Destinazione
 country: Islanda
 continent: Europa
-coverImage: ../../assets/articoli/islanda-estrema-cover-1.jpg
+coverImage: ../../assets/articoli/westfjord-iceland-8.jpg
 coverImageAlt: Fiordi occidentali dell'Islanda, paesaggio remoto tra mare e montagna
-excerpt: I Westfjords sono la parte d'Islanda che la maggior parte dei viaggiatori salta. Troppo lontani, strade troppo lente, niente di quello che c'è sulle guide mainstream. Per questo vale la pena andarci.
+excerpt: I Westfjords sono la parte d'Islanda che la maggior parte dei
+  viaggiatori salta. Troppo lontani, strade troppo lente, niente di quello che
+  c'è sulle guide mainstream. Per questo vale la pena andarci, anzi, vale la
+  pena dedicargli un viaggio
 publishDate: 2026-10-01
 featured: true
-seoMetaDescription: Guida ai fiordi occidentali dell'Islanda — itinerario, strade, cosa fotografare nei Westfjords.
-pullQuote: Guidare nei Westfjords significa accettare che ogni svolta costerà tempo. Ed è esattamente per questo che funziona.
+seoMetaDescription: Guida ai fiordi occidentali dell'Islanda — itinerario,
+  strade, cosa fotografare nei Westfjords.
+interludeImage: ../../assets/articoli/westfjord-iceland-9.jpg
+pullQuote: Guidare nei Westfjords significa accettare che ogni svolta costerà
+  tempo. Ed è esattamente per questo che funziona.
+bodyText2: >-
+  
+
+  Questi sono solo tre punti meravigliosi di una zona magica, ma, la vera magia dei fiordi occidentali non sta in un punto preciso, sta in tutto quello che ti passa davanti agli occhi, nelle strade che si perdono tra fiordi e colline, nel faticare a trovare un ristorante per finire a mangiare tra le persone locali di un piccolo paesino, nel guidare l'auto mentre spuntano code di balena nel mare accanto a te. La magia di questo luogo è qualcosa che vivi, ma che è impossibile spiegare.
 essentialToKnow:
   - title: Come arrivare
-    description: "Volo per Reykjavík, poi circa 5 ore di guida verso nord-ovest. In alternativa il traghetto Baldur da Stykkishólmur attraversa la penisola Snæfellsnes e attracca a Brjánslækur, nel cuore dei fiordi - consigliato."
+    description: Volo per Reykjavík, poi circa 5 ore di guida verso nord-ovest. In
+      alternativa il traghetto Baldur da Stykkishólmur attraversa la penisola
+      Snæfellsnes e attracca a Brjánslækur, nel cuore dei fiordi - consigliato.
   - title: Quando andare
-    description: "Giugno-agosto è l'unica finestra sicura. Le strade F dei Westfjords aprono tardi e chiudono presto. A luglio si guida con la luce del sole di mezzanotte - un vantaggio enorme per la fotografia."
+    description: Giugno-agosto è l'unica finestra sicura. Le strade F dei Westfjords
+      aprono tardi e chiudono presto. A luglio si guida con la luce del sole di
+      mezzanotte - un vantaggio enorme per la fotografia.
   - title: Strade
-    description: "Molte strade sono sterrate e alcune richiedono guadi. Una normale berlina arriva ovunque d'estate, ma un SUV dà più margine. Controllare sempre le previsioni meteo su vedur.is prima di partire verso zone remote."
+    description: Molte strade sono sterrate e alcune richiedono guadi. Una normale
+      berlina arriva ovunque d'estate, ma un SUV dà più margine. Controllare
+      sempre le previsioni meteo su vedur.is prima di partire verso zone remote.
   - title: Dove dormire
-    description: "I servizi sono scarsi. Hólmavík, Ísafjörður e Patreksfjörður hanno piccoli hotel e guesthouse. Fuori da questi tre centri, camping o niente. Prenotare sempre in anticipo - i posti sono pochissimi."
+    description: I servizi sono scarsi. Hólmavík, Ísafjörður e Patreksfjörður hanno
+      piccoli hotel e guesthouse. Fuori da questi tre centri, camping o niente.
+      Prenotare sempre in anticipo - i posti sono pochissimi.
 mapCenter:
   lat: 65.9
-  lng: -23.0
+  lng: -23
   zoom: 7
 mapMarkers:
   - lat: 66.0756
@@ -41,8 +59,7 @@ mapMarkers:
     lng: -24.0322
     label: Dynjandi
 ---
-
-I Westfjords iniziano dove finisce l'entusiasmo dei turisti. È una penisola che si allunga verso nord-ovest nell'Atlantico, con una costa frastagliata di fiordi profondi e strade che seguono ogni curva del terreno — lente, tortuose, bellissime.
+I Westfjords iniziano dove finisce l'entusiasmo dei turisti. È una penisola che si allunga verso nord-ovest nell'Atlantico, con una costa frastagliata di fiordi profondi e strade che seguono ogni curva del terreno, lente, tortuose, bellissime.
 
 ## Dynjandi
 
