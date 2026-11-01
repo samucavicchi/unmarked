@@ -13,7 +13,7 @@ publishDate: 2026-10-15
 featured: false
 seoMetaDescription: Itinerario nel sud della Namibia — Fish River Canyon,
   Lüderitz, dune di Sossusvlei e il deserto del Namib.
-pullQuote: Il sud della Namibia nonna bisogno di turismo man stream, ma di
+pullQuote: Il sud della Namibia non ha bisogno di turismo main stream, ma di
   persona che amano lasciarsi stupire
 essentialToKnow:
   - title: Periodo migliore
@@ -40,16 +40,16 @@ mapCenter:
   zoom: 6
 mapMarkers:
   - lat: -28.1322
-    lng: -16.8767
+    lng: 16.8767
     label: Fish River Canyon
   - lat: -26.6481
-    lng: -15.1594
+    lng: 15.1594
     label: Lüderitz
   - lat: -22.5609
-    lng: -17.0658
+    lng: 17.0658
     label: Windhoek
-  - lat: -26.705803
-    lng: 15.232896
+  - lat: -26.7058
+    lng: 15.2328
     label: Kolmanskop
 ---
 La Namibia è già un posto ai margini degli itinerari africani mainstream, potreste pensare che sia già mainstream perché guardate troppo Instagram, ma nella realtà dei fatti, quando sei li tu rendi conto che di turisti non ce ne sono poi così tanti. Vuoi perché gli spazzi sono così grandi da non sentire la pressione di altre persone vicine, o perché è un luogo visitabile tutto l'anno, ma non si avverte quasi mai la pressione turistica. Il suo sud lo è ancora di più, una regione che la maggior parte dei viaggiatori non affronta, perché è lontana e forse perché non si Sto arrivando! bene cosa ci sia realmente. 
