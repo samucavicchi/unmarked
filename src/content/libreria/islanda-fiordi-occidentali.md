@@ -38,6 +38,9 @@ essentialToKnow:
     description: I servizi sono scarsi. Hólmavík, Ísafjörður e Patreksfjörður hanno
       piccoli hotel e guesthouse. Fuori da questi tre centri, camping o niente.
       Prenotare sempre in anticipo - i posti sono pochissimi.
+schede:
+  - label: asxsxdasxdas
+    text: dasdxasxascxasxasxasx
 mapCenter:
   lat: 65.9
   lng: -23
