@@ -4,7 +4,7 @@ subtitle: Dune, scheletri e silenzio
 category: Destinazione
 country: Namibia
 continent: Africa
-coverImage: ../../assets/articoli/231011-namibia-dune-roman.jpg
+coverImage: ../../assets/articoli/unmarked-libro-namibia-339.jpg
 coverImageAlt: Dune rosse del Namib al tramonto, Namibia
 excerpt: Il sud della Namibia è una delle parti meno frequentate di un paese già
   poco frequentato. Deserti dentro i deserti, canyon profondi quanto il Grand
@@ -13,8 +13,8 @@ publishDate: 2026-10-15
 featured: false
 seoMetaDescription: Itinerario nel sud della Namibia — Fish River Canyon,
   Lüderitz, dune di Sossusvlei e il deserto del Namib.
-pullQuote: Il Namib non ha bisogno di fare niente per impressionarti. Sta lì da
-  55 milioni di anni. Ha tutto il tempo del mondo.
+pullQuote: Il sud della Namibia nonna bisogno di turismo man stream, ma di
+  persona che amano lasciarsi stupire
 essentialToKnow:
   - title: Periodo migliore
     description: Maggio-settembre è la stagione secca, temperature miti di giorno e
@@ -30,18 +30,15 @@ essentialToKnow:
       fondo è aperto solo maggio-settembre (il resto dell'anno fa troppo caldo
       per sopravvivere). L'affaccio dal bordo è accessibile tutto l'anno e vale
       da solo il viaggio.
-  - title: Sossusvlei
-    description: Le dune più alte del mondo - la Dune 45 si sale in 45 minuti di
-      sforzo vero. Partire prima dell'alba per essere in cima all'alba. Portare
-      più acqua del necessario, sempre.
+  - title: i Pinguini
+    description: Escursione in catamarano, durata circa 3 ore, costo dai 25 ai 40 €.
+      Il mare appena usciti dalla baia non è proprio delicato, ma vale
+      assolutamente la pena affrontare le onde.
 mapCenter:
   lat: -25.5
   lng: 17
   zoom: 6
 mapMarkers:
-  - lat: -24.7557
-    lng: -15.4
-    label: Sossusvlei
   - lat: -28.1322
     lng: -16.8767
     label: Fish River Canyon
@@ -51,6 +48,9 @@ mapMarkers:
   - lat: -22.5609
     lng: -17.0658
     label: Windhoek
+  - lat: -26.705803
+    lng: 15.232896
+    label: Kolmanskop
 ---
 La Namibia è già un posto ai margini degli itinerari africani mainstream, potreste pensare che sia già mainstream perché guardate troppo Instagram, ma nella realtà dei fatti, quando sei li tu rendi conto che di turisti non ce ne sono poi così tanti. Vuoi perché gli spazzi sono così grandi da non sentire la pressione di altre persone vicine, o perché è un luogo visitabile tutto l'anno, ma non si avverte quasi mai la pressione turistica. Il suo sud lo è ancora di più, una regione che la maggior parte dei viaggiatori non affronta, perché è lontana e forse perché non si Sto arrivando! bene cosa ci sia realmente. 
 
@@ -66,11 +66,11 @@ Lungo 160 chilometri, profondo fino a 550 metri. Lo si guarda dall'alto dal belv
 
 Siamo stati proprio un anno fa la Grand Canyon, e si, è un bel luogo, ma prima del canyon quello che ti colpisce è il turismo, strade asfaltate, pulmini che si muovono come in una grande città. Beh il Fish River è totalmente l'opposto, apparte il main View Point, dove si possono trovare un po di persone a goder del panorama dalla piattaforma, spostandosi di qualche centinaio di metri arrivando a tanti altri View Point presenti, ci si puo trovare completamente soli ad ammirare uno dei panorami piu belli del mondo. 
 
+![](../../assets/articoli/unmarked-libro-namibia-340.jpg)
+
 Se poi si ha il tempo e si è abbastanza esploratori, oltre a guardarlo dall'alto ci si puo entrare.
 
 Il trekking di cinque giorni sul fondo è uno dei percorsi più duri dell'Africa australe. Senza ombra, senza acqua corrente garantita, temperature sopra i 40 gradi in certi periodi. Lo si fa in piccoli gruppi, con un permesso, in stagione secca, ma in questo modo si puo anche   capire davvero l'incredibile dimensione di questo luogo.
-
-![](../../assets/articoli/unmarked-libro-namibia-339.jpg)
 
 ## Lüderitz
 
