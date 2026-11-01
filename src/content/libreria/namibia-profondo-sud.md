@@ -64,7 +64,7 @@ Beh privarsene potrebbe essere un errore. Qui ti posso dare dei validi motivi pe
 
 Lungo 160 chilometri, profondo fino a 550 metri. Lo si guarda dall'alto dal belvedere principale e non si riesce a misurarne le dimensioni che, lo rendono il secondo Canyon piu grande al mondo dopo il gran Canyon, ma paragonandolo con quest'ultimo, dobbiamo affrontare una differenza enorme.
 
-Siamo stati proprio un anno fa la Grand Canyon, e si, è un bel luogo, ma prima del canyon quello che ti colpisce è il turismo, strade asfaltate, pulmini che si muovono come in una grande città. Beh il Fish River è totalmente l'opposto, apparte il main View Point, dove si possono trovare un po di persone a goder del panorama dalla piattaforma, spostandosi di qualche centinaio di metri arrivando a tanti altri View Point presenti, ci si puo trovare completamente soli ad ammirare uno dei panorami piu belli del mondo. 
+Siamo stati proprio un anno fa la Grand Canyon, e si, è un bel luogo, ma prima del canyon quello che ti colpisce è il turismo, strade asfaltate, pulmini che si muovono come in una grande città. Beh il Fish River è totalmente l'opposto, apparte il main View Point, dove si possono trovare un po di persone a goder del panorama dalla piattaforma, spostandosi di qualche centinaio di metri arrivando a tanti altri View Point presenti, ci si puo trovare completamente soli ad ammirare uno dei panorami piu belli del mondo.  
 
 ![](../../assets/articoli/unmarked-libro-namibia-340.jpg)
 
