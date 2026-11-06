@@ -764,11 +764,11 @@ export const prerender = true;
   <!-- FORM REGISTRAZIONE -->
   <div class="nlp-form-wrap">
     <div class="nlp-form-intro">
-      <div class="nlp-badge-limited">Posti limitati</div>
-      <div class="nlp-form-title">Prenota il tuo posto</div>
+      <div class="nlp-badge-limited">Sala esaurita</div>
+      <div class="nlp-form-title">Lista d'attesa</div>
       <p class="nlp-form-note">
-        Compila il modulo per riservare il tuo ingresso.<br/>
-        Riceverai una conferma via email.
+        I posti disponibili sono esauriti.<br/>
+        Iscriviti alla lista d'attesa: se si liberano posti,<br/>li assegneremo in ordine di iscrizione.
       </p>
     </div>
 
@@ -781,6 +781,7 @@ export const prerender = true;
       netlify-honeypot="bot-field"
     >
       <input type="hidden" name="form-name" value="northern-line-premier" />
+      <input type="hidden" name="stato" value="lista-attesa" />
       <p style="display:none"><label>Non compilare: <input name="bot-field" /></label></p>
 
       <div class="nlp-field-row">
@@ -819,7 +820,7 @@ export const prerender = true;
       </div>
 
       <button type="submit" class="nlp-submit" id="nlp-submit-btn">
-        Prenota il mio posto
+        Iscrivimi alla lista d'attesa
       </button>
     </form>
 
@@ -830,8 +831,8 @@ export const prerender = true;
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h3>Posto riservato.</h3>
-      <p>Ti aspettiamo il 17 dicembre alle 20:00<br/>alla Sala Martinovich, Bassano del Grappa.<br/><br/>Riceverai una email di conferma a breve.</p>
+      <h3>Sei in lista.</h3>
+      <p>Ti contatteremo non appena si libera un posto.<br/>I posti vengono assegnati in ordine di iscrizione.</p>
     </div>
   </div>
 
@@ -867,7 +868,7 @@ export const prerender = true;
         }
       } catch {
         btn.disabled = false;
-        btn.textContent = 'Prenota il mio posto';
+        btn.textContent = 'Iscrivimi alla lista d\'attesa';
         alert('Qualcosa è andato storto. Riprova o scrivi a info@unmarked.it');
       }
     });
