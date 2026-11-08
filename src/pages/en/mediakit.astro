@@ -20,6 +20,25 @@ import { mediakitData as d } from '../../data/mediakit-data';
     </div>
   </section>
 
+  <!-- VIDEO PRESENTATION -->
+  <section class="mk-video">
+    <div class="mk-video-header">
+      <div class="mk-label mk-label-light">Presentation</div>
+      <h2 class="mk-video-title">We don't just tell a journey,<br/>but also the stories that usually go unseen.</h2>
+    </div>
+    <div class="mk-video-wrap" id="mk-video-wrap">
+      <video controls preload="metadata" poster="/weareunmarked.jpg" class="mk-video-player" id="mk-video">
+        <source src="/unmarked-presentazione.mp4" type="video/mp4" />
+      </video>
+      <div class="mk-video-overlay" id="mk-video-overlay">
+        <button class="mk-play-btn" id="mk-play-btn" aria-label="Play">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <span class="mk-play-label">Watch the presentation</span>
+      </div>
+    </div>
+  </section>
+
   <!-- WHO WE ARE -->
   <section class="mk-section mk-about">
     <div class="mk-inner">
@@ -409,11 +428,38 @@ import { mediakitData as d } from '../../data/mediakit-data';
   document.querySelector('.reel-lb-backdrop').addEventListener('click', closeLightbox);
   document.querySelector('.reel-lb-close').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // VIDEO PLAY OVERLAY
+  const mkVideo = document.getElementById('mk-video');
+  const mkOverlay = document.getElementById('mk-video-overlay');
+  if (mkVideo && mkOverlay) {
+    mkOverlay.addEventListener('click', () => {
+      mkVideo.play();
+      mkOverlay.classList.add('is-hidden');
+    });
+    mkVideo.addEventListener('pause', () => { mkOverlay.classList.remove('is-hidden'); });
+    mkVideo.addEventListener('ended', () => { mkOverlay.classList.remove('is-hidden'); });
+  }
 </script>
 
 </BaseLayout>
 
 <style>
+  /* VIDEO */
+  .mk-video { background: var(--dark); padding: 80px 0 0; }
+  .mk-video-header { max-width: 1100px; margin: 0 auto; padding: 0 56px 56px; }
+  .mk-video .mk-label { color: var(--sand); }
+  .mk-video .mk-label::before { background: var(--sand); }
+  .mk-video-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 2.5vw, 36px); font-weight: 300; color: #FAFAF8; line-height: 1.2; margin: 0; max-width: 640px; }
+  .mk-video-wrap { width: 100%; aspect-ratio: 21/9; background: #000; overflow: hidden; position: relative; }
+  .mk-video-player { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .mk-video-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: rgba(14,12,10,0.3); transition: opacity 0.3s ease; cursor: pointer; }
+  .mk-video-overlay.is-hidden { opacity: 0; pointer-events: none; }
+  .mk-play-btn { width: 80px; height: 80px; border-radius: 50%; border: 1.5px solid rgba(250,250,248,0.7); background: rgba(14,12,10,0.4); backdrop-filter: blur(8px); color: #FAFAF8; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+  .mk-play-btn:hover { transform: scale(1.08); background: rgba(196,133,90,0.5); border-color: var(--terra); }
+  .mk-play-btn svg { width: 32px; height: 32px; margin-left: 4px; }
+  .mk-play-label { font-size: 10px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.75); }
+
   /* ---- copia esatta degli stili da mediakit.astro ---- */
   /* HERO */
   .mk-hero { position: relative; height: 560px; display: flex; align-items: flex-end; overflow: hidden; }
