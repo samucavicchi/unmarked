@@ -25,7 +25,9 @@ const formattedDate = data.publishDate.toLocaleDateString('it-IT', {
   year: 'numeric',
 });
 
-const youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${data.youtubeId}?rel=0&modestbranding=1`;
+const youtubeEmbedUrl = data.youtubeId
+  ? `https://www.youtube-nocookie.com/embed/${data.youtubeId}?rel=0&modestbranding=1`
+  : null;
 
 // Video consigliati: 3 film più recenti diversi da quello attuale
 const tutti = await getCollection('film');
@@ -54,15 +56,34 @@ const consigliati = tutti
 
     <div class="film-player-wrap">
       <div class="film-player">
-        <iframe
-          src={youtubeEmbedUrl}
-          title={data.title}
-          loading="lazy"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
+        {youtubeEmbedUrl ? (
+          <iframe
+            src={youtubeEmbedUrl}
+            title={data.title}
+            loading="lazy"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        ) : data.videoUrl ? (
+          <div class="film-local-video-wrap" id="film-local-video-wrap">
+            <video
+              id="film-local-video"
+              class="film-local-video"
+              preload="metadata"
+              poster={data.coverImage.src}
+              playsinline
+            >
+              <source src={data.videoUrl} type="video/mp4" />
+            </video>
+            <div class="film-video-overlay" id="film-video-overlay">
+              <button class="film-play-btn" id="film-play-btn" aria-label="Riproduci">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
 
@@ -160,6 +181,60 @@ const consigliati = tutti
     display: block;
   }
 
+  /* Video locale */
+  .film-local-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    cursor: pointer;
+  }
+  .film-local-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .film-video-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14,12,10,0.35);
+    transition: background 0.2s ease;
+  }
+  .film-video-overlay:hover {
+    background: rgba(14,12,10,0.2);
+  }
+  .film-video-overlay.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .film-play-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(14,12,10,0.6);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(250,250,248,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    color: #FAFAF8;
+  }
+  .film-play-btn:hover {
+    transform: scale(1.08);
+    background: rgba(14,12,10,0.8);
+  }
+  .film-play-btn svg {
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+  }
+
   .film-body {
     max-width: 720px;
     margin: 60px auto;
@@ -241,3 +316,30 @@ const consigliati = tutti
   }
   .back-link:hover { text-decoration: underline; }
 </style>
+
+<script>
+  const video = document.getElementById('film-local-video') as HTMLVideoElement | null;
+  const overlay = document.getElementById('film-video-overlay');
+  const playBtn = document.getElementById('film-play-btn');
+
+  if (video && overlay && playBtn) {
+    const wrap = document.getElementById('film-local-video-wrap');
+
+    function showOverlay() { overlay.classList.remove('is-hidden'); }
+    function hideOverlay() { overlay.classList.add('is-hidden'); }
+
+    overlay.addEventListener('click', () => {
+      video.play();
+      hideOverlay();
+    });
+
+    video.addEventListener('pause', showOverlay);
+    video.addEventListener('ended', showOverlay);
+
+    // Mostra controlli nativi solo quando in riproduzione (accessibilità)
+    video.controls = false;
+    video.addEventListener('play', () => { video.controls = true; });
+    video.addEventListener('pause', () => { video.controls = false; });
+    video.addEventListener('ended', () => { video.controls = false; });
+  }
+</script>
