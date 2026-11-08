@@ -20,6 +20,22 @@ import { mediakitData as d } from '../data/mediakit-data';
     </div>
   </section>
 
+  <!-- VIDEO PRESENTAZIONE -->
+  <section class="mk-section mk-video">
+    <div class="mk-inner">
+      <div class="mk-label">Presentazione</div>
+      <div class="mk-video-wrap">
+        <video
+          controls
+          preload="metadata"
+          class="mk-video-player"
+        >
+          <source src="/unmarked-presentazione.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </section>
+
   <!-- CHI SIAMO -->
   <section class="mk-section mk-about">
     <div class="mk-inner">
@@ -485,6 +501,23 @@ import { mediakitData as d } from '../data/mediakit-data';
   .mk-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--terra); }
   .mk-label-light { color: var(--sand); }
   .mk-label-light::before { background: var(--sand); }
+
+  /* VIDEO PRESENTAZIONE */
+  .mk-video { background: var(--dark); }
+  .mk-video .mk-label { color: var(--sand); }
+  .mk-video .mk-label::before { background: var(--sand); }
+  .mk-video-wrap {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    overflow: hidden;
+  }
+  .mk-video-player {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
 
   /* CHI SIAMO */
   .mk-about { background: var(--cream); }
