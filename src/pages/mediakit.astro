@@ -21,18 +21,15 @@ import { mediakitData as d } from '../data/mediakit-data';
   </section>
 
   <!-- VIDEO PRESENTAZIONE -->
-  <section class="mk-section mk-video">
-    <div class="mk-inner">
-      <div class="mk-label">Presentazione</div>
-      <div class="mk-video-wrap">
-        <video
-          controls
-          preload="metadata"
-          class="mk-video-player"
-        >
-          <source src="/unmarked-presentazione.mp4" type="video/mp4" />
-        </video>
-      </div>
+  <section class="mk-video">
+    <div class="mk-video-header">
+      <div class="mk-label mk-label-light">Presentazione</div>
+      <h2 class="mk-video-title">Non raccontiamo i viaggi.<br/>Li viviamo per primi.</h2>
+    </div>
+    <div class="mk-video-wrap">
+      <video controls preload="metadata" class="mk-video-player">
+        <source src="/unmarked-presentazione.mp4" type="video/mp4" />
+      </video>
     </div>
   </section>
 
@@ -503,9 +500,26 @@ import { mediakitData as d } from '../data/mediakit-data';
   .mk-label-light::before { background: var(--sand); }
 
   /* VIDEO PRESENTAZIONE */
-  .mk-video { background: var(--dark); }
+  .mk-video {
+    background: var(--dark);
+    padding: 80px 0 0;
+  }
+  .mk-video-header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 56px 56px;
+  }
   .mk-video .mk-label { color: var(--sand); }
   .mk-video .mk-label::before { background: var(--sand); }
+  .mk-video-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: #FAFAF8;
+    line-height: 1.1;
+    margin: 0;
+    max-width: 640px;
+  }
   .mk-video-wrap {
     width: 100%;
     aspect-ratio: 16/9;
@@ -516,7 +530,6 @@ import { mediakitData as d } from '../data/mediakit-data';
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
   }
 
   /* CHI SIAMO */
