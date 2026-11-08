@@ -67,6 +67,6 @@ export const mediakitData = {
   },
 
   // CONTATTI
-  contactEmail: 'samu.cavicchi@gmail.com',
+  contactEmail: 'hello@unmarked.it',
 
 };
