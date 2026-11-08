@@ -26,10 +26,15 @@ import { mediakitData as d } from '../data/mediakit-data';
       <div class="mk-label mk-label-light">Presentazione</div>
       <h2 class="mk-video-title">Non raccontiamo solo un viaggio,<br/>ma anche le storie che di solito non si vedono.</h2>
     </div>
-    <div class="mk-video-wrap">
-      <video controls preload="metadata" poster="/weareunmarked.jpg" class="mk-video-player">
+    <div class="mk-video-wrap" id="mk-video-wrap">
+      <video controls preload="metadata" poster="/weareunmarked.jpg" class="mk-video-player" id="mk-video">
         <source src="/unmarked-presentazione.mp4" type="video/mp4" />
       </video>
+      <div class="mk-video-overlay" id="mk-video-overlay">
+        <button class="mk-play-btn" id="mk-play-btn" aria-label="Riproduci">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -378,6 +383,22 @@ import { mediakitData as d } from '../data/mediakit-data';
 </div>
 
 <script>
+  // VIDEO PLAY OVERLAY
+  const mkVideo = document.getElementById('mk-video');
+  const mkOverlay = document.getElementById('mk-video-overlay');
+  if (mkVideo && mkOverlay) {
+    mkOverlay.addEventListener('click', () => {
+      mkVideo.play();
+      mkOverlay.classList.add('is-hidden');
+    });
+    mkVideo.addEventListener('pause', () => {
+      mkOverlay.classList.remove('is-hidden');
+    });
+    mkVideo.addEventListener('ended', () => {
+      mkOverlay.classList.remove('is-hidden');
+    });
+  }
+
   // ACCORDION
   document.querySelectorAll('.mk-case-header').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -525,12 +546,44 @@ import { mediakitData as d } from '../data/mediakit-data';
     aspect-ratio: 16/9;
     background: #000;
     overflow: hidden;
+    position: relative;
   }
   .mk-video-player {
     width: 100%;
     height: 100%;
     display: block;
   }
+  .mk-video-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14,12,10,0.3);
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+  }
+  .mk-video-overlay.is-hidden { opacity: 0; pointer-events: none; }
+  .mk-play-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(250,250,248,0.7);
+    background: rgba(14,12,10,0.4);
+    backdrop-filter: blur(8px);
+    color: #FAFAF8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .mk-play-btn:hover {
+    transform: scale(1.08);
+    background: rgba(196,133,90,0.5);
+    border-color: var(--terra);
+  }
+  .mk-play-btn svg { width: 32px; height: 32px; margin-left: 4px; }
 
   /* CHI SIAMO */
   .mk-about { background: var(--cream); }
