@@ -46,7 +46,8 @@ exports.handler = async (event) => {
               <p style="font-size:14px;font-weight:300;color:rgba(250,250,248,0.6);line-height:1.8;margin:0 0 32px;">
                 Ciao ${nome},<br/><br/>
                 la sala è al completo, ma abbiamo registrato la tua iscrizione alla lista d'attesa per la première di <em>Northern Line</em>.<br/><br/>
-                Se si libera un posto, ti contatteremo in ordine di iscrizione.
+                Se qualcuno disdice il primo spettacolo (ore 20:00), il posto viene assegnato in ordine di iscrizione.<br/><br/>
+                Se raggiungiamo 50 persone in lista, organizzeremo un <strong style="font-weight:400;">secondo spettacolo alle 21:30</strong>. Ti avviseremo non appena confermato.
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(201,185,154,0.15);border-bottom:1px solid rgba(201,185,154,0.15);margin-bottom:32px;">
                 <tr>

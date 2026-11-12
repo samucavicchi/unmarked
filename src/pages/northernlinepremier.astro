@@ -691,7 +691,8 @@ export const prerender = true;
     <div class="nlp-info-cell">
       <div class="nlp-info-label">Data</div>
       <div class="nlp-info-val">17 Dicembre 2026</div>
-      <div class="nlp-info-small">ore 20:00</div>
+      <div class="nlp-info-small">1° spettacolo ore 20:00 · esaurito</div>
+      <div class="nlp-info-small" style="margin-top:4px;color:var(--terra);opacity:0.85;">2° spettacolo ore 21:30 · in attesa</div>
     </div>
     <div class="nlp-info-cell">
       <div class="nlp-info-label">Luogo</div>
@@ -767,8 +768,12 @@ export const prerender = true;
       <div class="nlp-badge-limited">Sold out</div>
       <div class="nlp-form-title">Lista d'attesa</div>
       <p class="nlp-form-note">
-        I posti disponibili sono esauriti.<br/>
-        Iscriviti alla lista d'attesa: se si liberano posti,<br/>li assegneremo in ordine di iscrizione.
+        Lo spettacolo delle 20:00 è esaurito.<br/><br/>
+        Iscriviti alla lista d'attesa: se qualcuno disdice, il posto
+        viene assegnato in ordine di iscrizione.<br/><br/>
+        Al raggiungimento di 50 iscritti organizzeremo
+        un <strong style="color:rgba(250,250,248,0.7);font-weight:400;">secondo spettacolo alle 21:30</strong>.
+        Ti avviseremo via email non appena confermato.
       </p>
     </div>
 
@@ -832,7 +837,7 @@ export const prerender = true;
         </svg>
       </div>
       <h3>Sei in lista.</h3>
-      <p>Ti contatteremo non appena si libera un posto.<br/>I posti vengono assegnati in ordine di iscrizione.</p>
+      <p>Ti contatteremo non appena si libera un posto nel primo spettacolo,<br/>o quando confermiamo il secondo spettacolo alle 21:30.</p>
     </div>
   </div>
 
