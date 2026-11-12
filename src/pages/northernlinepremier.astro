@@ -506,6 +506,47 @@ export const prerender = true;
     }
     .nlp-footer a:hover { color: var(--terra); }
 
+    /* ── SHOW STATUS OVERLAY ── */
+    .nlp-hero-shows {
+      position: absolute;
+      bottom: 10%;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 3;
+    }
+    .nlp-show-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nlp-show-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(15px, 2vw, 22px);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(250,250,248,0.9);
+    }
+    .nlp-show-time-struck {
+      text-decoration: line-through;
+      text-decoration-color: #C0392B;
+      text-decoration-thickness: 1.5px;
+      color: rgba(250,250,248,0.5);
+    }
+    .nlp-show-tag {
+      font-size: clamp(8px, 0.9vw, 10px);
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C0392B;
+    }
+    .nlp-show-tag-soft {
+      color: rgba(250,250,248,0.5);
+    }
+
     /* ── POSTER MOBILE (6.5:9) ── visibile solo su mobile, sostituisce l'hero landscape */
     .nlp-poster-mobile-hero {
       display: none; /* nascosto su desktop */
@@ -662,12 +703,32 @@ export const prerender = true;
   <section class="nlp-hero">
     <img class="nlp-hero-img" src="/northernline-poster-landscape.jpg" alt="Northern Line" />
     <div class="nlp-hero-overlay"></div>
+    <div class="nlp-hero-shows">
+      <div class="nlp-show-row nlp-show-soldout">
+        <span class="nlp-show-time nlp-show-time-struck">Spettacolo 20:00</span>
+        <span class="nlp-show-tag">Sold out</span>
+      </div>
+      <div class="nlp-show-row nlp-show-waiting">
+        <span class="nlp-show-time">Spettacolo 21:30</span>
+        <span class="nlp-show-tag nlp-show-tag-soft">waiting list</span>
+      </div>
+    </div>
   </section>
 
   <!-- HERO MOBILE — locandina 6.5:9 -->
   <div class="nlp-poster-mobile-hero">
     <img src="/northernline-poster-portrait.jpg" alt="Northern Line" />
     <div class="nlp-hero-overlay"></div>
+    <div class="nlp-hero-shows">
+      <div class="nlp-show-row nlp-show-soldout">
+        <span class="nlp-show-time nlp-show-time-struck">Spettacolo 20:00</span>
+        <span class="nlp-show-tag">Sold out</span>
+      </div>
+      <div class="nlp-show-row nlp-show-waiting">
+        <span class="nlp-show-time">Spettacolo 21:30</span>
+        <span class="nlp-show-tag nlp-show-tag-soft">waiting list</span>
+      </div>
+    </div>
   </div>
 
   <!-- TESTO + INFO EVENTO -->
